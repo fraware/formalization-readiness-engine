@@ -134,6 +134,8 @@ Acceptance criteria:
 
 ## Sprint 6: ReadinessBench gold/silver/bronze layout
 
+**Status:** Complete on `engineering-sprint6-readinessbench-tiers`.
+
 Goal: make benchmark tiers explicit.
 
 Tasks:
@@ -143,6 +145,15 @@ Tasks:
 3. Add a manifest format for benchmark items.
 4. Add evaluation scripts for predicted-vs-gold report pairs.
 5. Add CI tests on a tiny fixture.
+
+Delivered:
+
+- `benchmarks/readinessbench/` tier layout with gold, silver, and bronze finite-tree fixtures
+- `BenchmarkManifest`, `BenchmarkItem`, and `BenchmarkEvaluationReport` schemas with JSON Schema export
+- `benchmark.py` with manifest validation, tier invariants, and deterministic evaluation runner
+- `validate-readinessbench` and `run-readinessbench` CLI commands
+- `tests/test_benchmark.py` and prediction fixture under `tests/fixtures/readinessbench_predictions/`
+- `make validate-readinessbench`, `make run-readinessbench`, and matching `scripts/dev.ps1` targets
 
 Acceptance criteria:
 

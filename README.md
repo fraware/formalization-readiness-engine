@@ -27,6 +27,7 @@ Implemented and merged on `main`:
 - Readiness extraction orchestration from `TheoremProofUnit` to `ReadinessReport`.
 - ProofGraph and AtlasRecord extraction orchestration with post-extraction semantic validation (Sprint 4).
 - mathlib declaration index v0 with lexical lookup and readiness-report candidate enrichment (Sprint 5).
+- ReadinessBench Bronze/Silver/Gold layout, manifest validation, and evaluation runner (Sprint 6).
 - LeanTask renderer that emits L0 planning files and L1/L2 Lean skeletons.
 - Lean check runner that invokes `lake env lean` locally through a configured Lake project.
 - Corpus catalog utilities for source-id validation and release-mode filtering.
@@ -113,6 +114,20 @@ On Windows:
 
 ```powershell
 .\scripts\dev.ps1 lookup-finite-tree-declarations
+```
+
+Validate and run ReadinessBench against gold fixtures:
+
+```bash
+make validate-readinessbench
+make run-readinessbench PREDICTIONS_DIR=tests/fixtures/readinessbench_predictions
+```
+
+On Windows:
+
+```powershell
+.\scripts\dev.ps1 validate-readinessbench
+.\scripts\dev.ps1 run-readinessbench -PredictionsDir tests/fixtures/readinessbench_predictions
 ```
 
 Enrich a readiness report with index-backed theorem candidates:

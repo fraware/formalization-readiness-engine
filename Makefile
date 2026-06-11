@@ -2,7 +2,10 @@ PYTHON ?= python
 PYTHONPATH_VALUE := packages/fre_core/src
 
 .PHONY: setup setup-models test demo validate-examples export-schemas lint check \
-	extract-finite-tree-proofgraph extract-finite-tree-atlas lookup-finite-tree-declarations
+	extract-finite-tree-proofgraph extract-finite-tree-atlas lookup-finite-tree-declarations \
+	validate-readinessbench run-readinessbench
+
+PREDICTIONS_DIR ?= tests/fixtures/readinessbench_predictions
 
 setup:
 	$(PYTHON) -m pip install -r requirements.txt
@@ -55,3 +58,10 @@ extract-finite-tree-atlas:
 lookup-finite-tree-declarations:
 	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli lookup-declarations \
 		--unit-path examples/finite_tree/unit.json
+
+validate-readinessbench:
+	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli validate-readinessbench
+
+run-readinessbench:
+	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli run-readinessbench \
+		$(PREDICTIONS_DIR)

@@ -84,13 +84,15 @@ Provides a lightweight local runner for checking Lean files through `lake env le
 
 Provides corpus catalog loading, LaTeX ingestion from catalog sources, source-id validation, and release-mode filtering for shareable exports. CLI commands: `ingest-catalog` and `export-shareable-units`. See `corpus/catalog.json`, `examples/corpus_shareable/`, and `docs/ARCHITECTURE.md`.
 
-### `evaluation.py`
+### `evaluation.py` and `benchmark.py`
 
 Provides deterministic ReadinessBench metrics for comparing predicted readiness reports to reviewed gold reports. The first metric layer scores:
 
 - existing-theorem candidates;
 - constructive path items;
 - blockers.
+
+`benchmark.py` loads the ReadinessBench manifest, enforces Bronze/Silver/Gold tier invariants, rejects `artifacts/generated/` paths, and runs predicted-vs-gold evaluation through the CLI commands `validate-readinessbench` and `run-readinessbench`.
 
 ## Current tests
 
@@ -115,7 +117,8 @@ The test suite covers:
 - corpus release-mode checks;
 - corpus catalog ingestion, source-id validation, and shareable export (`tests/test_corpus_ingestion.py`);
 - mathlib declaration index load, deterministic search, and candidate enrichment (`tests/test_mathlib_index.py`);
-- ReadinessBench metrics.
+- ReadinessBench metrics;
+- ReadinessBench manifest validation and deterministic benchmark evaluation (`tests/test_benchmark.py`).
 
 ## First engineer takeover checklist
 

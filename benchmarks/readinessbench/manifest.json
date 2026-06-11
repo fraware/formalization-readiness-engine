@@ -1,0 +1,27 @@
+{
+  "schema_version": "0.1",
+  "benchmark_id": "readinessbench",
+  "items": [
+    {
+      "item_id": "finite_tree_edge_count_gold",
+      "unit_id": "finite_tree_edge_count",
+      "tier": "gold",
+      "unit_path": "gold/finite_tree_edge_count/unit.json",
+      "readiness_report_path": "gold/finite_tree_edge_count/readiness_report.json"
+    },
+    {
+      "item_id": "finite_tree_edge_count_silver",
+      "unit_id": "finite_tree_edge_count",
+      "tier": "silver",
+      "unit_path": "silver/finite_tree_edge_count/unit.json",
+      "readiness_report_path": "silver/finite_tree_edge_count/readiness_report.json"
+    },
+    {
+      "item_id": "finite_tree_edge_count_bronze",
+      "unit_id": "finite_tree_edge_count",
+      "tier": "bronze",
+      "unit_path": "bronze/finite_tree_edge_count/unit.json",
+      "readiness_report_path": "bronze/finite_tree_edge_count/readiness_report.json"
+    }
+  ]
+}

@@ -42,6 +42,7 @@ ReadinessBench    <-- evaluation
 | `corpus/catalog.json` | Committed source catalog with license and release metadata |
 | `corpus/sources/` | Permitted LaTeX inputs referenced by the catalog |
 | `fixtures/mathlib_declarations/` | Committed mathlib declaration index fixtures (v0 lexical lookup) |
+| `benchmarks/readinessbench/` | ReadinessBench manifest and Bronze/Silver/Gold readiness-report fixtures |
 | `examples/corpus_shareable/` | Shareable export demo with full-text and metadata-only fixtures |
 
 ## Key modules
@@ -56,6 +57,7 @@ packages/fre_core/src/fre_core/
   extract_proofgraph.py      ProofGraph orchestration
   extract_atlas.py           AtlasRecord orchestration
   mathlib_index.py           Declaration index load, lexical search, candidate enrichment
+  benchmark.py               ReadinessBench manifest validation and evaluation runner
   evaluation.py              ReadinessBench metrics
   cli.py                     Typer CLI entry point
 ```
@@ -104,3 +106,26 @@ Or on Windows:
 ```powershell
 .\scripts\dev.ps1 lookup-finite-tree-declarations
 ```
+
+## Sprint 6 ReadinessBench workflow
+
+1. Load `benchmarks/readinessbench/manifest.json`.
+2. Validate tier invariants: Gold requires `expert_reviewed` or `human_reviewed`; Bronze requires `candidate` or `machine_validated`.
+3. Reject manifest paths under `artifacts/generated/`.
+4. Score predicted readiness reports against Gold items only.
+
+Commands:
+
+```bash
+make validate-readinessbench
+make run-readinessbench PREDICTIONS_DIR=tests/fixtures/readinessbench_predictions
+```
+
+Or on Windows:
+
+```powershell
+.\scripts\dev.ps1 validate-readinessbench
+.\scripts\dev.ps1 run-readinessbench -PredictionsDir tests/fixtures/readinessbench_predictions
+```
+
+See `benchmarks/readinessbench/README.md` for tier definitions and promotion rules.

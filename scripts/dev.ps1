@@ -3,8 +3,9 @@
 
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("setup", "setup-models", "test", "validate-examples", "export-schemas", "lint", "check", "ingest-corpus", "export-corpus-shareable", "extract-finite-tree-proofgraph", "extract-finite-tree-atlas", "lookup-finite-tree-declarations")]
-    [string]$Command = "test"
+    [ValidateSet("setup", "setup-models", "test", "validate-examples", "export-schemas", "lint", "check", "ingest-corpus", "export-corpus-shareable", "extract-finite-tree-proofgraph", "extract-finite-tree-atlas", "lookup-finite-tree-declarations", "validate-readinessbench", "run-readinessbench")]
+    [string]$Command = "test",
+    [string]$PredictionsDir = "tests/fixtures/readinessbench_predictions"
 )
 
 $ErrorActionPreference = "Stop"
@@ -73,5 +74,11 @@ switch ($Command) {
     "lookup-finite-tree-declarations" {
         python -m fre_core.cli lookup-declarations `
             --unit-path examples/finite_tree/unit.json
+    }
+    "validate-readinessbench" {
+        python -m fre_core.cli validate-readinessbench
+    }
+    "run-readinessbench" {
+        python -m fre_core.cli run-readinessbench $PredictionsDir
     }
 }

@@ -140,3 +140,51 @@ class DeclarationIndex(BaseModel):
     index_id: str
     description: str | None = None
     declarations: list[MathlibDeclaration] = Field(default_factory=list)
+
+
+class BenchmarkTier(str, Enum):
+    """ReadinessBench data tier."""
+
+    BRONZE = "bronze"
+    SILVER = "silver"
+    GOLD = "gold"
+
+
+class BenchmarkItem(BaseModel):
+    """One benchmark item with explicit tier and artifact paths."""
+
+    item_id: str
+    unit_id: str
+    tier: BenchmarkTier
+    unit_path: str
+    readiness_report_path: str
+
+
+class BenchmarkManifest(BaseModel):
+    """Manifest listing ReadinessBench items and their tier placement."""
+
+    schema_version: Literal["0.1"] = "0.1"
+    benchmark_id: str
+    items: list[BenchmarkItem] = Field(default_factory=list)
+
+
+class BenchmarkItemScore(BaseModel):
+    """Deterministic scores for one gold benchmark item."""
+
+    item_id: str
+    unit_id: str
+    macro_f1: float
+    existing_theorem_candidates_f1: float
+    constructive_path_f1: float
+    blockers_f1: float
+
+
+class BenchmarkEvaluationReport(BaseModel):
+    """Aggregate ReadinessBench evaluation output."""
+
+    schema_version: Literal["0.1"] = "0.1"
+    benchmark_id: str
+    gold_item_count: int
+    scored_item_count: int
+    items: list[BenchmarkItemScore] = Field(default_factory=list)
+    macro_f1_mean: float

@@ -28,6 +28,12 @@ from fre_core.mathlib_index import (
     load_index,
     search,
 )
+from fre_core.benchmark import (
+    default_manifest_path,
+    load_manifest,
+    run_readinessbench,
+    validate_manifest,
+)
 from fre_core.openai_responses_provider import OpenAIResponsesProvider
 from fre_core.schema_exports import export_json_schemas
 from fre_core.validation import (
@@ -296,6 +302,59 @@ def enrich_report_candidates_cmd(
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(enriched.model_dump_json(indent=2), encoding="utf-8")
     print(f"[green]wrote enriched readiness report[/green] {output_path}")
+
+
+@app.command("validate-readinessbench")
+def validate_readinessbench_cmd(
+    manifest_path: Path = typer.Option(
+        default_manifest_path(),
+        help="Path to ReadinessBench manifest JSON.",
+    ),
+    benchmark_root: Path | None = typer.Option(
+        None,
+        help="Benchmark root directory (defaults to manifest parent).",
+    ),
+) -> None:
+    """Validate ReadinessBench manifest tier invariants and artifact paths."""
+    root = benchmark_root or manifest_path.parent
+    manifest = load_manifest(manifest_path)
+    gold_reports = validate_manifest(manifest=manifest, benchmark_root=root)
+    print(
+        f"[green]valid ReadinessBench manifest[/green] {manifest.benchmark_id} "
+        f"({len(manifest.items)} items, {len(gold_reports)} gold)"
+    )
+
+
+@app.command("run-readinessbench")
+def run_readinessbench_cmd(
+    predictions_dir: Path = typer.Argument(..., help="Directory of predicted readiness reports."),
+    manifest_path: Path = typer.Option(
+        default_manifest_path(),
+        help="Path to ReadinessBench manifest JSON.",
+    ),
+    output_path: Path | None = typer.Option(
+        None,
+        help="Optional path for the evaluation report JSON.",
+    ),
+    benchmark_root: Path | None = typer.Option(
+        None,
+        help="Benchmark root directory (defaults to manifest parent).",
+    ),
+) -> None:
+    """Score predicted readiness reports against ReadinessBench gold items."""
+    root = benchmark_root or manifest_path.parent
+    report = run_readinessbench(
+        manifest_path=manifest_path,
+        predictions_dir=predictions_dir,
+        benchmark_root=root,
+    )
+    payload = report.model_dump_json(indent=2)
+    if output_path is not None:
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text(payload + "\n", encoding="utf-8")
+        print(f"[green]wrote evaluation report[/green] {output_path}")
+    print(payload)
+    print(f"[green]macro_f1_mean[/green] {report.macro_f1_mean}")
 
 
 @app.command()
