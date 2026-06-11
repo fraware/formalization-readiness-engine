@@ -18,6 +18,18 @@ def _safe_identifier(value: str) -> str:
     return cleaned
 
 
+def _render_hypothesis(hypothesis: str) -> str:
+    """Render a Lean hypothesis without breaking typeclass bracket syntax."""
+    stripped = hypothesis.strip()
+    if not stripped:
+        return ""
+    if stripped.startswith("[") and stripped.endswith("]"):
+        return stripped
+    if stripped.startswith("(") and stripped.endswith(")"):
+        return stripped
+    return f"({stripped})"
+
+
 def render_leantask(task: LeanTaskPackage) -> str:
     """Render a LeanTask package as a Lean source file.
 
@@ -54,7 +66,9 @@ def render_leantask(task: LeanTaskPackage) -> str:
         return "\n".join(lines) + "\n"
 
     identifier = _safe_identifier(task.leantask_id)
-    hypotheses = " ".join(f"({hyp})" for hyp in task.hypotheses)
+    hypotheses = " ".join(
+        rendered for rendered in (_render_hypothesis(hyp) for hyp in task.hypotheses) if rendered
+    )
     if hypotheses:
         lines.append(f"theorem {identifier} {hypotheses} :")
     else:
