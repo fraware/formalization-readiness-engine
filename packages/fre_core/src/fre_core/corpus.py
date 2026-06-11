@@ -6,6 +6,7 @@ from pathlib import Path
 
 from pydantic import BaseModel, Field
 
+from fre_core.latex_ingestion import ingest_latex_file
 from fre_core.schemas import SourceDocument, TheoremProofUnit
 
 
@@ -26,6 +27,71 @@ class CorpusValidationError(ValueError):
 def load_corpus_catalog(path: Path) -> CorpusCatalog:
     """Load a corpus catalog from JSON."""
     return CorpusCatalog.model_validate_json(path.read_text(encoding="utf-8"))
+
+
+def resolve_source_path(*, source: SourceDocument, repo_root: Path) -> Path:
+    """Resolve a catalog source path relative to the repository root."""
+    return repo_root / source.path
+
+
+def ingest_catalog(
+    *,
+    catalog: CorpusCatalog,
+    repo_root: Path,
+) -> list[TheoremProofUnit]:
+    """Ingest every catalog source and validate unit source identifiers."""
+    units: list[TheoremProofUnit] = []
+
+    for source in catalog.sources:
+        source_path = resolve_source_path(source=source, repo_root=repo_root)
+        if not source_path.is_file():
+            raise CorpusValidationError(
+                f"Missing source file for {source.source_id}: {source_path}"
+            )
+        if source_path.suffix.lower() != ".tex":
+            raise CorpusValidationError(
+                f"Unsupported source format for {source.source_id}: {source_path}"
+            )
+        units.extend(
+            ingest_latex_file(
+                path=source_path,
+                source_id=source.source_id,
+                domain=source.domain,
+            )
+        )
+
+    validate_unit_sources(units=units, catalog=catalog)
+    return units
+
+
+def load_units_from_dir(units_dir: Path) -> list[TheoremProofUnit]:
+    """Load theorem/proof unit JSON files from a directory."""
+    units: list[TheoremProofUnit] = []
+    for path in sorted(units_dir.glob("*.json")):
+        units.append(TheoremProofUnit.model_validate_json(path.read_text(encoding="utf-8")))
+    return units
+
+
+def write_units(units: list[TheoremProofUnit], output_dir: Path) -> list[Path]:
+    """Write theorem/proof units as JSON files."""
+    output_dir.mkdir(parents=True, exist_ok=True)
+    written: list[Path] = []
+    for unit in units:
+        target = output_dir / f"{unit.unit_id}.json"
+        target.write_text(unit.model_dump_json(indent=2), encoding="utf-8")
+        written.append(target)
+    return written
+
+
+def export_shareable_units(
+    *,
+    units: list[TheoremProofUnit],
+    catalog: CorpusCatalog,
+    include_text: bool = False,
+) -> list[TheoremProofUnit]:
+    """Validate and filter units for sharing according to catalog release modes."""
+    validate_unit_sources(units=units, catalog=catalog)
+    return make_shareable_units(units=units, catalog=catalog, include_text=include_text)
 
 
 def validate_unit_sources(*, units: list[TheoremProofUnit], catalog: CorpusCatalog) -> None:

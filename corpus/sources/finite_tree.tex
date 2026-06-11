@@ -1,0 +1,9 @@
+\section{Finite trees}
+
+\begin{theorem}[Edge count in a finite tree]
+Let $G=(V,E)$ be a finite tree. Then $|E| = |V| - 1$.
+\end{theorem}
+
+\begin{proof}
+We argue by induction on $|V|$. If $|V|=1$, then $G$ has no edges. Otherwise, choose a leaf $v$, let $G' = G - v$, and apply the induction hypothesis to $G'$. Since $v$ is a leaf, deleting $v$ removes one vertex and one edge. Hence $|E|-1 = (|V|-1)-1$, so $|E| = |V|-1$.
+\end{proof}

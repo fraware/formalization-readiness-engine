@@ -1,0 +1,21 @@
+{
+  "schema_version": "0.1",
+  "sources": [
+    {
+      "source_id": "shareable_full_text_001",
+      "source_type": "author_permitted_notes",
+      "license_status": "permission_granted",
+      "release_mode": "full_text_allowed",
+      "domain": "graph_theory",
+      "path": "examples/corpus_shareable/sources/full_text_notes.tex"
+    },
+    {
+      "source_id": "shareable_metadata_only_001",
+      "source_type": "author_permitted_notes",
+      "license_status": "permission_granted",
+      "release_mode": "metadata_only",
+      "domain": "graph_theory",
+      "path": "examples/corpus_shareable/sources/metadata_only_notes.tex"
+    }
+  ]
+}

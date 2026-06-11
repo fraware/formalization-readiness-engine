@@ -44,6 +44,8 @@ Acceptance criteria:
 
 ## Sprint 3: corpus catalog file and ingestion workflow
 
+**Status:** Complete on `engineering-sprint3-corpus-catalog`.
+
 Goal: make source governance concrete instead of only library-level.
 
 Tasks:
@@ -53,6 +55,15 @@ Tasks:
 3. Add a CLI command or script that parses the catalog source into units.
 4. Validate unit source IDs against the catalog.
 5. Add a shareable export example where text is retained or stripped according to release mode.
+
+Delivered:
+
+- `corpus/catalog.json` and `corpus/sources/finite_tree.tex`
+- `ingest-catalog` and `export-shareable-units` CLI commands
+- `ingest_catalog`, `export_shareable_units`, and catalog path helpers in `corpus.py`
+- `examples/corpus_shareable/` with full-text and metadata-only export fixtures
+- `tests/test_corpus_ingestion.py` covering ingest, validation, release modes, and source spans
+- `make ingest-corpus`, `make export-corpus-shareable`, and matching `scripts/dev.ps1` targets
 
 Acceptance criteria:
 

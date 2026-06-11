@@ -28,6 +28,7 @@ Implemented and merged on `main`:
 - LeanTask renderer that emits L0 planning files and L1/L2 Lean skeletons.
 - Lean check runner that invokes `lake env lean` locally through a configured Lake project.
 - Corpus catalog utilities for source-id validation and release-mode filtering.
+- Corpus catalog file (`corpus/catalog.json`), LaTeX source inputs, and `ingest-catalog` / `export-shareable-units` CLI workflow (Sprint 3).
 - ReadinessBench precision, recall, F1, and macro-F1 utilities for comparing candidate reports against reviewed reports.
 
 ## Setup
@@ -64,6 +65,20 @@ Parse a LaTeX file into theorem/proof units:
 PYTHONPATH=packages/fre_core/src python -m fre_core.cli ingest-latex source.tex artifacts/units source_001 graph_theory
 ```
 
+Ingest catalog sources and export shareable units:
+
+```bash
+make ingest-corpus
+make export-corpus-shareable
+```
+
+On Windows:
+
+```powershell
+.\scripts\dev.ps1 ingest-corpus
+.\scripts\dev.ps1 export-corpus-shareable
+```
+
 Run model-based readiness extraction:
 
 ```bash
@@ -91,6 +106,7 @@ PYTHONPATH=packages/fre_core/src python -m fre_core.cli check-lean \
 ## Handoff documents
 
 - `docs/ENGINEERING_HANDOFF.md` gives the current architecture, branch status, and takeover checklist.
+- `docs/ARCHITECTURE.md` describes the pipeline and corpus ingestion workflow.
 - `docs/NEXT_SPRINTS.md` gives the next PR sequence for engineers.
 - `docs/BRANCH_CLEANUP.md` lists the temporary engineering branches that were merged and can be deleted from GitHub if the UI or Git CLI is available.
 

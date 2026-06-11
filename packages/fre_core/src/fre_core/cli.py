@@ -7,6 +7,13 @@ from pathlib import Path
 import typer
 from rich import print
 
+from fre_core.corpus import (
+    export_shareable_units,
+    ingest_catalog,
+    load_corpus_catalog,
+    load_units_from_dir,
+    write_units,
+)
 from fre_core.extraction import extract_readiness_report
 from fre_core.latex_ingestion import ingest_latex_file
 from fre_core.lean_runner import check_lean_file
@@ -104,6 +111,38 @@ def ingest_latex(
         target.write_text(unit.model_dump_json(indent=2), encoding="utf-8")
         print(f"[green]wrote unit[/green] {target}")
     print(f"[green]parsed units[/green] {len(units)}")
+
+
+@app.command("ingest-catalog")
+def ingest_catalog_cmd(
+    catalog_path: Path = typer.Argument(..., help="Path to corpus catalog JSON"),
+    output_dir: Path = typer.Argument(..., help="Directory for unit JSON output"),
+    repo_root: Path = typer.Option(Path("."), help="Repository root for source paths"),
+) -> None:
+    """Ingest catalog sources into theorem/proof unit JSON files."""
+    catalog = load_corpus_catalog(catalog_path)
+    units = ingest_catalog(catalog=catalog, repo_root=repo_root)
+    written = write_units(units, output_dir)
+    for path in written:
+        print(f"[green]wrote unit[/green] {path}")
+    print(f"[green]ingested units[/green] {len(units)} from {len(catalog.sources)} sources")
+
+
+@app.command("export-shareable-units")
+def export_shareable_units_cmd(
+    units_dir: Path = typer.Argument(..., help="Directory containing unit JSON files"),
+    catalog_path: Path = typer.Argument(..., help="Path to corpus catalog JSON"),
+    output_dir: Path = typer.Argument(..., help="Directory for shareable unit JSON output"),
+    include_text: bool = typer.Option(False, help="Include only full-text-allowed sources"),
+) -> None:
+    """Export units with text retained or stripped according to catalog release modes."""
+    catalog = load_corpus_catalog(catalog_path)
+    units = load_units_from_dir(units_dir)
+    shared = export_shareable_units(units=units, catalog=catalog, include_text=include_text)
+    written = write_units(shared, output_dir)
+    for path in written:
+        print(f"[green]wrote shareable unit[/green] {path}")
+    print(f"[green]exported shareable units[/green] {len(shared)}")
 
 
 @app.command()

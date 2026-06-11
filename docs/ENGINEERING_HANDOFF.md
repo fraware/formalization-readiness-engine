@@ -77,7 +77,7 @@ Provides a lightweight local runner for checking Lean files through `lake env le
 
 ### `corpus.py`
 
-Provides corpus catalog and release-mode checks. It validates source identifiers and removes theorem/proof text from shareable units when the catalog only allows metadata or derived annotations.
+Provides corpus catalog loading, LaTeX ingestion from catalog sources, source-id validation, and release-mode filtering for shareable exports. CLI commands: `ingest-catalog` and `export-shareable-units`. See `corpus/catalog.json`, `examples/corpus_shareable/`, and `docs/ARCHITECTURE.md`.
 
 ### `evaluation.py`
 
@@ -108,6 +108,7 @@ The test suite covers:
 - LeanTask rendering;
 - Lean runner command construction;
 - corpus release-mode checks;
+- corpus catalog ingestion, source-id validation, and shareable export (`tests/test_corpus_ingestion.py`);
 - ReadinessBench metrics.
 
 ## First engineer takeover checklist

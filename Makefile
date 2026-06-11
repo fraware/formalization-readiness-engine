@@ -22,5 +22,21 @@ export-schemas:
 demo:
 	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli demo
 
+ingest-corpus:
+	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli ingest-catalog examples/corpus_shareable/catalog.json examples/corpus_shareable/ingested --repo-root .
+
+export-corpus-shareable: ingest-corpus
+	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli export-shareable-units \
+		examples/corpus_shareable/ingested \
+		examples/corpus_shareable/catalog.json \
+		examples/corpus_shareable/full_text_export \
+		--include-text
+	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli export-shareable-units \
+		examples/corpus_shareable/ingested \
+		examples/corpus_shareable/catalog.json \
+		examples/corpus_shareable/metadata_only_export
+
 lint:
 	ruff check packages tests
+
+check: test validate-examples lint

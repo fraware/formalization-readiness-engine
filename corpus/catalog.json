@@ -1,0 +1,13 @@
+{
+  "schema_version": "0.1",
+  "sources": [
+    {
+      "source_id": "finite_tree_notes_001",
+      "source_type": "author_permitted_notes",
+      "license_status": "permission_granted",
+      "release_mode": "full_text_allowed",
+      "domain": "graph_theory",
+      "path": "corpus/sources/finite_tree.tex"
+    }
+  ]
+}
