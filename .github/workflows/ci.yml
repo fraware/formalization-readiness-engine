@@ -21,5 +21,4 @@ jobs:
           PYTHONPATH=packages/fre_core/src pytest -q
       - name: Validate examples
         run: |
-          PYTHONPATH=packages/fre_core/src python -m fre_core.cli validate-unit examples/finite_tree/unit.json
-          PYTHONPATH=packages/fre_core/src python -m fre_core.cli validate-report examples/finite_tree/readiness_report.json
+          PYTHONPATH=packages/fre_core/src python -m fre_core.cli validate-example-dir examples/finite_tree
