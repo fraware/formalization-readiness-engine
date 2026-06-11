@@ -35,5 +35,7 @@ def test_render_l1_leantask_as_lean_skeleton() -> None:
 
     assert "import Mathlib.Combinatorics.SimpleGraph.Acyclic" in rendered
     assert "theorem finite_tree_edge_count_L1" in rendered
+    assert "(V : Type*) [Fintype V] (G : SimpleGraph V)" in rendered
+    assert "([Fintype V])" not in rendered
     assert "G.edgeFinset.card + 1 = Fintype.card V" in rendered
     assert "sorry" in rendered
