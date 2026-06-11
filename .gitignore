@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
+
+# Data and generated artifacts
+data/raw_sources/
+data/eval_runs/
+artifacts/generated/
+public_exports/
+
+# Lean
+lean/.lake/
+lean/lake-packages/
+lean/lake-manifest.json
