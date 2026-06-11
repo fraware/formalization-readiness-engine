@@ -246,3 +246,62 @@ class GoldArtifactChangelogEntry(BaseModel):
     summary: str
     fields_changed: list[str] = Field(default_factory=list)
     review_submission_path: str | None = None
+
+
+class AlignmentCandidate(BaseModel):
+    """One mathlib declaration match proposed or confirmed for a readiness report."""
+
+    declaration_id: str
+    full_name: str
+    namespace: str
+    module: str
+    kind: str
+    score: int
+    match_reasons: list[str] = Field(default_factory=list)
+    query_source: str
+    alignment_status: Literal["candidate", "confirmed"] = "candidate"
+
+
+class AlignmentResult(BaseModel):
+    """Alignment output separating reviewer-confirmed matches from proposed candidates."""
+
+    schema_version: Literal["0.1"] = "0.1"
+    unit_id: str
+    index_id: str
+    candidates: list[AlignmentCandidate] = Field(default_factory=list)
+    confirmed: list[AlignmentCandidate] = Field(default_factory=list)
+
+
+class PublicBenchmarkExportRecord(BaseModel):
+    """One ReadinessBench item in a public JSONL export."""
+
+    schema_version: Literal["0.1"] = "0.1"
+    record_type: Literal["benchmark_item"] = "benchmark_item"
+    item_id: str
+    unit_id: str
+    tier: str
+    unit: TheoremProofUnit
+    readiness_report: ReadinessReport
+
+
+class PublicAtlasExportRecord(BaseModel):
+    """One Atlas record in a public JSONL export."""
+
+    schema_version: Literal["0.1"] = "0.1"
+    record_type: Literal["atlas"] = "atlas"
+    unit_id: str
+    source_id: str | None = None
+    domain: str | None = None
+    atlas_record: AtlasRecord
+    unit: TheoremProofUnit | None = None
+
+
+class PublicExportManifest(BaseModel):
+    """Manifest describing a public JSONL export."""
+
+    schema_version: Literal["0.1"] = "0.1"
+    export_id: str
+    export_type: Literal["readinessbench", "atlas"]
+    record_count: int
+    output_path: str
+    description: str | None = None

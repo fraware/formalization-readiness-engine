@@ -9,6 +9,8 @@ from typing import TypeAlias
 from pydantic import BaseModel
 
 from fre_core.schemas import (
+    AlignmentCandidate,
+    AlignmentResult,
     AtlasRecord,
     BenchmarkEvaluationReport,
     BenchmarkManifest,
@@ -16,6 +18,9 @@ from fre_core.schemas import (
     GoldArtifactChangelogEntry,
     LeanTaskPackage,
     ProofGraph,
+    PublicAtlasExportRecord,
+    PublicBenchmarkExportRecord,
+    PublicExportManifest,
     ReadinessReport,
     ReadinessReportReviewSubmission,
     SourceDocument,
@@ -36,6 +41,11 @@ SCHEMA_MODELS: dict[str, SchemaModel] = {
     "benchmark_evaluation_report": BenchmarkEvaluationReport,
     "readiness_report_review_submission": ReadinessReportReviewSubmission,
     "gold_artifact_changelog_entry": GoldArtifactChangelogEntry,
+    "alignment_candidate": AlignmentCandidate,
+    "alignment_result": AlignmentResult,
+    "public_benchmark_export_record": PublicBenchmarkExportRecord,
+    "public_atlas_export_record": PublicAtlasExportRecord,
+    "public_export_manifest": PublicExportManifest,
 }
 
 
