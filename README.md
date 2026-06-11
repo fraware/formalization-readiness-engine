@@ -33,6 +33,7 @@ Implemented and merged on `main`:
 - mathlib Alignment Service with multi-dimensional candidate search and explicit confirmed-alignment separation (Phase 4/5).
 - FastAPI review backend (`apps/api/`) and minimal static review UI (`apps/review-ui/`) (Phase 5 foundation).
 - Public ReadinessBench and Atlas JSONL export with licensing leak tests (Phase 6).
+- End-to-end offline demo (`make demo`) covering both reference examples (validate, align, render L1, ReadinessBench eval, public export dry-run).
 - Second hand-authored reference example: category-theory pullback transport along equivalence under `examples/category_theory_pullback/`.
 - LeanTask renderer that emits L0 planning files and L1/L2 Lean skeletons.
 - Lean check runner that invokes `lake env lean` locally through a configured Lake project.
@@ -46,13 +47,41 @@ Implemented and merged on `main`:
 make setup
 make test
 make validate-examples
+make demo
 ```
+
+The offline demo runs the full artifact pipeline on both reference examples without OpenAI or network access. See `docs/DEMO.md` for details.
 
 Optional model dependencies:
 
 ```bash
 make setup-models
 ```
+
+## End-to-end demo
+
+Run the full pipeline on both reference examples (offline, CI-safe):
+
+```bash
+make demo
+make demo-finite-tree
+make demo-category-theory
+```
+
+Live extraction with OpenAI (requires `OPENAI_API_KEY`):
+
+```bash
+make demo-live
+```
+
+On Windows:
+
+```powershell
+.\scripts\dev.ps1 demo
+.\scripts\dev.ps1 demo-live
+```
+
+See `docs/DEMO.md` for stage-by-stage walkthrough, expected outputs, and environment variables.
 
 ## Core commands
 
@@ -260,6 +289,7 @@ PYTHONPATH=packages/fre_core/src python -m fre_core.cli check-lean \
 - `docs/ARCHITECTURE.md` describes the pipeline and corpus ingestion workflow.
 - `docs/NEXT_SPRINTS.md` gives the next PR sequence for engineers.
 - `docs/review/REVIEWER_GUIDE.md` gives the standalone external review workflow (Sprint 7).
+- `docs/DEMO.md` explains the end-to-end demo (`make demo`) for both reference examples.
 - `docs/PUBLIC_RELEASE.md` explains public benchmark and Atlas exports for external users.
 - `docs/BRANCH_CLEANUP.md` lists the temporary engineering branches that were merged and can be deleted from GitHub if the UI or Git CLI is available.
 

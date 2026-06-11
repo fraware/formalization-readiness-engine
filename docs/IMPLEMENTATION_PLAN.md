@@ -233,7 +233,9 @@ Exit criterion:
 make demo
 ```
 
-produces one theorem/proof unit, one readiness report, one proof graph, one Atlas record, one LeanTask package, and one Lean check attempt.
+produces validated artifact stacks for both reference examples (`finite_tree` and `category_theory_pullback`), L1 Lean skeleton renders, ReadinessBench evaluation on fixture predictions, and a public export dry-run. **Status: satisfied for the offline path** (`make demo` / `python -m fre_core.cli demo --offline`). Live extraction (`make demo-live`) requires `OPENAI_API_KEY` and is documented in `docs/DEMO.md`.
+
+The original Phase 0 target of one theorem/proof unit through Lean check is covered by the `finite_tree` example; category theory extends coverage to a second domain.
 
 ### Phase 1: Artifact schemas and validation
 

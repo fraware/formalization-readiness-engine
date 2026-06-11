@@ -1,7 +1,8 @@
 PYTHON ?= python
 PYTHONPATH_VALUE := packages/fre_core/src:.
 
-.PHONY: setup setup-models setup-api test demo validate-examples export-schemas lint check \
+.PHONY: setup setup-models setup-api test demo demo-live demo-finite-tree demo-category-theory \
+	validate-examples export-schemas lint check \
 	extract-finite-tree-proofgraph extract-finite-tree-atlas lookup-finite-tree-declarations \
 	generate-finite-tree-leantask generate-category-theory-leantask \
 	validate-readinessbench run-readinessbench validate-review-submission validate-gold-changelog \
@@ -30,7 +31,16 @@ export-schemas:
 	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli export-schemas schemas
 
 demo:
-	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli demo
+	DEMO_SKIP_LEAN=1 PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli demo --offline --example all
+
+demo-live:
+	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli demo --live --example all
+
+demo-finite-tree:
+	DEMO_SKIP_LEAN=1 PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli demo --offline --example finite_tree
+
+demo-category-theory:
+	DEMO_SKIP_LEAN=1 PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli demo --offline --example category_theory_pullback
 
 ingest-corpus:
 	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli ingest-catalog examples/corpus_shareable/catalog.json examples/corpus_shareable/ingested --repo-root .

@@ -3,7 +3,7 @@
 
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("setup", "setup-models", "setup-api", "test", "validate-examples", "export-schemas", "lint", "check", "ingest-corpus", "export-corpus-shareable", "extract-finite-tree-proofgraph", "extract-finite-tree-atlas", "lookup-finite-tree-declarations", "generate-finite-tree-leantask", "generate-category-theory-leantask", "validate-readinessbench", "run-readinessbench", "validate-review-submission", "validate-gold-changelog", "run-api", "run-review-ui", "export-public-benchmark", "export-public-atlas")]
+    [ValidateSet("setup", "setup-models", "setup-api", "test", "demo", "demo-live", "demo-finite-tree", "demo-category-theory", "validate-examples", "export-schemas", "lint", "check", "ingest-corpus", "export-corpus-shareable", "extract-finite-tree-proofgraph", "extract-finite-tree-atlas", "lookup-finite-tree-declarations", "generate-finite-tree-leantask", "generate-category-theory-leantask", "validate-readinessbench", "run-readinessbench", "validate-review-submission", "validate-gold-changelog", "run-api", "run-review-ui", "export-public-benchmark", "export-public-atlas")]
     [string]$Command = "test",
     [string]$PredictionsDir = "tests/fixtures/readinessbench_predictions"
 )
@@ -31,6 +31,21 @@ switch ($Command) {
     "setup-models" { Invoke-SetupModels }
     "setup-api" { Invoke-SetupApi }
     "test" { python -m pytest -q }
+    "demo" {
+        $env:DEMO_SKIP_LEAN = "1"
+        python -m fre_core.cli demo --offline --example all
+    }
+    "demo-live" {
+        python -m fre_core.cli demo --live --example all
+    }
+    "demo-finite-tree" {
+        $env:DEMO_SKIP_LEAN = "1"
+        python -m fre_core.cli demo --offline --example finite_tree
+    }
+    "demo-category-theory" {
+        $env:DEMO_SKIP_LEAN = "1"
+        python -m fre_core.cli demo --offline --example category_theory_pullback
+    }
     "validate-examples" {
         python -m fre_core.cli validate-example-dir examples/finite_tree
         python -m fre_core.cli validate-example-dir examples/category_theory_pullback

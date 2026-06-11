@@ -19,6 +19,11 @@ jobs:
       - name: Run tests
         run: |
           PYTHONPATH=packages/fre_core/src:. pytest -q
+      - name: Run offline demo
+        env:
+          DEMO_SKIP_LEAN: "1"
+        run: |
+          PYTHONPATH=packages/fre_core/src:. python -m fre_core.cli demo --offline --example all
       - name: Validate examples
         run: |
           PYTHONPATH=packages/fre_core/src:. python -m fre_core.cli validate-example-dir examples/finite_tree

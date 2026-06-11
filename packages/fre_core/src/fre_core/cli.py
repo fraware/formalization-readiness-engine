@@ -627,12 +627,24 @@ def check_licensing_leak_cmd(
 
 
 @app.command()
-def demo() -> None:
-    """Describe the first target demo."""
-    print(
-        "finite-tree source -> theorem/proof unit -> readiness report -> "
-        "proof graph -> Atlas record -> LeanTask package -> Lean check"
-    )
+def demo(
+    offline: bool = typer.Option(
+        True,
+        "--offline/--live",
+        help="Offline mode uses committed gold artifacts (CI-safe). Live mode runs OpenAI extraction.",
+    ),
+    example: str = typer.Option(
+        "all",
+        "--example",
+        help="Reference example to run: finite_tree, category_theory_pullback, or all.",
+    ),
+) -> None:
+    """Run the end-to-end artifact pipeline on reference examples."""
+    from fre_core.demo_runner import main as run_demo_main
+
+    exit_code = run_demo_main(offline=offline, example=example)
+    if exit_code != 0:
+        raise typer.Exit(code=exit_code)
 
 
 if __name__ == "__main__":
