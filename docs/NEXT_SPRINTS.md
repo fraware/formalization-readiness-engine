@@ -103,6 +103,8 @@ Acceptance criteria:
 
 ## Sprint 5: mathlib declaration index v0
 
+**Status:** Complete on `engineering-sprint5-mathlib-index`.
+
 Goal: replace free-text theorem-candidate guesses with a reproducible declaration lookup layer.
 
 Tasks:
@@ -112,6 +114,16 @@ Tasks:
 3. Add lexical lookup by declaration name, namespace, and module.
 4. Connect lookup results to readiness-report candidate fields.
 5. Add tests proving stable ranking for a finite-tree query.
+
+Delivered:
+
+- `DeclarationIndex` and `MathlibDeclaration` schemas with JSON Schema export
+- Committed fixture `fixtures/mathlib_declarations/finite_tree_v0.json`
+- `mathlib_index.py` with `load_index`, `search`, and `enrich_readiness_candidates`
+- `lookup-declarations` and `enrich-report-candidates` CLI commands
+- Optional `--enrich-candidates` flag on `extract-report`
+- `make lookup-finite-tree-declarations` and matching `scripts/dev.ps1` target
+- `tests/test_mathlib_index.py` covering deterministic finite-tree ranking
 
 Acceptance criteria:
 

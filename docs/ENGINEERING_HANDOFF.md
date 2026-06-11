@@ -34,6 +34,7 @@ Defines the public artifact contracts:
 - `ProofGraph`
 - `AtlasRecord`
 - `LeanTaskPackage`
+- `DeclarationIndex` and `MathlibDeclaration` (mathlib lookup index)
 
 These classes are the center of the repository. Add fields only when the new field is required by the formalization-readiness spec or by a reviewed benchmark need.
 
@@ -61,11 +62,13 @@ Parses theorem-like LaTeX environments into theorem/proof units. It currently su
 
 It also pairs an immediately following proof block and preserves character spans for statement and proof text.
 
-### `model_client.py`, `openai_responses_provider.py`, `extraction.py`, `extract_proofgraph.py`, and `extract_atlas.py`
+### `model_client.py`, `openai_responses_provider.py`, `extraction.py`, `extract_proofgraph.py`, `extract_atlas.py`, and `mathlib_index.py`
 
 Keep model calls behind an interface. The current OpenAI provider uses structured output parsing and returns Pydantic objects. Engineers should keep provider-specific code isolated in provider modules.
 
 Extraction orchestration modules build prompts, call the structured model client, align `unit_id` with the source unit, and run semantic validation before returning artifacts.
+
+`mathlib_index.py` provides deterministic lexical lookup over committed declaration-index fixtures. Index hits are candidate alignments only; Silver and Gold records require human review. Use `--enrich-candidates` on `extract-report` or `enrich-report-candidates` to replace free-text theorem guesses with index-backed names.
 
 ### `leantask_renderer.py`
 
@@ -111,6 +114,7 @@ The test suite covers:
 - Lean runner command construction;
 - corpus release-mode checks;
 - corpus catalog ingestion, source-id validation, and shareable export (`tests/test_corpus_ingestion.py`);
+- mathlib declaration index load, deterministic search, and candidate enrichment (`tests/test_mathlib_index.py`);
 - ReadinessBench metrics.
 
 ## First engineer takeover checklist

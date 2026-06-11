@@ -119,3 +119,24 @@ class LeanTaskPackage(BaseModel):
     fallback_path: str | None = None
     next_action: str
     review_status: ReviewStatus = ReviewStatus.CANDIDATE
+
+
+class MathlibDeclaration(BaseModel):
+    """One Lean/mathlib declaration entry in a reproducible lookup index."""
+
+    declaration_id: str
+    full_name: str
+    namespace: str
+    module: str
+    kind: Literal["theorem", "def", "instance", "abbrev", "structure", "class", "inductive"]
+    type_signature: str | None = None
+    docstring: str | None = None
+
+
+class DeclarationIndex(BaseModel):
+    """Versioned index of mathlib declarations for lexical candidate lookup."""
+
+    schema_version: Literal["0.1"] = "0.1"
+    index_id: str
+    description: str | None = None
+    declarations: list[MathlibDeclaration] = Field(default_factory=list)

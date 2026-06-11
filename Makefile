@@ -2,7 +2,7 @@ PYTHON ?= python
 PYTHONPATH_VALUE := packages/fre_core/src
 
 .PHONY: setup setup-models test demo validate-examples export-schemas lint check \
-	extract-finite-tree-proofgraph extract-finite-tree-atlas
+	extract-finite-tree-proofgraph extract-finite-tree-atlas lookup-finite-tree-declarations
 
 setup:
 	$(PYTHON) -m pip install -r requirements.txt
@@ -51,3 +51,7 @@ extract-finite-tree-atlas:
 	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli extract-atlas \
 		examples/finite_tree/unit.json \
 		artifacts/generated/finite_tree/atlas_record.model.json
+
+lookup-finite-tree-declarations:
+	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli lookup-declarations \
+		--unit-path examples/finite_tree/unit.json

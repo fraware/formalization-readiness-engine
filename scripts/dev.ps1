@@ -3,7 +3,7 @@
 
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("setup", "setup-models", "test", "validate-examples", "export-schemas", "lint", "check", "ingest-corpus", "export-corpus-shareable", "extract-finite-tree-proofgraph", "extract-finite-tree-atlas")]
+    [ValidateSet("setup", "setup-models", "test", "validate-examples", "export-schemas", "lint", "check", "ingest-corpus", "export-corpus-shareable", "extract-finite-tree-proofgraph", "extract-finite-tree-atlas", "lookup-finite-tree-declarations")]
     [string]$Command = "test"
 )
 
@@ -69,5 +69,9 @@ switch ($Command) {
         python -m fre_core.cli extract-atlas `
             examples/finite_tree/unit.json `
             artifacts/generated/finite_tree/atlas_record.model.json
+    }
+    "lookup-finite-tree-declarations" {
+        python -m fre_core.cli lookup-declarations `
+            --unit-path examples/finite_tree/unit.json
     }
 }

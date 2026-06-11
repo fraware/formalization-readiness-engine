@@ -1,0 +1,142 @@
+{
+  "schema_version": "0.1",
+  "index_id": "mathlib_finite_tree_v0",
+  "description": "Static mathlib declaration fixture for finite-tree formalization alignment (v0).",
+  "declarations": [
+    {
+      "declaration_id": "mathlib:SimpleGraph.IsTree.card_edgeFinset",
+      "full_name": "SimpleGraph.IsTree.card_edgeFinset",
+      "namespace": "SimpleGraph.IsTree",
+      "module": "Mathlib.Combinatorics.SimpleGraph.Acyclic",
+      "kind": "theorem",
+      "type_signature": "{V : Type*} [Fintype V] (G : SimpleGraph V) [DecidableEq V] (h : G.IsTree) : G.edgeFinset.card = Fintype.card V - 1",
+      "docstring": "The number of edges in a finite tree is one less than the number of vertices."
+    },
+    {
+      "declaration_id": "mathlib:SimpleGraph.IsTree",
+      "full_name": "SimpleGraph.IsTree",
+      "namespace": "SimpleGraph",
+      "module": "Mathlib.Combinatorics.SimpleGraph.Acyclic",
+      "kind": "def",
+      "type_signature": "{V : Type u} (G : SimpleGraph V) : Prop",
+      "docstring": "A simple graph is a tree when it is connected and acyclic."
+    },
+    {
+      "declaration_id": "mathlib:SimpleGraph.IsTree.card_edgeFinset'",
+      "full_name": "SimpleGraph.IsTree.card_edgeFinset'",
+      "namespace": "SimpleGraph.IsTree",
+      "module": "Mathlib.Combinatorics.SimpleGraph.Acyclic",
+      "kind": "theorem",
+      "type_signature": "{V : Type*} [Fintype V] (G : SimpleGraph V) (h : G.IsTree) : G.edgeFinset.card = Fintype.card V - 1",
+      "docstring": "Edge-count identity for finite trees without an explicit decidable-equality assumption."
+    },
+    {
+      "declaration_id": "mathlib:SimpleGraph.leaf",
+      "full_name": "SimpleGraph.leaf",
+      "namespace": "SimpleGraph",
+      "module": "Mathlib.Combinatorics.SimpleGraph.Acyclic",
+      "kind": "def",
+      "type_signature": "{V : Type u} (G : SimpleGraph V) (v : V) : Prop",
+      "docstring": "A leaf is a vertex of degree at most one."
+    },
+    {
+      "declaration_id": "mathlib:SimpleGraph.exists_leaf_of_isTree",
+      "full_name": "SimpleGraph.exists_leaf_of_isTree",
+      "namespace": "SimpleGraph",
+      "module": "Mathlib.Combinatorics.SimpleGraph.Acyclic",
+      "kind": "theorem",
+      "type_signature": "{V : Type u} [Fintype V] [Nonempty V] (G : SimpleGraph V) (h : G.IsTree) : ∃ v, G.leaf v",
+      "docstring": "Every nontrivial finite tree has a leaf."
+    },
+    {
+      "declaration_id": "mathlib:SimpleGraph.edgeFinset",
+      "full_name": "SimpleGraph.edgeFinset",
+      "namespace": "SimpleGraph",
+      "module": "Mathlib.Combinatorics.SimpleGraph.Finite",
+      "kind": "def",
+      "type_signature": "{V : Type u} [Fintype V] [DecidableEq V] (G : SimpleGraph V) : Finset (Sym2 V)",
+      "docstring": "Finite edge set of a simple graph on a fintype vertex type."
+    },
+    {
+      "declaration_id": "mathlib:SimpleGraph.card_edgeFinset",
+      "full_name": "SimpleGraph.card_edgeFinset",
+      "namespace": "SimpleGraph",
+      "module": "Mathlib.Combinatorics.SimpleGraph.Finite",
+      "kind": "theorem",
+      "type_signature": "{V : Type u} [Fintype V] [DecidableEq V] (G : SimpleGraph V) : G.edgeFinset.card = 2 * G.edgeSet.card",
+      "docstring": "Cardinality of the edge finset equals twice the cardinality of the edge set."
+    },
+    {
+      "declaration_id": "mathlib:SimpleGraph.Connected",
+      "full_name": "SimpleGraph.Connected",
+      "namespace": "SimpleGraph",
+      "module": "Mathlib.Combinatorics.SimpleGraph.Connectivity",
+      "kind": "def",
+      "type_signature": "{V : Type u} (G : SimpleGraph V) : Prop",
+      "docstring": "A graph is connected when every pair of vertices is joined by a walk."
+    },
+    {
+      "declaration_id": "mathlib:SimpleGraph.IsAcyclic",
+      "full_name": "SimpleGraph.IsAcyclic",
+      "namespace": "SimpleGraph",
+      "module": "Mathlib.Combinatorics.SimpleGraph.Acyclic",
+      "kind": "def",
+      "type_signature": "{V : Type u} (G : SimpleGraph V) : Prop",
+      "docstring": "A graph is acyclic when it has no cycles."
+    },
+    {
+      "declaration_id": "mathlib:SimpleGraph.deleteVerts",
+      "full_name": "SimpleGraph.deleteVerts",
+      "namespace": "SimpleGraph",
+      "module": "Mathlib.Combinatorics.SimpleGraph.DeleteEdges",
+      "kind": "def",
+      "type_signature": "{V : Type u} (G : SimpleGraph V) (s : Set V) : SimpleGraph V",
+      "docstring": "Delete a set of vertices and all incident edges."
+    },
+    {
+      "declaration_id": "mathlib:SimpleGraph.deleteVert",
+      "full_name": "SimpleGraph.deleteVert",
+      "namespace": "SimpleGraph",
+      "module": "Mathlib.Combinatorics.SimpleGraph.DeleteEdges",
+      "kind": "def",
+      "type_signature": "{V : Type u} (G : SimpleGraph V) (v : V) : SimpleGraph V",
+      "docstring": "Delete one vertex and all incident edges."
+    },
+    {
+      "declaration_id": "mathlib:Finset.card",
+      "full_name": "Finset.card",
+      "namespace": "Finset",
+      "module": "Mathlib.Data.Finset.Card",
+      "kind": "def",
+      "type_signature": "{α : Type u} (s : Finset α) : ℕ",
+      "docstring": "Cardinality of a finite set."
+    },
+    {
+      "declaration_id": "mathlib:Fintype.card",
+      "full_name": "Fintype.card",
+      "namespace": "Fintype",
+      "module": "Mathlib.Data.Fintype.Card",
+      "kind": "def",
+      "type_signature": "(α : Type u) [Fintype α] : ℕ",
+      "docstring": "Cardinality of a fintype."
+    },
+    {
+      "declaration_id": "mathlib:SimpleGraph.minDegree",
+      "full_name": "SimpleGraph.minDegree",
+      "namespace": "SimpleGraph",
+      "module": "Mathlib.Combinatorics.SimpleGraph.DegreeSum",
+      "kind": "def",
+      "type_signature": "{V : Type u} [Fintype V] (G : SimpleGraph V) : ℕ",
+      "docstring": "Minimum degree over vertices of a finite simple graph."
+    },
+    {
+      "declaration_id": "mathlib:SimpleGraph.degree",
+      "full_name": "SimpleGraph.degree",
+      "namespace": "SimpleGraph",
+      "module": "Mathlib.Combinatorics.SimpleGraph.DegreeSum",
+      "kind": "def",
+      "type_signature": "{V : Type u} (G : SimpleGraph V) (v : V) [Fintype (G.neighborSet v)] : ℕ",
+      "docstring": "Degree of a vertex in a simple graph."
+    }
+  ]
+}

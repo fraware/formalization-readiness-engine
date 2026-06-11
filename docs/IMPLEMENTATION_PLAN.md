@@ -132,6 +132,8 @@ The mathlib Alignment Service indexes Lean/mathlib declarations and supports lex
 
 It should distinguish candidate alignment from confirmed alignment. A model or retrieval system can propose candidates; Silver and Gold records require human review.
 
+**Current implementation (Sprint 5 v0):** `DeclarationIndex` / `MathlibDeclaration` schemas, committed fixture at `fixtures/mathlib_declarations/finite_tree_v0.json`, and lexical lookup in `packages/fre_core/src/fre_core/mathlib_index.py`. See `docs/ARCHITECTURE.md` for the lookup workflow.
+
 ### 4.6 LeanTask Generator
 
 LeanTask packages connect readiness reports to formalization action.

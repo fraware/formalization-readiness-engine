@@ -17,6 +17,8 @@ TheoremProofUnit  <-- latex_ingestion + ingest_catalog
         v
 ReadinessReport   <-- extraction + StructuredModelClient
         |
+        +--> DeclarationIndex lookup (mathlib_index) --> candidate theorem names
+        |
         +--> ProofGraph      <-- extract_proofgraph + StructuredModelClient
         +--> AtlasRecord     <-- extract_atlas + StructuredModelClient
         |
@@ -39,6 +41,7 @@ ReadinessBench    <-- evaluation
 |------|---------|
 | `corpus/catalog.json` | Committed source catalog with license and release metadata |
 | `corpus/sources/` | Permitted LaTeX inputs referenced by the catalog |
+| `fixtures/mathlib_declarations/` | Committed mathlib declaration index fixtures (v0 lexical lookup) |
 | `examples/corpus_shareable/` | Shareable export demo with full-text and metadata-only fixtures |
 
 ## Key modules
@@ -52,6 +55,7 @@ packages/fre_core/src/fre_core/
   extraction.py              ReadinessReport orchestration
   extract_proofgraph.py      ProofGraph orchestration
   extract_atlas.py           AtlasRecord orchestration
+  mathlib_index.py           Declaration index load, lexical search, candidate enrichment
   evaluation.py              ReadinessBench metrics
   cli.py                     Typer CLI entry point
 ```
@@ -76,4 +80,27 @@ Or on Windows:
 ```powershell
 .\scripts\dev.ps1 ingest-corpus
 .\scripts\dev.ps1 export-corpus-shareable
+```
+
+## Sprint 5 mathlib index workflow
+
+1. Load a committed declaration index fixture (for example `fixtures/mathlib_declarations/finite_tree_v0.json`).
+2. Build a lexical query from a unit or readiness report.
+3. Search the index for ranked candidate theorem names (Bronze candidates only).
+4. Optionally enrich `existing_theorem_candidates` on a readiness report.
+
+Commands:
+
+```bash
+make lookup-finite-tree-declarations
+PYTHONPATH=packages/fre_core/src python -m fre_core.cli lookup-declarations --query "finite tree edge card"
+PYTHONPATH=packages/fre_core/src python -m fre_core.cli enrich-report-candidates \
+  examples/finite_tree/readiness_report.json \
+  artifacts/generated/finite_tree/readiness_report.enriched.json
+```
+
+Or on Windows:
+
+```powershell
+.\scripts\dev.ps1 lookup-finite-tree-declarations
 ```

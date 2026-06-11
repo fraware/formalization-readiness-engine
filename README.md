@@ -26,6 +26,7 @@ Implemented and merged on `main`:
 - OpenAI Responses provider behind the internal structured model-client boundary.
 - Readiness extraction orchestration from `TheoremProofUnit` to `ReadinessReport`.
 - ProofGraph and AtlasRecord extraction orchestration with post-extraction semantic validation (Sprint 4).
+- mathlib declaration index v0 with lexical lookup and readiness-report candidate enrichment (Sprint 5).
 - LeanTask renderer that emits L0 planning files and L1/L2 Lean skeletons.
 - Lean check runner that invokes `lake env lean` locally through a configured Lake project.
 - Corpus catalog utilities for source-id validation and release-mode filtering.
@@ -100,6 +101,26 @@ On Windows:
 ```powershell
 .\scripts\dev.ps1 extract-finite-tree-proofgraph
 .\scripts\dev.ps1 extract-finite-tree-atlas
+```
+
+Look up mathlib declaration candidates for the finite-tree example:
+
+```bash
+make lookup-finite-tree-declarations
+```
+
+On Windows:
+
+```powershell
+.\scripts\dev.ps1 lookup-finite-tree-declarations
+```
+
+Enrich a readiness report with index-backed theorem candidates:
+
+```bash
+PYTHONPATH=packages/fre_core/src python -m fre_core.cli enrich-report-candidates \
+  examples/finite_tree/readiness_report.json \
+  artifacts/generated/finite_tree/readiness_report.enriched.json
 ```
 
 See `docs/OPENAI_USAGE.md` for model-call conventions and environment variables.
