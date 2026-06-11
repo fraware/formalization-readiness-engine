@@ -9,6 +9,7 @@ from rich import print
 
 from fre_core.extraction import extract_readiness_report
 from fre_core.latex_ingestion import ingest_latex_file
+from fre_core.leantask_renderer import write_leantask
 from fre_core.openai_responses_provider import OpenAIResponsesProvider
 from fre_core.schema_exports import export_json_schemas
 from fre_core.validation import (
@@ -102,6 +103,14 @@ def ingest_latex(
         target.write_text(unit.model_dump_json(indent=2), encoding="utf-8")
         print(f"[green]wrote unit[/green] {target}")
     print(f"[green]parsed units[/green] {len(units)}")
+
+
+@app.command()
+def render_leantask(task_path: Path, output_path: Path) -> None:
+    """Render a LeanTask package JSON file into a Lean source skeleton."""
+    task = load_leantask_package(task_path)
+    written = write_leantask(task, output_path)
+    print(f"[green]wrote Lean file[/green] {written}")
 
 
 @app.command()
