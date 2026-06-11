@@ -164,6 +164,8 @@ Acceptance criteria:
 
 ## Sprint 7: external-review workflow
 
+**Status:** Complete on `engineering-sprint7-review-workflow`.
+
 Goal: prepare the repo for mathematician and formalizer feedback.
 
 Tasks:
@@ -173,6 +175,16 @@ Tasks:
 3. Add scoring rubric for external usefulness.
 4. Add examples of acceptable and unacceptable edits to generated artifacts.
 5. Add a changelog for reviewed gold artifacts.
+
+Delivered:
+
+- `docs/review/` reviewer guide, review form, usefulness rubric, and edit examples
+- `docs/review/templates/readiness_report_review.json` structured submission template
+- `ReadinessReportReviewSubmission` and `GoldArtifactChangelogEntry` schemas with JSON Schema export
+- `review_workflow.py` with submission and changelog validation
+- `validate-review-submission` and `validate-gold-changelog` CLI commands
+- `benchmarks/readinessbench/gold/CHANGELOG.md` and `gold/changelog.jsonl` auditable Gold change log
+- `tests/test_review_workflow.py` covering submission template and changelog validation
 
 Acceptance criteria:
 

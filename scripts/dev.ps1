@@ -3,7 +3,7 @@
 
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("setup", "setup-models", "test", "validate-examples", "export-schemas", "lint", "check", "ingest-corpus", "export-corpus-shareable", "extract-finite-tree-proofgraph", "extract-finite-tree-atlas", "lookup-finite-tree-declarations", "validate-readinessbench", "run-readinessbench")]
+    [ValidateSet("setup", "setup-models", "test", "validate-examples", "export-schemas", "lint", "check", "ingest-corpus", "export-corpus-shareable", "extract-finite-tree-proofgraph", "extract-finite-tree-atlas", "lookup-finite-tree-declarations", "validate-readinessbench", "run-readinessbench", "validate-review-submission", "validate-gold-changelog")]
     [string]$Command = "test",
     [string]$PredictionsDir = "tests/fixtures/readinessbench_predictions"
 )
@@ -80,5 +80,12 @@ switch ($Command) {
     }
     "run-readinessbench" {
         python -m fre_core.cli run-readinessbench $PredictionsDir
+    }
+    "validate-review-submission" {
+        python -m fre_core.cli validate-review-submission `
+            docs/review/templates/readiness_report_review.json
+    }
+    "validate-gold-changelog" {
+        python -m fre_core.cli validate-gold-changelog
     }
 }

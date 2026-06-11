@@ -94,6 +94,10 @@ Provides deterministic ReadinessBench metrics for comparing predicted readiness 
 
 `benchmark.py` loads the ReadinessBench manifest, enforces Bronze/Silver/Gold tier invariants, rejects `artifacts/generated/` paths, and runs predicted-vs-gold evaluation through the CLI commands `validate-readinessbench` and `run-readinessbench`.
 
+### `review_workflow.py`
+
+Validates structured external review submissions and Gold artifact changelog entries. Reviewers produce JSON submissions mapped to `ReadinessReportReviewSubmission`; Gold changes are logged in `benchmarks/readinessbench/gold/changelog.jsonl` and `CHANGELOG.md`. CLI commands: `validate-review-submission` and `validate-gold-changelog`. See `docs/review/`.
+
 ## Current tests
 
 Run:
@@ -118,7 +122,8 @@ The test suite covers:
 - corpus catalog ingestion, source-id validation, and shareable export (`tests/test_corpus_ingestion.py`);
 - mathlib declaration index load, deterministic search, and candidate enrichment (`tests/test_mathlib_index.py`);
 - ReadinessBench metrics;
-- ReadinessBench manifest validation and deterministic benchmark evaluation (`tests/test_benchmark.py`).
+- ReadinessBench manifest validation and deterministic benchmark evaluation (`tests/test_benchmark.py`);
+- external review submission and Gold changelog validation (`tests/test_review_workflow.py`).
 
 ## First engineer takeover checklist
 

@@ -28,6 +28,7 @@ Implemented and merged on `main`:
 - ProofGraph and AtlasRecord extraction orchestration with post-extraction semantic validation (Sprint 4).
 - mathlib declaration index v0 with lexical lookup and readiness-report candidate enrichment (Sprint 5).
 - ReadinessBench Bronze/Silver/Gold layout, manifest validation, and evaluation runner (Sprint 6).
+- External review workflow: reviewer docs, structured submission template, usefulness rubric, Gold changelog, and validation CLI (Sprint 7).
 - LeanTask renderer that emits L0 planning files and L1/L2 Lean skeletons.
 - Lean check runner that invokes `lake env lean` locally through a configured Lake project.
 - Corpus catalog utilities for source-id validation and release-mode filtering.
@@ -130,6 +131,31 @@ On Windows:
 .\scripts\dev.ps1 run-readinessbench -PredictionsDir tests/fixtures/readinessbench_predictions
 ```
 
+## External review workflow
+
+Mathematicians and formalizers can review units without reading Python code. Start with `docs/review/REVIEWER_GUIDE.md`.
+
+Validate a structured review submission:
+
+```bash
+PYTHONPATH=packages/fre_core/src python -m fre_core.cli validate-review-submission \
+  docs/review/templates/readiness_report_review.json
+```
+
+Validate the Gold artifact changelog:
+
+```bash
+PYTHONPATH=packages/fre_core/src python -m fre_core.cli validate-gold-changelog
+```
+
+On Windows:
+
+```powershell
+$env:PYTHONPATH = "packages/fre_core/src"
+python -m fre_core.cli validate-review-submission docs/review/templates/readiness_report_review.json
+python -m fre_core.cli validate-gold-changelog
+```
+
 Enrich a readiness report with index-backed theorem candidates:
 
 ```bash
@@ -161,6 +187,7 @@ PYTHONPATH=packages/fre_core/src python -m fre_core.cli check-lean \
 - `docs/ENGINEERING_HANDOFF.md` gives the current architecture, branch status, and takeover checklist.
 - `docs/ARCHITECTURE.md` describes the pipeline and corpus ingestion workflow.
 - `docs/NEXT_SPRINTS.md` gives the next PR sequence for engineers.
+- `docs/review/REVIEWER_GUIDE.md` gives the standalone external review workflow (Sprint 7).
 - `docs/BRANCH_CLEANUP.md` lists the temporary engineering branches that were merged and can be deleted from GitHub if the UI or Git CLI is available.
 
 ## Development rule

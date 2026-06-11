@@ -36,6 +36,12 @@ from fre_core.benchmark import (
 )
 from fre_core.openai_responses_provider import OpenAIResponsesProvider
 from fre_core.schema_exports import export_json_schemas
+from fre_core.review_workflow import (
+    load_changelog_entries,
+    load_review_submission,
+    validate_changelog_entries,
+    validate_review_submission,
+)
 from fre_core.validation import (
     load_atlas_record,
     load_leantask_package,
@@ -355,6 +361,30 @@ def run_readinessbench_cmd(
         print(f"[green]wrote evaluation report[/green] {output_path}")
     print(payload)
     print(f"[green]macro_f1_mean[/green] {report.macro_f1_mean}")
+
+
+@app.command("validate-review-submission")
+def validate_review_submission_cmd(path: Path) -> None:
+    """Validate a structured readiness-report review submission JSON file."""
+    submission = load_review_submission(path)
+    validate_review_submission(submission)
+    print(
+        f"[green]valid review submission[/green] {submission.unit_id} "
+        f"reviewer={submission.reviewer_id}"
+    )
+
+
+@app.command("validate-gold-changelog")
+def validate_gold_changelog_cmd(
+    path: Path = typer.Option(
+        Path("benchmarks/readinessbench/gold/changelog.jsonl"),
+        help="Path to gold artifact changelog JSONL.",
+    ),
+) -> None:
+    """Validate ReadinessBench gold artifact changelog entries."""
+    entries = load_changelog_entries(path)
+    validate_changelog_entries(entries)
+    print(f"[green]valid gold changelog[/green] {len(entries)} entries")
 
 
 @app.command()

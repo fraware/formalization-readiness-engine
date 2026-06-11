@@ -3,7 +3,7 @@ PYTHONPATH_VALUE := packages/fre_core/src
 
 .PHONY: setup setup-models test demo validate-examples export-schemas lint check \
 	extract-finite-tree-proofgraph extract-finite-tree-atlas lookup-finite-tree-declarations \
-	validate-readinessbench run-readinessbench
+	validate-readinessbench run-readinessbench validate-review-submission validate-gold-changelog
 
 PREDICTIONS_DIR ?= tests/fixtures/readinessbench_predictions
 
@@ -65,3 +65,10 @@ validate-readinessbench:
 run-readinessbench:
 	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli run-readinessbench \
 		$(PREDICTIONS_DIR)
+
+validate-review-submission:
+	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli validate-review-submission \
+		docs/review/templates/readiness_report_review.json
+
+validate-gold-changelog:
+	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli validate-gold-changelog

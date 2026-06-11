@@ -67,6 +67,11 @@ The runner writes a deterministic JSON report with per-item and mean macro-F1 sc
 ## Promoting artifacts
 
 1. Write model output under `artifacts/generated/` with `review_status: candidate`.
-2. Review and correct fields; update `review_status` to `human_reviewed` for Silver or `expert_reviewed` for Gold.
-3. Copy reviewed artifacts into the appropriate tier directory and add or update `manifest.json`.
-4. Never copy directly from `artifacts/generated/` into Gold without an explicit review step.
+2. Follow the external review workflow in `docs/review/REVIEWER_GUIDE.md`.
+3. Review and correct fields using `docs/review/READINESS_REPORT_REVIEW_FORM.md` and score with `docs/review/USEFULNESS_RUBRIC.md`.
+4. Submit structured review JSON (template: `docs/review/templates/readiness_report_review.json`) and run `validate-review-submission`.
+5. Copy reviewed artifacts into the appropriate tier directory and add or update `manifest.json`.
+6. For Gold changes, append entries to `gold/changelog.jsonl` and `gold/CHANGELOG.md`, then run `validate-gold-changelog`.
+7. Never copy directly from `artifacts/generated/` into Gold without an explicit review step.
+
+See also `docs/review/EDIT_EXAMPLES.md` for acceptable and unacceptable edits.

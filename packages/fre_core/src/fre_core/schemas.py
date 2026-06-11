@@ -188,3 +188,61 @@ class BenchmarkEvaluationReport(BaseModel):
     scored_item_count: int
     items: list[BenchmarkItemScore] = Field(default_factory=list)
     macro_f1_mean: float
+
+
+class ReadinessDimensionReview(BaseModel):
+    """Reviewer assessment of one ReadinessReport dimension field group."""
+
+    status_accurate: bool
+    recovered_accurate: bool
+    unresolved_accurate: bool
+    notes: str | None = None
+
+
+class UsefulnessRubricScores(BaseModel):
+    """External-usefulness rubric scores (1 = poor, 5 = excellent)."""
+
+    source_fidelity: int = Field(ge=1, le=5)
+    actionability: int = Field(ge=1, le=5)
+    library_alignment: int = Field(ge=1, le=5)
+    blocker_specificity: int = Field(ge=1, le=5)
+    path_clarity: int = Field(ge=1, le=5)
+
+
+class ReadinessReportDimensionReviews(BaseModel):
+    """Per-dimension review flags aligned with ReadinessReport schema fields."""
+
+    statement_readiness: ReadinessDimensionReview
+    context_readiness: ReadinessDimensionReview
+    notation_readiness: ReadinessDimensionReview
+    dependency_readiness: ReadinessDimensionReview
+
+
+class ReadinessReportReviewSubmission(BaseModel):
+    """Structured external review output for one theorem/proof unit."""
+
+    schema_version: Literal["0.1"] = "0.1"
+    unit_id: str
+    item_id: str | None = None
+    reviewer_id: str
+    review_date: str
+    tier_promotion: Literal["silver", "gold"] | None = None
+    review_status: ReviewStatus
+    rubric_scores: UsefulnessRubricScores
+    dimension_reviews: ReadinessReportDimensionReviews
+    list_fields_accurate: bool
+    recommended_next_action_accurate: bool
+    corrected_report_path: str | None = None
+    corrected_report: ReadinessReport | None = None
+    notes: str | None = None
+
+
+class GoldArtifactChangelogEntry(BaseModel):
+    """Auditable record of a change to a ReadinessBench gold artifact."""
+
+    date: str
+    item_id: str
+    reviewer_id: str
+    summary: str
+    fields_changed: list[str] = Field(default_factory=list)
+    review_submission_path: str | None = None

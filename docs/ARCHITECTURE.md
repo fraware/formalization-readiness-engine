@@ -58,6 +58,7 @@ packages/fre_core/src/fre_core/
   extract_atlas.py           AtlasRecord orchestration
   mathlib_index.py           Declaration index load, lexical search, candidate enrichment
   benchmark.py               ReadinessBench manifest validation and evaluation runner
+  review_workflow.py         External review submission and Gold changelog validation
   evaluation.py              ReadinessBench metrics
   cli.py                     Typer CLI entry point
 ```
@@ -129,3 +130,27 @@ Or on Windows:
 ```
 
 See `benchmarks/readinessbench/README.md` for tier definitions and promotion rules.
+
+## Sprint 7 external review workflow
+
+1. Reviewer reads `docs/review/REVIEWER_GUIDE.md` and the unit JSON artifacts only.
+2. Reviewer completes `docs/review/READINESS_REPORT_REVIEW_FORM.md` and fills `docs/review/templates/readiness_report_review.json`.
+3. Reviewer scores external usefulness using `docs/review/USEFULNESS_RUBRIC.md`.
+4. Corrected reports are promoted to Silver or Gold tier directories; Gold edits are logged in `benchmarks/readinessbench/gold/changelog.jsonl` and `CHANGELOG.md`.
+5. Validate submissions with `validate-review-submission` and the Gold changelog with `validate-gold-changelog`.
+
+Commands:
+
+```bash
+PYTHONPATH=packages/fre_core/src python -m fre_core.cli validate-review-submission \
+  docs/review/templates/readiness_report_review.json
+PYTHONPATH=packages/fre_core/src python -m fre_core.cli validate-gold-changelog
+```
+
+Or on Windows:
+
+```powershell
+$env:PYTHONPATH = "packages/fre_core/src"
+python -m fre_core.cli validate-review-submission docs/review/templates/readiness_report_review.json
+python -m fre_core.cli validate-gold-changelog
+```

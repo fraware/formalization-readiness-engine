@@ -13,9 +13,11 @@ from fre_core.schemas import (
     BenchmarkEvaluationReport,
     BenchmarkManifest,
     DeclarationIndex,
+    GoldArtifactChangelogEntry,
     LeanTaskPackage,
     ProofGraph,
     ReadinessReport,
+    ReadinessReportReviewSubmission,
     SourceDocument,
     TheoremProofUnit,
 )
@@ -32,6 +34,8 @@ SCHEMA_MODELS: dict[str, SchemaModel] = {
     "declaration_index": DeclarationIndex,
     "benchmark_manifest": BenchmarkManifest,
     "benchmark_evaluation_report": BenchmarkEvaluationReport,
+    "readiness_report_review_submission": ReadinessReportReviewSubmission,
+    "gold_artifact_changelog_entry": GoldArtifactChangelogEntry,
 }
 
 
