@@ -15,6 +15,7 @@ from fre_core.corpus import (
     write_units,
 )
 from fre_core.extract_atlas import extract_atlas_record
+from fre_core.extract_leantask import extract_leantask_package
 from fre_core.extract_proofgraph import extract_proofgraph
 from fre_core.extraction import extract_readiness_report
 from fre_core.latex_ingestion import ingest_latex_file
@@ -36,6 +37,7 @@ from fre_core.benchmark import (
 )
 from fre_core.openai_responses_provider import OpenAIResponsesProvider
 from fre_core.schema_exports import export_json_schemas
+from fre_core.schemas import LeanTaskLevel
 from fre_core.review_workflow import (
     load_changelog_entries,
     load_review_submission,
@@ -249,6 +251,42 @@ def extract_atlas_cmd(
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(record.model_dump_json(indent=2), encoding="utf-8")
     print(f"[green]wrote Atlas record[/green] {output_path}")
+
+
+@app.command("generate-leantask")
+def generate_leantask_cmd(
+    unit_path: Path,
+    report_path: Path,
+    output_path: Path,
+    level: LeanTaskLevel = typer.Option(LeanTaskLevel.L0, help="LeanTask level to generate."),
+    model: str | None = None,
+    enrich_imports: bool = typer.Option(
+        False,
+        help="Append mathlib module imports from declaration index lookup.",
+    ),
+    index_path: Path | None = typer.Option(
+        None,
+        help="Declaration index JSON path (defaults to finite-tree fixture).",
+    ),
+    import_top_k: int = typer.Option(5, help="Maximum index modules when enriching imports."),
+) -> None:
+    """Generate a LeanTask package from a unit and readiness report using the model provider."""
+    unit = load_unit(unit_path)
+    report = load_readiness_report(report_path)
+    provider = OpenAIResponsesProvider(model=model)
+    index = load_index(index_path or default_index_path()) if enrich_imports else None
+    package = extract_leantask_package(
+        unit=unit,
+        report=report,
+        model_client=provider,
+        level=level,
+        enrich_imports=enrich_imports,
+        index=index,
+        import_top_k=import_top_k,
+    )
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(package.model_dump_json(indent=2), encoding="utf-8")
+    print(f"[green]wrote LeanTask package[/green] {output_path}")
 
 
 @app.command("lookup-declarations")

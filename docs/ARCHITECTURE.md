@@ -23,7 +23,7 @@ ReadinessReport   <-- extraction + StructuredModelClient
         +--> AtlasRecord     <-- extract_atlas + StructuredModelClient
         |
         v
-LeanTaskPackage
+LeanTaskPackage   <-- extract_leantask + StructuredModelClient (+ optional mathlib import enrichment)
         |
         v
 .lean skeleton    <-- leantask_renderer
@@ -57,6 +57,7 @@ packages/fre_core/src/fre_core/
   extraction.py              ReadinessReport orchestration
   extract_proofgraph.py      ProofGraph orchestration
   extract_atlas.py           AtlasRecord orchestration
+  extract_leantask.py        LeanTaskPackage orchestration from unit + readiness report
   mathlib_index.py           Declaration index load, lexical search, candidate enrichment
   benchmark.py               ReadinessBench manifest validation and evaluation runner
   review_workflow.py         External review submission and Gold changelog validation
@@ -155,3 +156,31 @@ $env:PYTHONPATH = "packages/fre_core/src"
 python -m fre_core.cli validate-review-submission docs/review/templates/readiness_report_review.json
 python -m fre_core.cli validate-gold-changelog
 ```
+
+## LeanTask generation workflow
+
+1. Extract or load a readiness report for a theorem/proof unit (optionally enrich theorem candidates with `--enrich-candidates` on `extract-report`).
+2. Generate a candidate LeanTask package with `generate-leantask`.
+3. Render the package with `render-leantask`.
+4. Optionally typecheck L1 skeletons with `check-lean`.
+
+Commands:
+
+```bash
+make generate-finite-tree-leantask
+make generate-category-theory-leantask
+OPENAI_API_KEY=... PYTHONPATH=packages/fre_core/src python -m fre_core.cli generate-leantask \
+  examples/finite_tree/unit.json \
+  examples/finite_tree/readiness_report.json \
+  artifacts/generated/finite_tree/leantask.model.json \
+  --level L0
+```
+
+Or on Windows:
+
+```powershell
+.\scripts\dev.ps1 generate-finite-tree-leantask
+.\scripts\dev.ps1 generate-category-theory-leantask
+```
+
+Candidate outputs are written under `artifacts/generated/`. Reviewed gold artifacts remain under `examples/`.

@@ -33,6 +33,7 @@ Do not import the OpenAI SDK from extraction modules, tests, scripts, notebooks,
 | `extract-report` | `TheoremProofUnit` JSON | `ReadinessReport` |
 | `extract-proofgraph` | `TheoremProofUnit` JSON | `ProofGraph` |
 | `extract-atlas` | `TheoremProofUnit` JSON | `AtlasRecord` |
+| `generate-leantask` | `TheoremProofUnit` + `ReadinessReport` JSON | `LeanTaskPackage` |
 
 Each command:
 
@@ -42,18 +43,21 @@ Each command:
 4. aligns `unit_id` with the source unit when the model drifts;
 5. runs semantic validation before writing output.
 
+For `generate-leantask`, the command also accepts an optional `--level` (`L0` or `L1`) and `--enrich-imports` to append mathlib module paths from the declaration index.
+
 ## Finite-tree examples
 
 ```bash
 make extract-finite-tree-proofgraph
 make extract-finite-tree-atlas
+make generate-finite-tree-leantask
 ```
 
 Candidate outputs are written under `artifacts/generated/finite_tree/`. That directory is gitignored. Reviewed gold artifacts remain under `examples/finite_tree/`.
 
 ## Testing without API access
 
-Unit tests use fake model clients that implement `StructuredModelClient`. They cover prompt construction, `unit_id` alignment, and post-extraction semantic validation, including negative cases for broken proof-graph edges and missing Atlas evidence.
+Unit tests use fake model clients that implement `StructuredModelClient`. They cover prompt construction, `unit_id` alignment, and post-extraction semantic validation, including negative cases for broken proof-graph edges, missing Atlas evidence, and L1 LeanTasks without formal targets.
 
 Run:
 

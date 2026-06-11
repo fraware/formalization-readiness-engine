@@ -3,6 +3,7 @@ PYTHONPATH_VALUE := packages/fre_core/src
 
 .PHONY: setup setup-models test demo validate-examples export-schemas lint check \
 	extract-finite-tree-proofgraph extract-finite-tree-atlas lookup-finite-tree-declarations \
+	generate-finite-tree-leantask generate-category-theory-leantask \
 	validate-readinessbench run-readinessbench validate-review-submission validate-gold-changelog
 
 PREDICTIONS_DIR ?= tests/fixtures/readinessbench_predictions
@@ -59,6 +60,18 @@ extract-finite-tree-atlas:
 lookup-finite-tree-declarations:
 	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli lookup-declarations \
 		--unit-path examples/finite_tree/unit.json
+
+generate-finite-tree-leantask:
+	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli generate-leantask \
+		examples/finite_tree/unit.json \
+		examples/finite_tree/readiness_report.json \
+		artifacts/generated/finite_tree/leantask.model.json
+
+generate-category-theory-leantask:
+	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli generate-leantask \
+		examples/category_theory_pullback/unit.json \
+		examples/category_theory_pullback/readiness_report.json \
+		artifacts/generated/category_theory_pullback/leantask.model.json
 
 validate-readinessbench:
 	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli validate-readinessbench

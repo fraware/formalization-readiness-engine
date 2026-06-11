@@ -211,3 +211,32 @@ Acceptance criteria:
 - all category-theory artifacts validate with semantic checks;
 - `unit_id` is consistent across the stack;
 - example remains examples-only until reviewed for ReadinessBench promotion.
+
+## Post-Sprint: LeanTask generation
+
+**Status:** Complete on `engineering-leantask-generation`.
+
+Goal: connect readiness reports to formalization action through model-assisted LeanTask package generation.
+
+Tasks:
+
+1. Add prompt builder and orchestration for `LeanTaskPackage` from `TheoremProofUnit` + `ReadinessReport`.
+2. Keep provider code behind the structured model-client boundary.
+3. Add fake-client unit tests and L1 formal-target validation.
+4. Add `generate-leantask` CLI and Makefile/dev.ps1 targets for both reference examples.
+5. Document the extract-report → generate-leantask → render → check-lean workflow.
+
+Delivered:
+
+- `extract_leantask.py` with `LEANTASK_GENERATION_INSTRUCTIONS`, `build_leantask_prompt`, `extract_leantask_package`, and `enrich_imports_from_index`
+- `generate-leantask` CLI command with optional `--level` and `--enrich-imports`
+- `make generate-finite-tree-leantask`, `make generate-category-theory-leantask`, and matching `scripts/dev.ps1` targets
+- `tests/test_extract_leantask.py` covering prompts, unit_id alignment, L1 validation, import enrichment, and structural gold comparison
+- Candidate outputs under `artifacts/generated/<example>/leantask.model.json` (gitignored)
+
+Acceptance criteria:
+
+- model outputs validate through `validate_leantask_package`;
+- L1 packages without `formal_target` are rejected;
+- generated artifacts remain separate from reviewed examples;
+- all existing tests pass.

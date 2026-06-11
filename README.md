@@ -26,6 +26,7 @@ Implemented and merged on `main`:
 - OpenAI Responses provider behind the internal structured model-client boundary.
 - Readiness extraction orchestration from `TheoremProofUnit` to `ReadinessReport`.
 - ProofGraph and AtlasRecord extraction orchestration with post-extraction semantic validation (Sprint 4).
+- LeanTask package generation from theorem/proof units and readiness reports (Phase 4).
 - mathlib declaration index v0 with lexical lookup and readiness-report candidate enrichment (Sprint 5).
 - ReadinessBench Bronze/Silver/Gold layout, manifest validation, and evaluation runner (Sprint 6).
 - External review workflow: reviewer docs, structured submission template, usefulness rubric, Gold changelog, and validation CLI (Sprint 7).
@@ -106,11 +107,30 @@ make extract-finite-tree-proofgraph
 make extract-finite-tree-atlas
 ```
 
+Generate candidate LeanTask packages from reviewed readiness reports:
+
+```bash
+make generate-finite-tree-leantask
+make generate-category-theory-leantask
+```
+
 On Windows:
 
 ```powershell
 .\scripts\dev.ps1 extract-finite-tree-proofgraph
 .\scripts\dev.ps1 extract-finite-tree-atlas
+.\scripts\dev.ps1 generate-finite-tree-leantask
+.\scripts\dev.ps1 generate-category-theory-leantask
+```
+
+Or run generation directly:
+
+```bash
+OPENAI_API_KEY=... PYTHONPATH=packages/fre_core/src python -m fre_core.cli generate-leantask \
+  examples/finite_tree/unit.json \
+  examples/finite_tree/readiness_report.json \
+  artifacts/generated/finite_tree/leantask.model.json \
+  --level L0
 ```
 
 Look up mathlib declaration candidates for the finite-tree example:

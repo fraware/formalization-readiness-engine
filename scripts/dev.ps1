@@ -3,7 +3,7 @@
 
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("setup", "setup-models", "test", "validate-examples", "export-schemas", "lint", "check", "ingest-corpus", "export-corpus-shareable", "extract-finite-tree-proofgraph", "extract-finite-tree-atlas", "lookup-finite-tree-declarations", "validate-readinessbench", "run-readinessbench", "validate-review-submission", "validate-gold-changelog")]
+    [ValidateSet("setup", "setup-models", "test", "validate-examples", "export-schemas", "lint", "check", "ingest-corpus", "export-corpus-shareable", "extract-finite-tree-proofgraph", "extract-finite-tree-atlas", "lookup-finite-tree-declarations", "generate-finite-tree-leantask", "generate-category-theory-leantask", "validate-readinessbench", "run-readinessbench", "validate-review-submission", "validate-gold-changelog")]
     [string]$Command = "test",
     [string]$PredictionsDir = "tests/fixtures/readinessbench_predictions"
 )
@@ -76,6 +76,18 @@ switch ($Command) {
     "lookup-finite-tree-declarations" {
         python -m fre_core.cli lookup-declarations `
             --unit-path examples/finite_tree/unit.json
+    }
+    "generate-finite-tree-leantask" {
+        python -m fre_core.cli generate-leantask `
+            examples/finite_tree/unit.json `
+            examples/finite_tree/readiness_report.json `
+            artifacts/generated/finite_tree/leantask.model.json
+    }
+    "generate-category-theory-leantask" {
+        python -m fre_core.cli generate-leantask `
+            examples/category_theory_pullback/unit.json `
+            examples/category_theory_pullback/readiness_report.json `
+            artifacts/generated/category_theory_pullback/leantask.model.json
     }
     "validate-readinessbench" {
         python -m fre_core.cli validate-readinessbench

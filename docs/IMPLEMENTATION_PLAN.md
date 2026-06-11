@@ -291,6 +291,8 @@ Thirty units produce schema-valid reports and proof graphs, with errors categori
 
 Target duration: 8 to 10 weeks.
 
+**Progress snapshot:** mathlib declaration index v0, lexical lookup, readiness-report candidate enrichment, and LeanTask L0/L1 generation orchestration (`extract_leantask.py`, `generate-leantask` CLI) are implemented. L2 remains for selected Gold examples only.
+
 Deliverables:
 
 - mathlib declaration index;

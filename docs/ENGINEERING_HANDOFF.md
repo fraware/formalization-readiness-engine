@@ -71,11 +71,13 @@ Parses theorem-like LaTeX environments into theorem/proof units. It currently su
 
 It also pairs an immediately following proof block and preserves character spans for statement and proof text.
 
-### `model_client.py`, `openai_responses_provider.py`, `extraction.py`, `extract_proofgraph.py`, `extract_atlas.py`, and `mathlib_index.py`
+### `model_client.py`, `openai_responses_provider.py`, `extraction.py`, `extract_proofgraph.py`, `extract_atlas.py`, `extract_leantask.py`, and `mathlib_index.py`
 
 Keep model calls behind an interface. The current OpenAI provider uses structured output parsing and returns Pydantic objects. Engineers should keep provider-specific code isolated in provider modules.
 
 Extraction orchestration modules build prompts, call the structured model client, align `unit_id` with the source unit, and run semantic validation before returning artifacts.
+
+`extract_leantask.py` generates `LeanTaskPackage` artifacts from a `TheoremProofUnit` and `ReadinessReport`. L0 is the default planning level; L1 requires a `formal_target`. Optional `enrich_imports_from_index` appends mathlib module paths from deterministic index lookup.
 
 `mathlib_index.py` provides deterministic lexical lookup over committed declaration-index fixtures. Index hits are candidate alignments only; Silver and Gold records require human review. Use `--enrich-candidates` on `extract-report` or `enrich-report-candidates` to replace free-text theorem guesses with index-backed names.
 
@@ -124,7 +126,7 @@ The test suite covers:
 - broken proof-graph rejection;
 - JSON Schema export;
 - deterministic LaTeX ingestion;
-- structured extraction orchestration with a fake model client (`tests/test_extraction.py`, `tests/test_extract_proofgraph.py`, `tests/test_extract_atlas.py`);
+- structured extraction orchestration with a fake model client (`tests/test_extraction.py`, `tests/test_extract_proofgraph.py`, `tests/test_extract_atlas.py`, `tests/test_extract_leantask.py`);
 - LeanTask rendering;
 - Lean runner command construction;
 - corpus release-mode checks;
