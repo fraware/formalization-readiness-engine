@@ -73,6 +73,8 @@ Acceptance criteria:
 
 ## Sprint 4: ProofGraph and Atlas extraction scaffolds
 
+**Status:** Complete on `engineering-sprint4-graph-atlas-extraction`.
+
 Goal: extend extraction beyond readiness reports while preserving the artifact-first design.
 
 Tasks:
@@ -82,6 +84,15 @@ Tasks:
 3. Add fake-client unit tests.
 4. Add semantic validation after extraction.
 5. Generate candidate proof-graph and Atlas artifacts for the finite-tree example.
+
+Delivered:
+
+- `extract_proofgraph.py` and `extract_atlas.py` orchestration modules with prompt builders
+- `extract-proofgraph` and `extract-atlas` CLI commands
+- Fake-client tests for prompts, unit_id alignment, and post-extraction validation
+- Negative tests rejecting broken graph edges and missing Atlas evidence
+- `make extract-finite-tree-proofgraph`, `make extract-finite-tree-atlas`, and matching `scripts/dev.ps1` targets
+- Candidate outputs under `artifacts/generated/finite_tree/` (gitignored)
 
 Acceptance criteria:
 

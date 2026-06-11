@@ -3,7 +3,7 @@
 
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("setup", "setup-models", "test", "validate-examples", "export-schemas", "lint", "check", "ingest-corpus", "export-corpus-shareable")]
+    [ValidateSet("setup", "setup-models", "test", "validate-examples", "export-schemas", "lint", "check", "ingest-corpus", "export-corpus-shareable", "extract-finite-tree-proofgraph", "extract-finite-tree-atlas")]
     [string]$Command = "test"
 )
 
@@ -59,5 +59,15 @@ switch ($Command) {
             examples/corpus_shareable/ingested `
             examples/corpus_shareable/catalog.json `
             examples/corpus_shareable/metadata_only_export
+    }
+    "extract-finite-tree-proofgraph" {
+        python -m fre_core.cli extract-proofgraph `
+            examples/finite_tree/unit.json `
+            artifacts/generated/finite_tree/proofgraph.model.json
+    }
+    "extract-finite-tree-atlas" {
+        python -m fre_core.cli extract-atlas `
+            examples/finite_tree/unit.json `
+            artifacts/generated/finite_tree/atlas_record.model.json
     }
 }

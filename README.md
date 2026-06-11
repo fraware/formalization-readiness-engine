@@ -25,6 +25,7 @@ Implemented and merged on `main`:
 - Deterministic LaTeX ingestion for theorem-like environments and immediately following proof blocks, with source-span preservation.
 - OpenAI Responses provider behind the internal structured model-client boundary.
 - Readiness extraction orchestration from `TheoremProofUnit` to `ReadinessReport`.
+- ProofGraph and AtlasRecord extraction orchestration with post-extraction semantic validation (Sprint 4).
 - LeanTask renderer that emits L0 planning files and L1/L2 Lean skeletons.
 - Lean check runner that invokes `lake env lean` locally through a configured Lake project.
 - Corpus catalog utilities for source-id validation and release-mode filtering.
@@ -86,6 +87,22 @@ OPENAI_API_KEY=... PYTHONPATH=packages/fre_core/src python -m fre_core.cli extra
   examples/finite_tree/unit.json \
   artifacts/generated/finite_tree/readiness_report.model.json
 ```
+
+Extract candidate proof-graph and Atlas artifacts:
+
+```bash
+make extract-finite-tree-proofgraph
+make extract-finite-tree-atlas
+```
+
+On Windows:
+
+```powershell
+.\scripts\dev.ps1 extract-finite-tree-proofgraph
+.\scripts\dev.ps1 extract-finite-tree-atlas
+```
+
+See `docs/OPENAI_USAGE.md` for model-call conventions and environment variables.
 
 Render a LeanTask into a Lean skeleton:
 

@@ -61,9 +61,11 @@ Parses theorem-like LaTeX environments into theorem/proof units. It currently su
 
 It also pairs an immediately following proof block and preserves character spans for statement and proof text.
 
-### `model_client.py`, `openai_responses_provider.py`, and `extraction.py`
+### `model_client.py`, `openai_responses_provider.py`, `extraction.py`, `extract_proofgraph.py`, and `extract_atlas.py`
 
 Keep model calls behind an interface. The current OpenAI provider uses structured output parsing and returns Pydantic objects. Engineers should keep provider-specific code isolated in provider modules.
+
+Extraction orchestration modules build prompts, call the structured model client, align `unit_id` with the source unit, and run semantic validation before returning artifacts.
 
 ### `leantask_renderer.py`
 
@@ -104,7 +106,7 @@ The test suite covers:
 - broken proof-graph rejection;
 - JSON Schema export;
 - deterministic LaTeX ingestion;
-- structured extraction orchestration with a fake model client;
+- structured extraction orchestration with a fake model client (`tests/test_extraction.py`, `tests/test_extract_proofgraph.py`, `tests/test_extract_atlas.py`);
 - LeanTask rendering;
 - Lean runner command construction;
 - corpus release-mode checks;

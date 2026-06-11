@@ -17,8 +17,8 @@ TheoremProofUnit  <-- latex_ingestion + ingest_catalog
         v
 ReadinessReport   <-- extraction + StructuredModelClient
         |
-        +--> ProofGraph      (hand-authored examples; extraction planned Sprint 4)
-        +--> AtlasRecord     (hand-authored examples; extraction planned Sprint 4)
+        +--> ProofGraph      <-- extract_proofgraph + StructuredModelClient
+        +--> AtlasRecord     <-- extract_atlas + StructuredModelClient
         |
         v
 LeanTaskPackage
@@ -50,6 +50,8 @@ packages/fre_core/src/fre_core/
   latex_ingestion.py         LaTeX -> TheoremProofUnit
   corpus.py                  Catalog load, ingest, validate, shareable export
   extraction.py              ReadinessReport orchestration
+  extract_proofgraph.py      ProofGraph orchestration
+  extract_atlas.py           AtlasRecord orchestration
   evaluation.py              ReadinessBench metrics
   cli.py                     Typer CLI entry point
 ```

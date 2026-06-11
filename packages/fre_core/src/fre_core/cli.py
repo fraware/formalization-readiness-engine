@@ -14,6 +14,8 @@ from fre_core.corpus import (
     load_units_from_dir,
     write_units,
 )
+from fre_core.extract_atlas import extract_atlas_record
+from fre_core.extract_proofgraph import extract_proofgraph
 from fre_core.extraction import extract_readiness_report
 from fre_core.latex_ingestion import ingest_latex_file
 from fre_core.lean_runner import check_lean_file
@@ -177,6 +179,36 @@ def extract_report(unit_path: Path, output_path: Path, model: str | None = None)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(report.model_dump_json(indent=2), encoding="utf-8")
     print(f"[green]wrote readiness report[/green] {output_path}")
+
+
+@app.command("extract-proofgraph")
+def extract_proofgraph_cmd(
+    unit_path: Path,
+    output_path: Path,
+    model: str | None = None,
+) -> None:
+    """Extract a proof graph from a theorem/proof unit using the model provider."""
+    unit = load_unit(unit_path)
+    provider = OpenAIResponsesProvider(model=model)
+    graph = extract_proofgraph(unit=unit, model_client=provider)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(graph.model_dump_json(indent=2), encoding="utf-8")
+    print(f"[green]wrote proof graph[/green] {output_path}")
+
+
+@app.command("extract-atlas")
+def extract_atlas_cmd(
+    unit_path: Path,
+    output_path: Path,
+    model: str | None = None,
+) -> None:
+    """Extract an Atlas record from a theorem/proof unit using the model provider."""
+    unit = load_unit(unit_path)
+    provider = OpenAIResponsesProvider(model=model)
+    record = extract_atlas_record(unit=unit, model_client=provider)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(record.model_dump_json(indent=2), encoding="utf-8")
+    print(f"[green]wrote Atlas record[/green] {output_path}")
 
 
 @app.command()
