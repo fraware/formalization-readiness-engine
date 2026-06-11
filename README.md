@@ -30,6 +30,9 @@ Implemented and merged on `main`:
 - mathlib declaration index v0 with lexical lookup and readiness-report candidate enrichment (Sprint 5).
 - ReadinessBench Bronze/Silver/Gold layout, manifest validation, and evaluation runner (Sprint 6).
 - External review workflow: reviewer docs, structured submission template, usefulness rubric, Gold changelog, and validation CLI (Sprint 7).
+- mathlib Alignment Service with multi-dimensional candidate search and explicit confirmed-alignment separation (Phase 4/5).
+- FastAPI review backend (`apps/api/`) and minimal static review UI (`apps/review-ui/`) (Phase 5 foundation).
+- Public ReadinessBench and Atlas JSONL export with licensing leak tests (Phase 6).
 - Second hand-authored reference example: category-theory pullback transport along equivalence under `examples/category_theory_pullback/`.
 - LeanTask renderer that emits L0 planning files and L1/L2 Lean skeletons.
 - Lean check runner that invokes `lake env lean` locally through a configured Lake project.
@@ -159,6 +162,47 @@ On Windows:
 .\scripts\dev.ps1 run-readinessbench -PredictionsDir tests/fixtures/readinessbench_predictions
 ```
 
+## Review API and UI
+
+Install API dependencies and start the backend:
+
+```bash
+make setup-api
+make run-api
+```
+
+Serve the minimal review UI:
+
+```bash
+make run-review-ui
+```
+
+Open `http://127.0.0.1:8080`. See `apps/review-ui/README.md` and `docs/PUBLIC_RELEASE.md`.
+
+On Windows:
+
+```powershell
+.\scripts\dev.ps1 setup-api
+.\scripts\dev.ps1 run-api
+.\scripts\dev.ps1 run-review-ui
+```
+
+## Public exports
+
+```bash
+make export-public-benchmark
+make export-public-atlas
+```
+
+Align a readiness report against the mathlib index:
+
+```bash
+PYTHONPATH=packages/fre_core/src:. python -m fre_core.cli align-readiness-report \
+  examples/finite_tree/readiness_report.json \
+  artifacts/generated/finite_tree/alignment.json \
+  --unit-path examples/finite_tree/unit.json
+```
+
 ## External review workflow
 
 Mathematicians and formalizers can review units without reading Python code. Start with `docs/review/REVIEWER_GUIDE.md`.
@@ -216,6 +260,7 @@ PYTHONPATH=packages/fre_core/src python -m fre_core.cli check-lean \
 - `docs/ARCHITECTURE.md` describes the pipeline and corpus ingestion workflow.
 - `docs/NEXT_SPRINTS.md` gives the next PR sequence for engineers.
 - `docs/review/REVIEWER_GUIDE.md` gives the standalone external review workflow (Sprint 7).
+- `docs/PUBLIC_RELEASE.md` explains public benchmark and Atlas exports for external users.
 - `docs/BRANCH_CLEANUP.md` lists the temporary engineering branches that were merged and can be deleted from GitHub if the UI or Git CLI is available.
 
 ## Development rule

@@ -132,7 +132,7 @@ The mathlib Alignment Service indexes Lean/mathlib declarations and supports lex
 
 It should distinguish candidate alignment from confirmed alignment. A model or retrieval system can propose candidates; Silver and Gold records require human review.
 
-**Current implementation (Sprint 5 v0):** `DeclarationIndex` / `MathlibDeclaration` schemas, committed fixture at `fixtures/mathlib_declarations/finite_tree_v0.json`, and lexical lookup in `packages/fre_core/src/fre_core/mathlib_index.py`. See `docs/ARCHITECTURE.md` for the lookup workflow.
+**Current implementation:** `DeclarationIndex` / `MathlibDeclaration` schemas, committed fixtures under `fixtures/mathlib_declarations/`, lexical lookup in `mathlib_index.py`, and the multi-dimensional Alignment Service in `mathlib_alignment.py` with `AlignmentCandidate` / `AlignmentResult` schemas. Candidate alignment is proposed from readiness-report fields; confirmed alignment requires explicit reviewer flags and is never auto-promoted. CLI: `align-declarations`, `align-readiness-report`. See `docs/ARCHITECTURE.md`.
 
 ### 4.6 LeanTask Generator
 
@@ -310,6 +310,8 @@ The finite-tree example reaches L1 or L2 alignment, and at least ten aligned uni
 
 Target duration: 8 to 10 weeks.
 
+**Progress snapshot:** FastAPI backend (`apps/api/`) with artifact-first validation and alignment endpoints; minimal static review UI (`apps/review-ui/`); structured review submission validation via existing `review_workflow.py`. Full annotation workflow and versioned reviewer edits remain for follow-on work.
+
 Deliverables:
 
 - review UI;
@@ -324,6 +326,8 @@ Reviewers can produce Silver and Gold artifacts through the interface.
 ### Phase 6: Benchmark and Atlas release
 
 Target duration: 6 to 8 weeks.
+
+**Progress snapshot:** ReadinessBench evaluation runner and manifest validation are implemented. Public JSONL export (`public_export.py`), Atlas curation export from examples and gold benchmark items, licensing leak test in CI, and `docs/PUBLIC_RELEASE.md` are implemented. Full technical report generation remains for follow-on work.
 
 Deliverables:
 

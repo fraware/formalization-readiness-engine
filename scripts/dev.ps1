@@ -3,7 +3,7 @@
 
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("setup", "setup-models", "test", "validate-examples", "export-schemas", "lint", "check", "ingest-corpus", "export-corpus-shareable", "extract-finite-tree-proofgraph", "extract-finite-tree-atlas", "lookup-finite-tree-declarations", "generate-finite-tree-leantask", "generate-category-theory-leantask", "validate-readinessbench", "run-readinessbench", "validate-review-submission", "validate-gold-changelog")]
+    [ValidateSet("setup", "setup-models", "setup-api", "test", "validate-examples", "export-schemas", "lint", "check", "ingest-corpus", "export-corpus-shareable", "extract-finite-tree-proofgraph", "extract-finite-tree-atlas", "lookup-finite-tree-declarations", "generate-finite-tree-leantask", "generate-category-theory-leantask", "validate-readinessbench", "run-readinessbench", "validate-review-submission", "validate-gold-changelog", "run-api", "run-review-ui", "export-public-benchmark", "export-public-atlas")]
     [string]$Command = "test",
     [string]$PredictionsDir = "tests/fixtures/readinessbench_predictions"
 )
@@ -11,7 +11,7 @@ param(
 $ErrorActionPreference = "Stop"
 Set-Location (Split-Path $PSScriptRoot -Parent)
 
-$env:PYTHONPATH = "packages/fre_core/src"
+$env:PYTHONPATH = "packages/fre_core/src;."
 
 function Invoke-Setup {
     python -m pip install -r requirements.txt
@@ -22,9 +22,14 @@ function Invoke-SetupModels {
     python -m pip install -r packages/fre_core/requirements-models.txt
 }
 
+function Invoke-SetupApi {
+    python -m pip install -r requirements-api.txt
+}
+
 switch ($Command) {
     "setup" { Invoke-Setup }
     "setup-models" { Invoke-SetupModels }
+    "setup-api" { Invoke-SetupApi }
     "test" { python -m pytest -q }
     "validate-examples" {
         python -m fre_core.cli validate-example-dir examples/finite_tree
@@ -34,13 +39,13 @@ switch ($Command) {
         python -m fre_core.cli export-schemas schemas
     }
     "lint" {
-        ruff check packages tests
+        ruff check packages tests apps
     }
     "check" {
         python -m pytest -q
         python -m fre_core.cli validate-example-dir examples/finite_tree
         python -m fre_core.cli validate-example-dir examples/category_theory_pullback
-        ruff check packages tests
+        ruff check packages tests apps
     }
     "ingest-corpus" {
         python -m fre_core.cli ingest-catalog `
@@ -101,5 +106,22 @@ switch ($Command) {
     }
     "validate-gold-changelog" {
         python -m fre_core.cli validate-gold-changelog
+    }
+    "run-api" {
+        python -m uvicorn apps.api.main:app --reload --host 127.0.0.1 --port 8000
+    }
+    "run-review-ui" {
+        Push-Location apps/review-ui
+        try {
+            python -m http.server 8080
+        } finally {
+            Pop-Location
+        }
+    }
+    "export-public-benchmark" {
+        python -m fre_core.cli export-public-benchmark
+    }
+    "export-public-atlas" {
+        python -m fre_core.cli export-public-atlas
     }
 }

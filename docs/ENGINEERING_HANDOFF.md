@@ -81,6 +81,12 @@ Extraction orchestration modules build prompts, call the structured model client
 
 `mathlib_index.py` provides deterministic lexical lookup over committed declaration-index fixtures. Index hits are candidate alignments only; Silver and Gold records require human review. Use `--enrich-candidates` on `extract-report` or `enrich-report-candidates` to replace free-text theorem guesses with index-backed names.
 
+`mathlib_alignment.py` extends the index into a proper alignment service with namespace, module-path, and declaration-kind search dimensions. `AlignmentResult` separates `candidates` from `confirmed`; confirmed alignment requires explicit reviewer flags and is never auto-promoted. CLI commands: `align-declarations` and `align-readiness-report`.
+
+`public_export.py` exports ReadinessBench and Atlas records as public JSONL with optional corpus release-mode filtering. CLI commands: `export-public-benchmark`, `export-public-atlas`, and `check-licensing-leak`. See `docs/PUBLIC_RELEASE.md`.
+
+`apps/api/main.py` exposes artifact-first FastAPI endpoints for health checks, example metadata, readiness-report validation, review-submission validation, and alignment. `apps/review-ui/` is a minimal static review surface for Phase 5.
+
 ### `leantask_renderer.py`
 
 Renders LeanTask packages into Lean files. L0 tasks remain documentation-only. L1/L2 tasks emit theorem skeletons with imports, hypotheses, formal target, and `sorry`.
@@ -134,7 +140,10 @@ The test suite covers:
 - mathlib declaration index load, deterministic search, and candidate enrichment (`tests/test_mathlib_index.py`);
 - ReadinessBench metrics;
 - ReadinessBench manifest validation and deterministic benchmark evaluation (`tests/test_benchmark.py`);
-- external review submission and Gold changelog validation (`tests/test_review_workflow.py`).
+- external review submission and Gold changelog validation (`tests/test_review_workflow.py`);
+- mathlib alignment service and deterministic ranking (`tests/test_mathlib_alignment.py`);
+- FastAPI review endpoints (`tests/test_api.py`);
+- public export and licensing leak tests (`tests/test_public_export.py`).
 
 ## First engineer takeover checklist
 

@@ -15,11 +15,18 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt
+          python -m pip install -r requirements-api.txt
       - name: Run tests
         run: |
-          PYTHONPATH=packages/fre_core/src pytest -q
+          PYTHONPATH=packages/fre_core/src:. pytest -q
       - name: Validate examples
         run: |
-          PYTHONPATH=packages/fre_core/src python -m fre_core.cli validate-example-dir examples/finite_tree
-          PYTHONPATH=packages/fre_core/src python -m fre_core.cli validate-example-dir examples/category_theory_pullback
+          PYTHONPATH=packages/fre_core/src:. python -m fre_core.cli validate-example-dir examples/finite_tree
+          PYTHONPATH=packages/fre_core/src:. python -m fre_core.cli validate-example-dir examples/category_theory_pullback
+      - name: Export public artifacts
+        run: |
+          PYTHONPATH=packages/fre_core/src:. python -m fre_core.cli export-public-benchmark
+          PYTHONPATH=packages/fre_core/src:. python -m fre_core.cli export-public-atlas
+      - name: Licensing leak test
+        run: |
+          PYTHONPATH=packages/fre_core/src:. pytest tests/test_public_export.py -q -k "licensing or metadata_only"

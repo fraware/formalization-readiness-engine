@@ -1,10 +1,11 @@
 PYTHON ?= python
-PYTHONPATH_VALUE := packages/fre_core/src
+PYTHONPATH_VALUE := packages/fre_core/src:.
 
-.PHONY: setup setup-models test demo validate-examples export-schemas lint check \
+.PHONY: setup setup-models setup-api test demo validate-examples export-schemas lint check \
 	extract-finite-tree-proofgraph extract-finite-tree-atlas lookup-finite-tree-declarations \
 	generate-finite-tree-leantask generate-category-theory-leantask \
-	validate-readinessbench run-readinessbench validate-review-submission validate-gold-changelog
+	validate-readinessbench run-readinessbench validate-review-submission validate-gold-changelog \
+	run-api run-review-ui export-public-benchmark export-public-atlas
 
 PREDICTIONS_DIR ?= tests/fixtures/readinessbench_predictions
 
@@ -14,6 +15,9 @@ setup:
 
 setup-models:
 	$(PYTHON) -m pip install -r packages/fre_core/requirements-models.txt
+
+setup-api:
+	$(PYTHON) -m pip install -r requirements-api.txt
 
 test:
 	PYTHONPATH=$(PYTHONPATH_VALUE) pytest -q
@@ -43,7 +47,7 @@ export-corpus-shareable: ingest-corpus
 		examples/corpus_shareable/metadata_only_export
 
 lint:
-	ruff check packages tests
+	ruff check packages tests apps
 
 check: test validate-examples lint
 
@@ -86,3 +90,15 @@ validate-review-submission:
 
 validate-gold-changelog:
 	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli validate-gold-changelog
+
+run-api:
+	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m uvicorn apps.api.main:app --reload --host 127.0.0.1 --port 8000
+
+run-review-ui:
+	cd apps/review-ui && $(PYTHON) -m http.server 8080
+
+export-public-benchmark:
+	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli export-public-benchmark
+
+export-public-atlas:
+	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli export-public-atlas

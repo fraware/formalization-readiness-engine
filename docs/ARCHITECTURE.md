@@ -17,7 +17,7 @@ TheoremProofUnit  <-- latex_ingestion + ingest_catalog
         v
 ReadinessReport   <-- extraction + StructuredModelClient
         |
-        +--> DeclarationIndex lookup (mathlib_index) --> candidate theorem names
+        +--> DeclarationIndex lookup (mathlib_index / mathlib_alignment) --> candidate theorem names
         |
         +--> ProofGraph      <-- extract_proofgraph + StructuredModelClient
         +--> AtlasRecord     <-- extract_atlas + StructuredModelClient
@@ -59,10 +59,16 @@ packages/fre_core/src/fre_core/
   extract_atlas.py           AtlasRecord orchestration
   extract_leantask.py        LeanTaskPackage orchestration from unit + readiness report
   mathlib_index.py           Declaration index load, lexical search, candidate enrichment
+  mathlib_alignment.py       Multi-dimensional alignment service (candidate vs confirmed)
+  public_export.py           Public ReadinessBench and Atlas JSONL export
   benchmark.py               ReadinessBench manifest validation and evaluation runner
   review_workflow.py         External review submission and Gold changelog validation
   evaluation.py              ReadinessBench metrics
   cli.py                     Typer CLI entry point
+
+apps/
+  api/main.py                FastAPI validation and alignment endpoints
+  review-ui/                 Minimal static review interface
 ```
 
 ## Sprint 3 ingestion workflow
@@ -184,3 +190,35 @@ Or on Windows:
 ```
 
 Candidate outputs are written under `artifacts/generated/`. Reviewed gold artifacts remain under `examples/`.
+
+## Phase 5 review API workflow
+
+1. Start the FastAPI backend with `make run-api`.
+2. Serve the minimal review UI with `make run-review-ui`.
+3. Load example artifact metadata from `GET /examples/{name}`.
+4. Validate readiness reports and review submissions through artifact-first POST endpoints.
+5. Propose mathlib alignment candidates with `POST /align/readiness-report` (confirmed alignment requires explicit reviewer flags).
+
+See `apps/review-ui/README.md` and `docs/PUBLIC_RELEASE.md`.
+
+## Phase 6 public export workflow
+
+1. Export ReadinessBench tiers with `make export-public-benchmark`.
+2. Export curated Atlas records with `make export-public-atlas`.
+3. Optional corpus catalog paths strip restricted source text via `make_shareable_units`.
+4. CI runs licensing leak tests on metadata-only sources.
+
+Commands:
+
+```bash
+make export-public-benchmark
+make export-public-atlas
+PYTHONPATH=packages/fre_core/src:. python -m fre_core.cli align-readiness-report \
+  examples/finite_tree/readiness_report.json \
+  artifacts/generated/finite_tree/alignment.json \
+  --unit-path examples/finite_tree/unit.json
+```
+
+## mathlib alignment service
+
+The alignment service extends Sprint 5 lexical lookup with namespace, module-path, and declaration-kind dimensions. `AlignmentResult` separates `candidates` from `confirmed`; retrieval never auto-promotes to confirmed status.

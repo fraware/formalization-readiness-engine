@@ -21,6 +21,10 @@ from fre_core.extraction import extract_readiness_report
 from fre_core.latex_ingestion import ingest_latex_file
 from fre_core.lean_runner import check_lean_file
 from fre_core.leantask_renderer import write_leantask
+from fre_core.mathlib_alignment import (
+    align_readiness_report,
+    enrich_readiness_candidates_from_alignment,
+)
 from fre_core.mathlib_index import (
     build_search_query_from_report,
     build_search_query_from_unit,
@@ -28,6 +32,13 @@ from fre_core.mathlib_index import (
     enrich_readiness_candidates,
     load_index,
     search,
+)
+from fre_core.public_export import (
+    assert_no_licensing_leak,
+    default_public_exports_dir,
+    export_public_atlas,
+    export_public_benchmark,
+    write_export_manifest,
 )
 from fre_core.benchmark import (
     default_manifest_path,
@@ -323,6 +334,120 @@ def lookup_declarations_cmd(
         )
 
 
+@app.command("align-declarations")
+def align_declarations_cmd(
+    query: str | None = typer.Option(None, help="Lexical search query."),
+    unit_path: Path | None = typer.Option(None, help="Build queries from a theorem/proof unit."),
+    report_path: Path | None = typer.Option(None, help="Build queries from a readiness report."),
+    index_path: Path = typer.Option(
+        default_index_path(),
+        help="Declaration index JSON path.",
+    ),
+    confirmed_name: list[str] = typer.Option(
+        [],
+        help="Reviewer-confirmed declaration full names (never auto-promoted).",
+    ),
+    top_k: int = typer.Option(15, help="Maximum ranked alignment candidates to print."),
+) -> None:
+    """Search the mathlib index across lexical, namespace, module, and kind dimensions."""
+    if sum(value is not None for value in (query, unit_path, report_path)) != 1:
+        raise typer.BadParameter("Provide exactly one of --query, --unit-path, or --report-path.")
+
+    index = load_index(index_path)
+    if report_path is not None:
+        report = load_readiness_report(report_path)
+        unit = None
+        if unit_path is not None:
+            unit = load_unit(unit_path)
+        alignment = align_readiness_report(
+            report=report,
+            index=index,
+            unit=unit,
+            confirmed_full_names=frozenset(confirmed_name),
+            top_k_total=top_k,
+        )
+        print(f"[bold]unit[/bold] {alignment.unit_id}")
+        print(f"[bold]index[/bold] {alignment.index_id}")
+        for rank, candidate in enumerate(alignment.candidates, start=1):
+            print(
+                f"{rank}. {candidate.full_name} "
+                f"(score={candidate.score}, status={candidate.alignment_status}, "
+                f"source={candidate.query_source})"
+            )
+        if alignment.confirmed:
+            print("[bold]confirmed[/bold]")
+            for candidate in alignment.confirmed:
+                print(f"- {candidate.full_name}")
+        return
+
+    if unit_path is not None:
+        unit = load_unit(unit_path)
+        lookup_query = build_search_query_from_unit(unit)
+    else:
+        lookup_query = query or ""
+
+    hits = search(index=index, query=lookup_query, top_k=top_k)
+    print(f"[bold]query[/bold] {lookup_query}")
+    for rank, hit in enumerate(hits, start=1):
+        print(
+            f"{rank}. {hit.declaration.full_name} "
+            f"(score={hit.score}, kind={hit.declaration.kind}, module={hit.declaration.module})"
+        )
+
+
+@app.command("align-readiness-report")
+def align_readiness_report_cmd(
+    report_path: Path,
+    output_path: Path,
+    unit_path: Path | None = typer.Option(None, help="Optional source unit for statement tokens."),
+    index_path: Path = typer.Option(
+        default_index_path(),
+        help="Declaration index JSON path.",
+    ),
+    confirmed_name: list[str] = typer.Option(
+        [],
+        help="Reviewer-confirmed declaration full names (never auto-promoted).",
+    ),
+    top_k: int = typer.Option(15, help="Maximum ranked alignment candidates to write."),
+    enrich_report: bool = typer.Option(
+        False,
+        help="Also write an enriched readiness report with candidate theorem names.",
+    ),
+    enriched_output_path: Path | None = typer.Option(
+        None,
+        help="Path for enriched readiness report when --enrich-report is set.",
+    ),
+) -> None:
+    """Align a readiness report against the mathlib index and write an AlignmentResult artifact."""
+    report = load_readiness_report(report_path)
+    unit = load_unit(unit_path) if unit_path is not None else None
+    index = load_index(index_path)
+    alignment = align_readiness_report(
+        report=report,
+        index=index,
+        unit=unit,
+        confirmed_full_names=frozenset(confirmed_name),
+        top_k_total=top_k,
+    )
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(alignment.model_dump_json(indent=2), encoding="utf-8")
+    print(f"[green]wrote alignment result[/green] {output_path}")
+    if alignment.confirmed:
+        print(f"[green]confirmed alignments[/green] {len(alignment.confirmed)}")
+    print(f"[green]candidate alignments[/green] {len(alignment.candidates)}")
+
+    if enrich_report:
+        enriched = enrich_readiness_candidates_from_alignment(
+            report=report,
+            alignment=alignment,
+            top_k=top_k,
+        )
+        target = enriched_output_path or output_path.with_name("readiness_report.enriched.json")
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(enriched.model_dump_json(indent=2), encoding="utf-8")
+        print(f"[green]wrote enriched readiness report[/green] {target}")
+
+
 @app.command("enrich-report-candidates")
 def enrich_report_candidates_cmd(
     report_path: Path,
@@ -423,6 +548,82 @@ def validate_gold_changelog_cmd(
     entries = load_changelog_entries(path)
     validate_changelog_entries(entries)
     print(f"[green]valid gold changelog[/green] {len(entries)} entries")
+
+
+@app.command("export-public-benchmark")
+def export_public_benchmark_cmd(
+    output_path: Path = typer.Option(
+        default_public_exports_dir() / "readinessbench.jsonl",
+        help="Output JSONL path.",
+    ),
+    manifest_path: Path = typer.Option(
+        default_manifest_path(),
+        help="ReadinessBench manifest JSON path.",
+    ),
+    catalog_path: Path | None = typer.Option(
+        None,
+        help="Optional corpus catalog for release-mode text stripping.",
+    ),
+    manifest_output: Path | None = typer.Option(
+        None,
+        help="Optional path for the export manifest JSON.",
+    ),
+) -> None:
+    """Export ReadinessBench tiers as public JSONL with release-mode filtering."""
+    manifest = export_public_benchmark(
+        output_path=output_path,
+        manifest_path=manifest_path,
+        catalog_path=catalog_path,
+    )
+    target = manifest_output or output_path.with_suffix(".manifest.json")
+    write_export_manifest(manifest=manifest, output_path=target)
+    print(f"[green]exported benchmark[/green] {manifest.record_count} records -> {output_path}")
+    print(f"[green]wrote manifest[/green] {target}")
+
+
+@app.command("export-public-atlas")
+def export_public_atlas_cmd(
+    output_path: Path = typer.Option(
+        default_public_exports_dir() / "atlas.jsonl",
+        help="Output JSONL path.",
+    ),
+    catalog_path: Path | None = typer.Option(
+        None,
+        help="Optional corpus catalog for release-mode text stripping.",
+    ),
+    manifest_output: Path | None = typer.Option(
+        None,
+        help="Optional path for the export manifest JSON.",
+    ),
+) -> None:
+    """Export curated Atlas records from examples and reviewed benchmark items."""
+    manifest = export_public_atlas(
+        output_path=output_path,
+        catalog_path=catalog_path,
+    )
+    target = manifest_output or output_path.with_suffix(".manifest.json")
+    write_export_manifest(manifest=manifest, output_path=target)
+    print(f"[green]exported atlas[/green] {manifest.record_count} records -> {output_path}")
+    print(f"[green]wrote manifest[/green] {target}")
+
+
+@app.command("check-licensing-leak")
+def check_licensing_leak_cmd(
+    jsonl_path: Path,
+    catalog_path: Path,
+) -> None:
+    """Fail when metadata-only source text appears in a public export."""
+    from fre_core.corpus import load_corpus_catalog, load_units_from_dir
+
+    catalog = load_corpus_catalog(catalog_path)
+    units_dir = catalog_path.parent / "ingested"
+    restricted_units = load_units_from_dir(units_dir) if units_dir.is_dir() else None
+    assert_no_licensing_leak(
+        jsonl_path=jsonl_path,
+        catalog=catalog,
+        restricted_units=restricted_units,
+    )
+    print(f"[green]no licensing leak detected[/green] {jsonl_path}")
 
 
 @app.command()
