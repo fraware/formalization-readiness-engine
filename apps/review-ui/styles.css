@@ -1,0 +1,81 @@
+:root {
+  color-scheme: light;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+body {
+  margin: 0 auto;
+  max-width: 960px;
+  padding: 1.5rem;
+  background: #f7f7f8;
+  color: #1b1b1f;
+}
+
+header,
+.panel {
+  background: #fff;
+  border: 1px solid #d8d8de;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  padding: 1rem 1.25rem;
+}
+
+h1,
+h2 {
+  margin-top: 0;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+select,
+input,
+textarea,
+button {
+  font: inherit;
+}
+
+select,
+input,
+textarea {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 0.75rem;
+}
+
+button {
+  cursor: pointer;
+  margin-right: 0.5rem;
+  padding: 0.4rem 0.8rem;
+}
+
+.artifact {
+  background: #111827;
+  color: #f3f4f6;
+  border-radius: 6px;
+  overflow-x: auto;
+  padding: 0.75rem;
+  white-space: pre-wrap;
+}
+
+.status {
+  color: #374151;
+}
+
+.actions {
+  margin-bottom: 0.75rem;
+}
+
+#report-summary dl {
+  display: grid;
+  grid-template-columns: 10rem 1fr;
+  gap: 0.25rem 1rem;
+}
+
+#report-summary dt {
+  font-weight: 600;
+}
