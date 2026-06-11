@@ -9,6 +9,7 @@ from rich import print
 
 from fre_core.extraction import extract_readiness_report
 from fre_core.latex_ingestion import ingest_latex_file
+from fre_core.lean_runner import check_lean_file
 from fre_core.leantask_renderer import write_leantask
 from fre_core.openai_responses_provider import OpenAIResponsesProvider
 from fre_core.schema_exports import export_json_schemas
@@ -111,6 +112,21 @@ def render_leantask(task_path: Path, output_path: Path) -> None:
     task = load_leantask_package(task_path)
     written = write_leantask(task, output_path)
     print(f"[green]wrote Lean file[/green] {written}")
+
+
+@app.command()
+def check_lean(path: Path, project_dir: Path = Path("lean"), timeout_seconds: int = 60) -> None:
+    """Check one Lean file through the configured Lake project."""
+    result = check_lean_file(path=path, cwd=project_dir, timeout_seconds=timeout_seconds)
+    if result.passed:
+        print(f"[green]Lean check passed[/green] {path}")
+        return
+    print(f"[red]Lean check failed[/red] {path}")
+    if result.stdout:
+        print(result.stdout)
+    if result.stderr:
+        print(result.stderr)
+    raise typer.Exit(code=result.returncode or 1)
 
 
 @app.command()
