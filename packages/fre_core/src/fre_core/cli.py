@@ -8,6 +8,7 @@ import typer
 from rich import print
 
 from fre_core.extraction import extract_readiness_report
+from fre_core.latex_ingestion import ingest_latex_file
 from fre_core.openai_responses_provider import OpenAIResponsesProvider
 from fre_core.schema_exports import export_json_schemas
 from fre_core.validation import (
@@ -78,6 +79,29 @@ def export_schemas(output_dir: Path = Path("schemas")) -> None:
     written = export_json_schemas(output_dir)
     for path in written:
         print(f"[green]wrote schema[/green] {path}")
+
+
+@app.command()
+def ingest_latex(
+    path: Path,
+    output_dir: Path,
+    source_id: str,
+    domain: str,
+    local_context: str | None = None,
+) -> None:
+    """Parse a LaTeX file into theorem/proof unit JSON files."""
+    units = ingest_latex_file(
+        path=path,
+        source_id=source_id,
+        domain=domain,
+        local_context=local_context,
+    )
+    output_dir.mkdir(parents=True, exist_ok=True)
+    for unit in units:
+        target = output_dir / f"{unit.unit_id}.json"
+        target.write_text(unit.model_dump_json(indent=2), encoding="utf-8")
+        print(f"[green]wrote unit[/green] {target}")
+    print(f"[green]parsed units[/green] {len(units)}")
 
 
 @app.command()
