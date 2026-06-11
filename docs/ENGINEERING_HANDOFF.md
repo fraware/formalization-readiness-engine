@@ -8,6 +8,15 @@ The system is artifact-first. Every pipeline step should produce, validate, rend
 
 The current implementation should be treated as a foundation for the first working benchmark pipeline. It should not be presented as an end-to-end theorem-proving system.
 
+## Reference examples
+
+Two hand-authored artifact stacks validate under `make validate-examples`:
+
+- `examples/finite_tree/` — finite-tree edge-count theorem (graph theory)
+- `examples/category_theory_pullback/` — pullback transport along a categorical equivalence
+
+The category-theory stack includes L0 and L1 LeanTask packages, a corpus LaTeX source at `corpus/sources/category_theory_pullback.tex`, and a mathlib fixture at `fixtures/mathlib_declarations/category_theory_v0.json`. It is examples-only until promoted through the review workflow and ReadinessBench manifest.
+
 ## Current branch state
 
 `main` contains all accepted work from the initial engineering sprint. The temporary branches below were used for focused PRs and have already been squash-merged into `main`:

@@ -1,0 +1,133 @@
+{
+  "schema_version": "0.1",
+  "index_id": "mathlib_category_theory_v0",
+  "description": "Static mathlib declaration fixture for category-theory pullback transport alignment (v0).",
+  "declarations": [
+    {
+      "declaration_id": "mathlib:CategoryTheory.Equivalence.preservesLimitsOfShape",
+      "full_name": "CategoryTheory.Equivalence.preservesLimitsOfShape",
+      "namespace": "CategoryTheory.Equivalence",
+      "module": "Mathlib.CategoryTheory.Equivalence",
+      "kind": "theorem",
+      "type_signature": "{C D : Type*} [Category C] [Category D] (e : C ≌ D) (J : Type*) [Category J] [HasLimitsOfShape J C] : HasLimitsOfShape J D",
+      "docstring": "An equivalence of categories preserves limits of a given shape, including pullbacks."
+    },
+    {
+      "declaration_id": "mathlib:CategoryTheory.Limits.PreservesPullback",
+      "full_name": "CategoryTheory.Limits.PreservesPullback",
+      "namespace": "CategoryTheory.Limits",
+      "module": "Mathlib.CategoryTheory.Limits.Shapes.Pullbacks",
+      "kind": "theorem",
+      "type_signature": "{C D : Type*} [Category C] [Category D] (F : C ⥤ D) {X Y Z : C} (f : X ⟶ Z) (g : Y ⟶ Z) [HasPullback f g] [PreservesPullback F] : HasPullback (F.map f) (F.map g)",
+      "docstring": "A functor that preserves pullbacks sends pullbackable cospans to pullbackable cospans."
+    },
+    {
+      "declaration_id": "mathlib:CategoryTheory.Equivalence",
+      "full_name": "CategoryTheory.Equivalence",
+      "namespace": "CategoryTheory",
+      "module": "Mathlib.CategoryTheory.Equivalence",
+      "kind": "structure",
+      "type_signature": "(C : Type u) (D : Type v) [Category C] [Category D]",
+      "docstring": "A categorical equivalence between two categories, with unit and counit natural isomorphisms."
+    },
+    {
+      "declaration_id": "mathlib:CategoryTheory.Equivalence.fullyFaithful",
+      "full_name": "CategoryTheory.Equivalence.fullyFaithful",
+      "namespace": "CategoryTheory.Equivalence",
+      "module": "Mathlib.CategoryTheory.Equivalence",
+      "kind": "theorem",
+      "type_signature": "{C D : Type*} [Category C] [Category D] (e : C ≌ D) : e.functor.FullyFaithful",
+      "docstring": "The functor underlying a categorical equivalence is fully faithful."
+    },
+    {
+      "declaration_id": "mathlib:CategoryTheory.Limits.HasPullback",
+      "full_name": "CategoryTheory.Limits.HasPullback",
+      "namespace": "CategoryTheory.Limits",
+      "module": "Mathlib.CategoryTheory.Limits.Shapes.Pullbacks",
+      "kind": "def",
+      "type_signature": "{C : Type u} [Category C] {X Y Z : C} (f : X ⟶ Z) (g : Y ⟶ Z) : Prop",
+      "docstring": "A cospan admits a pullback when a limit cone over the parallel pair exists."
+    },
+    {
+      "declaration_id": "mathlib:CategoryTheory.Limits.IsPullback",
+      "full_name": "CategoryTheory.Limits.IsPullback",
+      "namespace": "CategoryTheory.Limits",
+      "module": "Mathlib.CategoryTheory.Limits.Shapes.Pullbacks",
+      "kind": "def",
+      "type_signature": "{C : Type u} [Category C] {X Y Z P : C} (f : X ⟶ Z) (g : Y ⟶ Z) (π₁ : P ⟶ X) (π₂ : P ⟶ Y) : Prop",
+      "docstring": "A cone is a pullback when it satisfies the universal property for the cospan."
+    },
+    {
+      "declaration_id": "mathlib:CategoryTheory.Limits.pullbackCone",
+      "full_name": "CategoryTheory.Limits.pullbackCone",
+      "namespace": "CategoryTheory.Limits",
+      "module": "Mathlib.CategoryTheory.Limits.Shapes.Pullbacks",
+      "kind": "def",
+      "type_signature": "{C : Type u} [Category C] {X Y Z : C} (f : X ⟶ Z) (g : Y ⟶ Z) : Type u",
+      "docstring": "The type of cones over a cospan, i.e. pullback cones."
+    },
+    {
+      "declaration_id": "mathlib:CategoryTheory.Limits.pullback",
+      "full_name": "CategoryTheory.Limits.pullback",
+      "namespace": "CategoryTheory.Limits",
+      "module": "Mathlib.CategoryTheory.Limits.Shapes.Pullbacks",
+      "kind": "def",
+      "type_signature": "{C : Type u} [Category C] {X Y Z : C} (f : X ⟶ Z) (g : Y ⟶ Z) [HasPullback f g] : C",
+      "docstring": "The pullback object of a cospan."
+    },
+    {
+      "declaration_id": "mathlib:CategoryTheory.Functor.map",
+      "full_name": "CategoryTheory.Functor.map",
+      "namespace": "CategoryTheory.Functor",
+      "module": "Mathlib.CategoryTheory.Functor.Basic",
+      "kind": "def",
+      "type_signature": "{C D : Type*} [Category C] [Category D] (F : C ⥤ D) {X Y : C} : (X ⟶ Y) → (F.obj X ⟶ F.obj Y)",
+      "docstring": "A functor maps morphisms between mapped objects."
+    },
+    {
+      "declaration_id": "mathlib:CategoryTheory.Equivalence.symm",
+      "full_name": "CategoryTheory.Equivalence.symm",
+      "namespace": "CategoryTheory.Equivalence",
+      "module": "Mathlib.CategoryTheory.Equivalence",
+      "kind": "def",
+      "type_signature": "{C D : Type*} [Category C] [Category D] (e : C ≌ D) : D ≌ C",
+      "docstring": "The symmetric equivalence obtained by swapping the two categories."
+    },
+    {
+      "declaration_id": "mathlib:CategoryTheory.Limits.IsLimit",
+      "full_name": "CategoryTheory.Limits.IsLimit",
+      "namespace": "CategoryTheory.Limits",
+      "module": "Mathlib.CategoryTheory.Limits.Cones",
+      "kind": "def",
+      "type_signature": "{C : Type u} [Category C] {J : Type v} [Category J] {F : J ⥤ C} (c : Cone F) : Prop",
+      "docstring": "A cone is a limit when it satisfies the universal property."
+    },
+    {
+      "declaration_id": "mathlib:CategoryTheory.Limits.HasLimitsOfShape",
+      "full_name": "CategoryTheory.Limits.HasLimitsOfShape",
+      "namespace": "CategoryTheory.Limits",
+      "module": "Mathlib.CategoryTheory.Limits.HasLimits",
+      "kind": "def",
+      "type_signature": "{C : Type u} [Category C] (J : Type v) [Category J] : Prop",
+      "docstring": "A category has all limits of a given diagram shape."
+    },
+    {
+      "declaration_id": "mathlib:CategoryTheory.Functor.PreservesPullback",
+      "full_name": "CategoryTheory.Functor.PreservesPullback",
+      "namespace": "CategoryTheory.Functor",
+      "module": "Mathlib.CategoryTheory.Limits.Shapes.Pullbacks",
+      "kind": "def",
+      "type_signature": "{C D : Type*} [Category C] [Category D] (F : C ⥤ D) : Prop",
+      "docstring": "A functor preserves pullbacks when it preserves all pullback cones."
+    },
+    {
+      "declaration_id": "mathlib:CategoryTheory.Equivalence.functor",
+      "full_name": "CategoryTheory.Equivalence.functor",
+      "namespace": "CategoryTheory.Equivalence",
+      "module": "Mathlib.CategoryTheory.Equivalence",
+      "kind": "def",
+      "type_signature": "{C D : Type*} [Category C] [Category D] (e : C ≌ D) : C ⥤ D",
+      "docstring": "The forward functor of a categorical equivalence."
+    }
+  ]
+}

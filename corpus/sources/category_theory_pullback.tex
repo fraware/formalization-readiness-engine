@@ -1,0 +1,9 @@
+\section{Pullbacks and equivalences}
+
+\begin{theorem}[Pullbacks are preserved by equivalences]
+Let $C$ and $D$ be categories and $F : C \simeq D$ an equivalence of categories. If a cospan $(f : X \to Z,\; g : Y \to Z)$ admits a pullback $(P, \pi_1, \pi_2)$ in $C$, then $(F f, F g)$ admits a pullback $(F P, F \pi_1, F \pi_2)$ in $D$, and $F$ induces an equivalence between the categories of pullback cones over $(f, g)$ and over $(F f, F g)$.
+\end{theorem}
+
+\begin{proof}
+Because $F$ is an equivalence, it is fully faithful and admits a quasi-inverse $G : D \to C$. Given a cone $(Q, q_1, q_2)$ over $(F f, F g)$ in $D$, apply $G$ to obtain a cone over $(f, g)$ in $C$. The universal property of the pullback $(P, \pi_1, \pi_2)$ yields a unique mediating morphism $u : GQ \to P$ in $C$; applying $F$ gives a mediating morphism $F u : Q \to F P$ in $D$. Uniqueness follows from full faithfulness of $F$. Essential surjectivity ensures that the transported pullback object is correct up to canonical isomorphism.
+\end{proof}

@@ -1,0 +1,27 @@
+{
+  "schema_version": "0.1",
+  "leantask_id": "category_theory_pullback_equivalence_L1",
+  "unit_id": "category_theory_pullback_equivalence",
+  "level": "L1",
+  "informal_statement": "Let C and D be categories and F : C ≃ D an equivalence of categories. If a cospan (f : X → Z, g : Y → Z) admits a pullback (P, π₁, π₂) in C, then (F f, F g) admits a pullback (F P, F π₁, F π₂) in D.",
+  "imports": [
+    "Mathlib.CategoryTheory.Limits.Shapes.Pullbacks",
+    "Mathlib.CategoryTheory.Equivalence"
+  ],
+  "formal_target": "HasPullback (e.functor.map f) (e.functor.map g)",
+  "hypotheses": [
+    "C : Type u",
+    "[Category C]",
+    "D : Type v",
+    "[Category D]",
+    "e : C ≌ D",
+    "{X Y Z : C}",
+    "f : X ⟶ Z",
+    "g : Y ⟶ Z",
+    "[HasPullback f g]"
+  ],
+  "proof_path": "apply Equivalence.preservesLimitsOfShape to the pullback diagram",
+  "fallback_path": "sorry-based cone transport skeleton",
+  "next_action": "Typecheck this skeleton against the pinned lean/ Lake project and refine imports.",
+  "review_status": "candidate"
+}

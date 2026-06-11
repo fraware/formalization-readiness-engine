@@ -41,7 +41,8 @@ ReadinessBench    <-- evaluation
 |------|---------|
 | `corpus/catalog.json` | Committed source catalog with license and release metadata |
 | `corpus/sources/` | Permitted LaTeX inputs referenced by the catalog |
-| `fixtures/mathlib_declarations/` | Committed mathlib declaration index fixtures (v0 lexical lookup) |
+| `fixtures/mathlib_declarations/` | Committed mathlib declaration index fixtures (v0 lexical lookup; finite-tree and category-theory) |
+| `examples/category_theory_pullback/` | Hand-authored category-theory reference artifacts (pullback transport along equivalence) |
 | `benchmarks/readinessbench/` | ReadinessBench manifest and Bronze/Silver/Gold readiness-report fixtures |
 | `examples/corpus_shareable/` | Shareable export demo with full-text and metadata-only fixtures |
 

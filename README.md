@@ -29,6 +29,7 @@ Implemented and merged on `main`:
 - mathlib declaration index v0 with lexical lookup and readiness-report candidate enrichment (Sprint 5).
 - ReadinessBench Bronze/Silver/Gold layout, manifest validation, and evaluation runner (Sprint 6).
 - External review workflow: reviewer docs, structured submission template, usefulness rubric, Gold changelog, and validation CLI (Sprint 7).
+- Second hand-authored reference example: category-theory pullback transport along equivalence under `examples/category_theory_pullback/`.
 - LeanTask renderer that emits L0 planning files and L1/L2 Lean skeletons.
 - Lean check runner that invokes `lake env lean` locally through a configured Lake project.
 - Corpus catalog utilities for source-id validation and release-mode filtering.
@@ -51,10 +52,17 @@ make setup-models
 
 ## Core commands
 
-Validate the finite-tree example artifact stack:
+Validate the hand-authored reference example stacks:
+
+```bash
+make validate-examples
+```
+
+Or validate one directory:
 
 ```bash
 PYTHONPATH=packages/fre_core/src python -m fre_core.cli validate-example-dir examples/finite_tree
+PYTHONPATH=packages/fre_core/src python -m fre_core.cli validate-example-dir examples/category_theory_pullback
 ```
 
 Export public JSON Schemas:

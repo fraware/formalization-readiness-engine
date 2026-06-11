@@ -8,6 +8,14 @@
       "release_mode": "full_text_allowed",
       "domain": "graph_theory",
       "path": "corpus/sources/finite_tree.tex"
+    },
+    {
+      "source_id": "category_theory_pullback_notes_001",
+      "source_type": "author_permitted_notes",
+      "license_status": "permission_granted",
+      "release_mode": "full_text_allowed",
+      "domain": "category_theory",
+      "path": "corpus/sources/category_theory_pullback.tex"
     }
   ]
 }

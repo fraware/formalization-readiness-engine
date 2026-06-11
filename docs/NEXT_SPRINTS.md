@@ -191,3 +191,23 @@ Acceptance criteria:
 - a reviewer can evaluate one unit without reading the codebase;
 - review outputs are structured enough to feed ReadinessBench;
 - changes to gold artifacts are auditable.
+
+## Post-Sprint 7: category-theory reference example
+
+**Status:** Complete on `engineering-category-theory-example`.
+
+Goal: add the second Phase 0 hand-authored reference stack for pullback transport along a categorical equivalence.
+
+Delivered:
+
+- `examples/category_theory_pullback/` with unit, readiness report, proof graph, Atlas record, L0/L1 LeanTask packages
+- `corpus/sources/category_theory_pullback.tex` and catalog entry in `corpus/catalog.json`
+- `fixtures/mathlib_declarations/category_theory_v0.json` for deterministic lookup tests
+- `make validate-examples` and CI validate both reference directories
+- tests in `tests/test_schemas.py`, `tests/test_mathlib_index.py`, and `tests/test_corpus_ingestion.py`
+
+Acceptance criteria:
+
+- all category-theory artifacts validate with semantic checks;
+- `unit_id` is consistent across the stack;
+- example remains examples-only until reviewed for ReadinessBench promotion.

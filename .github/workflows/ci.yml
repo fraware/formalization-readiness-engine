@@ -22,3 +22,4 @@ jobs:
       - name: Validate examples
         run: |
           PYTHONPATH=packages/fre_core/src python -m fre_core.cli validate-example-dir examples/finite_tree
+          PYTHONPATH=packages/fre_core/src python -m fre_core.cli validate-example-dir examples/category_theory_pullback

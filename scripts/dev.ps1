@@ -28,6 +28,7 @@ switch ($Command) {
     "test" { python -m pytest -q }
     "validate-examples" {
         python -m fre_core.cli validate-example-dir examples/finite_tree
+        python -m fre_core.cli validate-example-dir examples/category_theory_pullback
     }
     "export-schemas" {
         python -m fre_core.cli export-schemas schemas
@@ -38,6 +39,7 @@ switch ($Command) {
     "check" {
         python -m pytest -q
         python -m fre_core.cli validate-example-dir examples/finite_tree
+        python -m fre_core.cli validate-example-dir examples/category_theory_pullback
         ruff check packages tests
     }
     "ingest-corpus" {

@@ -224,7 +224,7 @@ Deliverables:
 - pinned Lean/mathlib environment;
 - schema package;
 - finite-tree example;
-- category-theory example;
+- category-theory example (`examples/category_theory_pullback/`, pullback transport along equivalence);
 - basic CI.
 
 Exit criterion:

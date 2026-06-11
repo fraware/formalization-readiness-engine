@@ -22,14 +22,16 @@ FIXTURES = Path(__file__).parent / "fixtures" / "corpus"
 TWO_SOURCE_CATALOG = FIXTURES / "catalog_two_sources.json"
 MAIN_CATALOG = REPO_ROOT / "corpus" / "catalog.json"
 FINITE_TREE_TEX = REPO_ROOT / "corpus" / "sources" / "finite_tree.tex"
+CATEGORY_THEORY_TEX = REPO_ROOT / "corpus" / "sources" / "category_theory_pullback.tex"
 
 
-def test_load_main_catalog_has_finite_tree_source() -> None:
+def test_load_main_catalog_has_reference_sources() -> None:
     catalog = load_corpus_catalog(MAIN_CATALOG)
 
-    assert len(catalog.sources) == 1
-    assert catalog.sources[0].source_id == "finite_tree_notes_001"
-    assert catalog.sources[0].release_mode == "full_text_allowed"
+    assert len(catalog.sources) == 2
+    source_ids = {source.source_id for source in catalog.sources}
+    assert source_ids == {"finite_tree_notes_001", "category_theory_pullback_notes_001"}
+    assert all(source.release_mode == "full_text_allowed" for source in catalog.sources)
 
 
 def test_ingest_catalog_assigns_known_source_ids() -> None:
@@ -49,15 +51,22 @@ def test_ingest_catalog_rejects_missing_source_file() -> None:
         ingest_catalog(catalog=catalog, repo_root=REPO_ROOT / "missing")
 
 
-def test_ingest_main_finite_tree_catalog() -> None:
+def test_ingest_main_catalog_reference_sources() -> None:
     catalog = load_corpus_catalog(MAIN_CATALOG)
 
     units = ingest_catalog(catalog=catalog, repo_root=REPO_ROOT)
 
-    assert len(units) == 1
-    assert units[0].source_id == "finite_tree_notes_001"
-    assert "finite tree" in units[0].statement.lower()
-    assert units[0].proof is not None
+    assert len(units) == 2
+    by_source = {unit.source_id: unit for unit in units}
+
+    finite_tree = by_source["finite_tree_notes_001"]
+    assert "finite tree" in finite_tree.statement.lower()
+    assert finite_tree.proof is not None
+
+    category_theory = by_source["category_theory_pullback_notes_001"]
+    assert "equivalence" in category_theory.statement.lower()
+    assert "pullback" in category_theory.statement.lower()
+    assert category_theory.proof is not None
 
 
 def test_source_spans_preserved_through_catalog_ingest() -> None:
@@ -158,5 +167,18 @@ def test_ingest_catalog_cli_runs_on_main_catalog(tmp_path: Path) -> None:
 
     assert result.returncode == 0, result.stderr
     written = list(output_dir.glob("*.json"))
-    assert len(written) == 1
+    assert len(written) == 2
     assert "ingested units" in result.stdout
+
+
+def test_source_spans_preserved_for_category_theory_catalog_ingest() -> None:
+    catalog = load_corpus_catalog(MAIN_CATALOG)
+    source_text = CATEGORY_THEORY_TEX.read_text(encoding="utf-8")
+
+    units = ingest_catalog(catalog=catalog, repo_root=REPO_ROOT)
+    unit = next(unit for unit in units if unit.source_id == "category_theory_pullback_notes_001")
+
+    assert unit.statement_span is not None
+    assert unit.proof_span is not None
+    assert unit.statement == source_text[unit.statement_span.start : unit.statement_span.end].strip()
+    assert unit.proof == source_text[unit.proof_span.start : unit.proof_span.end].strip()

@@ -36,7 +36,9 @@ Tier paths must live under the matching tier prefix (`gold/`, `silver/`, or `bro
 
 Only Gold items participate in benchmark scoring. Silver and Bronze items document the promotion path from extraction to reviewed truth. A report with `review_status: candidate` cannot be listed as Gold in the manifest; validation fails before scoring runs.
 
-The hand-authored reference stack remains at `examples/finite_tree/`. Gold benchmark copies are the evaluated truth set and may diverge after expert review.
+The hand-authored reference stacks remain at `examples/finite_tree/` and `examples/category_theory_pullback/`. Gold benchmark copies are the evaluated truth set and may diverge after expert review.
+
+The category-theory example is **examples-only** until it passes external review. It is not listed in `manifest.json` and does not participate in benchmark scoring yet.
 
 ## Running evaluation
 

@@ -1,0 +1,26 @@
+{
+  "schema_version": "0.1",
+  "leantask_id": "category_theory_pullback_equivalence_L0",
+  "unit_id": "category_theory_pullback_equivalence",
+  "level": "L0",
+  "informal_statement": "Let C and D be categories and F : C ≃ D an equivalence of categories. If a cospan (f : X → Z, g : Y → Z) admits a pullback (P, π₁, π₂) in C, then (F f, F g) admits a pullback (F P, F π₁, F π₂) in D, and F induces an equivalence between the categories of pullback cones over (f, g) and over (F f, F g).",
+  "imports": [
+    "Mathlib.CategoryTheory.Limits.Shapes.Pullbacks",
+    "Mathlib.CategoryTheory.Equivalence"
+  ],
+  "formal_target": "HasPullback (e.functor.map f) (e.functor.map g)",
+  "hypotheses": [
+    "C : Type u",
+    "[Category C]",
+    "D : Type v",
+    "[Category D]",
+    "e : C ≌ D",
+    "f : X ⟶ Z",
+    "g : Y ⟶ Z",
+    "[HasPullback f g]"
+  ],
+  "proof_path": "existing theorem alignment via Equivalence.preservesLimitsOfShape specialized to pullbacks",
+  "fallback_path": "constructive cone transport using unit, counit, and full faithfulness",
+  "next_action": "Confirm the exact mathlib theorem for pullback preservation under equivalence before promoting this package to L1.",
+  "review_status": "candidate"
+}
