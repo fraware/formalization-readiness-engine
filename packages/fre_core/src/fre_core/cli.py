@@ -7,6 +7,8 @@ from pathlib import Path
 import typer
 from rich import print
 
+from fre_core.extraction import extract_readiness_report
+from fre_core.openai_responses_provider import OpenAIResponsesProvider
 from fre_core.validation import (
     load_atlas_record,
     load_leantask_package,
@@ -67,6 +69,17 @@ def validate_example_dir(path: Path) -> None:
         raise typer.BadParameter(f"Example directory has inconsistent unit ids: {sorted(unit_ids)}")
 
     print(f"[green]valid example directory[/green] {unit.unit_id}")
+
+
+@app.command()
+def extract_report(unit_path: Path, output_path: Path, model: str | None = None) -> None:
+    """Extract a readiness report from a theorem/proof unit using the model provider."""
+    unit = load_unit(unit_path)
+    provider = OpenAIResponsesProvider(model=model)
+    report = extract_readiness_report(unit=unit, model_client=provider)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(report.model_dump_json(indent=2), encoding="utf-8")
+    print(f"[green]wrote readiness report[/green] {output_path}")
 
 
 @app.command()
