@@ -9,6 +9,7 @@ from rich import print
 
 from fre_core.extraction import extract_readiness_report
 from fre_core.openai_responses_provider import OpenAIResponsesProvider
+from fre_core.schema_exports import export_json_schemas
 from fre_core.validation import (
     load_atlas_record,
     load_leantask_package,
@@ -69,6 +70,14 @@ def validate_example_dir(path: Path) -> None:
         raise typer.BadParameter(f"Example directory has inconsistent unit ids: {sorted(unit_ids)}")
 
     print(f"[green]valid example directory[/green] {unit.unit_id}")
+
+
+@app.command()
+def export_schemas(output_dir: Path = Path("schemas")) -> None:
+    """Export public artifact contracts as JSON Schema files."""
+    written = export_json_schemas(output_dir)
+    for path in written:
+        print(f"[green]wrote schema[/green] {path}")
 
 
 @app.command()
