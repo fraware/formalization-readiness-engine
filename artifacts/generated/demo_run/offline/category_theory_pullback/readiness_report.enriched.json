@@ -56,7 +56,7 @@
   "existing_theorem_candidates": [
     "CategoryTheory.Equivalence.preservesLimitsOfShape",
     "CategoryTheory.Limits.PreservesPullback",
-    "CategoryTheory.Equivalence.fullyFaithful",
+    "CategoryTheory.Functor.PreservesPullback",
     "CategoryTheory.Limits.HasPullback",
     "CategoryTheory.Limits.IsPullback"
   ],

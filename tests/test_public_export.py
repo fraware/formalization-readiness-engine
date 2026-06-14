@@ -27,8 +27,8 @@ def test_export_public_benchmark_writes_all_tiers(tmp_path: Path) -> None:
     )
 
     lines = output_path.read_text(encoding="utf-8").splitlines()
-    assert manifest.record_count == 13
-    assert len(lines) == 13
+    assert manifest.record_count == 43
+    assert len(lines) == 43
 
     tiers = {json.loads(line)["tier"] for line in lines}
     assert tiers == {"bronze", "gold", "silver"}

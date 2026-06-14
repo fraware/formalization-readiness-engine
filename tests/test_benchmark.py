@@ -186,11 +186,21 @@ def test_promote_benchmark_item_writes_bronze_artifacts(tmp_path: Path) -> None:
 BASELINE_PREDICTIONS_DIR = ROOT / "tests" / "fixtures" / "baseline_predictions"
 
 
-def test_run_benchmark_evaluation_scores_full_macro_f1() -> None:
+def test_run_benchmark_evaluation_scores_full_macro_f1(tmp_path: Path) -> None:
     from fre_core.benchmark import run_benchmark_evaluation
 
+    manifest_path = tmp_path / "manifest.json"
+    manifest_path.write_text(
+        (
+            '{"schema_version":"0.1","benchmark_id":"readinessbench","items":[{'
+            '"item_id":"finite_tree_edge_count_gold","unit_id":"finite_tree_edge_count","tier":"gold",'
+            '"unit_path":"gold/finite_tree_edge_count/unit.json",'
+            '"readiness_report_path":"gold/finite_tree_edge_count/readiness_report.json"}]}'
+        ),
+        encoding="utf-8",
+    )
     report = run_benchmark_evaluation(
-        manifest_path=MANIFEST_PATH,
+        manifest_path=manifest_path,
         predictions_dir=BASELINE_PREDICTIONS_DIR,
         benchmark_root=BENCHMARK_ROOT,
         repo_root=ROOT,
