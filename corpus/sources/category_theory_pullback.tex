@@ -1,9 +1,43 @@
+% FRE CORPUS GOVERNANCE
+% source_id: category_theory_pullback_notes_001
+% license_status: permission_granted
+% release_mode: full_text_allowed
+% permission_reference: in-repo curriculum notes with author permission
+
 \section{Pullbacks and equivalences}
 
 \begin{theorem}[Pullbacks are preserved by equivalences]
 Let $C$ and $D$ be categories and $F : C \simeq D$ an equivalence of categories. If a cospan $(f : X \to Z,\; g : Y \to Z)$ admits a pullback $(P, \pi_1, \pi_2)$ in $C$, then $(F f, F g)$ admits a pullback $(F P, F \pi_1, F \pi_2)$ in $D$, and $F$ induces an equivalence between the categories of pullback cones over $(f, g)$ and over $(F f, F g)$.
 \end{theorem}
-
 \begin{proof}
 Because $F$ is an equivalence, it is fully faithful and admits a quasi-inverse $G : D \to C$. Given a cone $(Q, q_1, q_2)$ over $(F f, F g)$ in $D$, apply $G$ to obtain a cone over $(f, g)$ in $C$. The universal property of the pullback $(P, \pi_1, \pi_2)$ yields a unique mediating morphism $u : GQ \to P$ in $C$; applying $F$ gives a mediating morphism $F u : Q \to F P$ in $D$. Uniqueness follows from full faithfulness of $F$. Essential surjectivity ensures that the transported pullback object is correct up to canonical isomorphism.
 \end{proof}
+
+\begin{lemma}[Equivalences preserve isomorphisms]
+If $F : C \simeq D$ is an equivalence and $f : X \to Y$ is an isomorphism in $C$, then $F f$ is an isomorphism in $D$.
+\end{lemma}
+\begin{proof}
+Apply $F$ to an inverse $g$ of $f$. Full faithfulness gives $F g \circ F f = F(id)$ and $F f \circ F g = F(id)$, so $F g$ is an inverse of $F f$.
+\end{proof}
+
+\begin{proposition}[Pullbacks commute with isomorphisms]
+If $(P, \pi_1, \pi_2)$ is a pullback of $(f, g)$ and $i : P' \to P$ is an isomorphism, then $(P', i^{-1}\pi_1, i^{-1}\pi_2)$ is also a pullback of $(f, g)$.
+\end{proposition}
+\begin{proof}
+Transport cones along $i$ and $i^{-1}$; the universal mediating maps compose with $i$ and its inverse.
+\end{proof}
+
+\begin{corollary}[Uniqueness of pullbacks up to isomorphism]
+Any two pullbacks of the same cospan are isomorphic by a unique isomorphism compatible with the projections.
+\end{corollary}
+\begin{proof}
+Apply the universal property twice to obtain mediating isomorphisms in both directions; uniqueness of mediating maps yields inverses.
+\end{proof}
+
+\begin{definition}[Pullback cone]
+A pullback cone over a cospan $(f : X \to Z, g : Y \to Z)$ is a triple $(Q, q_1, q_2)$ with $q_1 : Q \to X$, $q_2 : Q \to Y$, and $f q_1 = g q_2$.
+\end{definition}
+
+\begin{remark}[Equivalence vs isomorphism of categories]
+The preservation statement uses an equivalence, not merely a functor, so essential surjectivity is available.
+\end{remark}

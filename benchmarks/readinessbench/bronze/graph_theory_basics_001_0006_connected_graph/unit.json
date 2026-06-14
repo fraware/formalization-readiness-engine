@@ -1,0 +1,15 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "graph_theory_basics_001_0006_connected_graph",
+  "source_id": "graph_theory_basics_001",
+  "statement": "A graph is connected when every pair of vertices is joined by a path.",
+  "proof": null,
+  "local_context": null,
+  "domain": "graph_theory",
+  "statement_span": {
+    "start": 1657,
+    "end": 1728
+  },
+  "proof_span": null,
+  "review_status": "candidate"
+}

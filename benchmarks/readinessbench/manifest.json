@@ -92,6 +92,216 @@
       "tier": "bronze",
       "unit_path": "bronze/finite_tree_edge_count/unit.json",
       "readiness_report_path": "bronze/finite_tree_edge_count/readiness_report.json"
+    },
+    {
+      "item_id": "category_theory_limits_001_0001_pullbacks_as_limits_bronze",
+      "unit_id": "category_theory_limits_001_0001_pullbacks_as_limits",
+      "tier": "bronze",
+      "unit_path": "bronze/category_theory_limits_001_0001_pullbacks_as_limits/unit.json",
+      "readiness_report_path": "bronze/category_theory_limits_001_0001_pullbacks_as_limits/readiness_report.json"
+    },
+    {
+      "item_id": "category_theory_limits_001_0002_identity_pullback_bronze",
+      "unit_id": "category_theory_limits_001_0002_identity_pullback",
+      "tier": "bronze",
+      "unit_path": "bronze/category_theory_limits_001_0002_identity_pullback/unit.json",
+      "readiness_report_path": "bronze/category_theory_limits_001_0002_identity_pullback/readiness_report.json"
+    },
+    {
+      "item_id": "category_theory_limits_001_0003_stability_of_pullbacks_along_isomorphisms_bronze",
+      "unit_id": "category_theory_limits_001_0003_stability_of_pullbacks_along_isomorphisms",
+      "tier": "bronze",
+      "unit_path": "bronze/category_theory_limits_001_0003_stability_of_pullbacks_along_isomorphisms/unit.json",
+      "readiness_report_path": "bronze/category_theory_limits_001_0003_stability_of_pullbacks_along_isomorphisms/readiness_report.json"
+    },
+    {
+      "item_id": "category_theory_limits_001_0004_pullbacks_of_monomorphisms_bronze",
+      "unit_id": "category_theory_limits_001_0004_pullbacks_of_monomorphisms",
+      "tier": "bronze",
+      "unit_path": "bronze/category_theory_limits_001_0004_pullbacks_of_monomorphisms/unit.json",
+      "readiness_report_path": "bronze/category_theory_limits_001_0004_pullbacks_of_monomorphisms/readiness_report.json"
+    },
+    {
+      "item_id": "category_theory_limits_001_0005_limit_cone_bronze",
+      "unit_id": "category_theory_limits_001_0005_limit_cone",
+      "tier": "bronze",
+      "unit_path": "bronze/category_theory_limits_001_0005_limit_cone/unit.json",
+      "readiness_report_path": "bronze/category_theory_limits_001_0005_limit_cone/readiness_report.json"
+    },
+    {
+      "item_id": "category_theory_limits_001_0006_finite_limit_recipes_bronze",
+      "unit_id": "category_theory_limits_001_0006_finite_limit_recipes",
+      "tier": "bronze",
+      "unit_path": "bronze/category_theory_limits_001_0006_finite_limit_recipes/unit.json",
+      "readiness_report_path": "bronze/category_theory_limits_001_0006_finite_limit_recipes/readiness_report.json"
+    },
+    {
+      "item_id": "category_theory_pullback_notes_001_0001_pullbacks_are_preserved_by_equivalences_bronze",
+      "unit_id": "category_theory_pullback_notes_001_0001_pullbacks_are_preserved_by_equivalences",
+      "tier": "bronze",
+      "unit_path": "bronze/category_theory_pullback_notes_001_0001_pullbacks_are_preserved_by_equivalences/unit.json",
+      "readiness_report_path": "bronze/category_theory_pullback_notes_001_0001_pullbacks_are_preserved_by_equivalences/readiness_report.json"
+    },
+    {
+      "item_id": "finite_tree_notes_001_0001_edge_count_in_a_finite_tree_bronze",
+      "unit_id": "finite_tree_notes_001_0001_edge_count_in_a_finite_tree",
+      "tier": "bronze",
+      "unit_path": "bronze/finite_tree_notes_001_0001_edge_count_in_a_finite_tree/unit.json",
+      "readiness_report_path": "bronze/finite_tree_notes_001_0001_edge_count_in_a_finite_tree/readiness_report.json"
+    },
+    {
+      "item_id": "graph_theory_basics_001_0001_handshaking_lemma_bronze",
+      "unit_id": "graph_theory_basics_001_0001_handshaking_lemma",
+      "tier": "bronze",
+      "unit_path": "bronze/graph_theory_basics_001_0001_handshaking_lemma/unit.json",
+      "readiness_report_path": "bronze/graph_theory_basics_001_0001_handshaking_lemma/readiness_report.json"
+    },
+    {
+      "item_id": "graph_theory_basics_001_0002_connected_graph_with_v_ge_2_has_an_edge_bronze",
+      "unit_id": "graph_theory_basics_001_0002_connected_graph_with_v_ge_2_has_an_edge",
+      "tier": "bronze",
+      "unit_path": "bronze/graph_theory_basics_001_0002_connected_graph_with_v_ge_2_has_an_edge/unit.json",
+      "readiness_report_path": "bronze/graph_theory_basics_001_0002_connected_graph_with_v_ge_2_has_an_edge/readiness_report.json"
+    },
+    {
+      "item_id": "graph_theory_basics_001_0003_acyclic_connected_graphs_are_trees_bronze",
+      "unit_id": "graph_theory_basics_001_0003_acyclic_connected_graphs_are_trees",
+      "tier": "bronze",
+      "unit_path": "bronze/graph_theory_basics_001_0003_acyclic_connected_graphs_are_trees/unit.json",
+      "readiness_report_path": "bronze/graph_theory_basics_001_0003_acyclic_connected_graphs_are_trees/readiness_report.json"
+    },
+    {
+      "item_id": "graph_theory_basics_001_0004_even_number_of_odd_degree_vertices_bronze",
+      "unit_id": "graph_theory_basics_001_0004_even_number_of_odd_degree_vertices",
+      "tier": "bronze",
+      "unit_path": "bronze/graph_theory_basics_001_0004_even_number_of_odd_degree_vertices/unit.json",
+      "readiness_report_path": "bronze/graph_theory_basics_001_0004_even_number_of_odd_degree_vertices/readiness_report.json"
+    },
+    {
+      "item_id": "graph_theory_basics_001_0005_forest_edge_count_bronze",
+      "unit_id": "graph_theory_basics_001_0005_forest_edge_count",
+      "tier": "bronze",
+      "unit_path": "bronze/graph_theory_basics_001_0005_forest_edge_count/unit.json",
+      "readiness_report_path": "bronze/graph_theory_basics_001_0005_forest_edge_count/readiness_report.json"
+    },
+    {
+      "item_id": "graph_theory_basics_001_0006_connected_graph_bronze",
+      "unit_id": "graph_theory_basics_001_0006_connected_graph",
+      "tier": "bronze",
+      "unit_path": "bronze/graph_theory_basics_001_0006_connected_graph/unit.json",
+      "readiness_report_path": "bronze/graph_theory_basics_001_0006_connected_graph/readiness_report.json"
+    },
+    {
+      "item_id": "graph_theory_basics_001_0007_deletion_of_a_leaf_preserves_acyclicity_bronze",
+      "unit_id": "graph_theory_basics_001_0007_deletion_of_a_leaf_preserves_acyclicity",
+      "tier": "bronze",
+      "unit_path": "bronze/graph_theory_basics_001_0007_deletion_of_a_leaf_preserves_acyclicity/unit.json",
+      "readiness_report_path": "bronze/graph_theory_basics_001_0007_deletion_of_a_leaf_preserves_acyclicity/readiness_report.json"
+    },
+    {
+      "item_id": "graph_theory_basics_001_0008_forests_and_induction_bronze",
+      "unit_id": "graph_theory_basics_001_0008_forests_and_induction",
+      "tier": "bronze",
+      "unit_path": "bronze/graph_theory_basics_001_0008_forests_and_induction/unit.json",
+      "readiness_report_path": "bronze/graph_theory_basics_001_0008_forests_and_induction/readiness_report.json"
+    },
+    {
+      "item_id": "metadata_only_graph_sketch_001_0001_sketch_tree_edge_bound_bronze",
+      "unit_id": "metadata_only_graph_sketch_001_0001_sketch_tree_edge_bound",
+      "tier": "bronze",
+      "unit_path": "bronze/metadata_only_graph_sketch_001_0001_sketch_tree_edge_bound/unit.json",
+      "readiness_report_path": "bronze/metadata_only_graph_sketch_001_0001_sketch_tree_edge_bound/readiness_report.json"
+    },
+    {
+      "item_id": "metadata_only_graph_sketch_001_0002_sketch_leaf_existence_bronze",
+      "unit_id": "metadata_only_graph_sketch_001_0002_sketch_leaf_existence",
+      "tier": "bronze",
+      "unit_path": "bronze/metadata_only_graph_sketch_001_0002_sketch_leaf_existence/unit.json",
+      "readiness_report_path": "bronze/metadata_only_graph_sketch_001_0002_sketch_leaf_existence/readiness_report.json"
+    },
+    {
+      "item_id": "metadata_only_graph_sketch_001_0003_sketch_spanning_tree_bronze",
+      "unit_id": "metadata_only_graph_sketch_001_0003_sketch_spanning_tree",
+      "tier": "bronze",
+      "unit_path": "bronze/metadata_only_graph_sketch_001_0003_sketch_spanning_tree/unit.json",
+      "readiness_report_path": "bronze/metadata_only_graph_sketch_001_0003_sketch_spanning_tree/readiness_report.json"
+    },
+    {
+      "item_id": "metadata_only_graph_sketch_001_0004_sketch_export_policy_bronze",
+      "unit_id": "metadata_only_graph_sketch_001_0004_sketch_export_policy",
+      "tier": "bronze",
+      "unit_path": "bronze/metadata_only_graph_sketch_001_0004_sketch_export_policy/unit.json",
+      "readiness_report_path": "bronze/metadata_only_graph_sketch_001_0004_sketch_export_policy/readiness_report.json"
+    },
+    {
+      "item_id": "category_theory_pullback_notes_001_0002_equivalences_preserve_isomorphisms_bronze",
+      "unit_id": "category_theory_pullback_notes_001_0002_equivalences_preserve_isomorphisms",
+      "tier": "bronze",
+      "unit_path": "bronze/category_theory_pullback_notes_001_0002_equivalences_preserve_isomorphisms/unit.json",
+      "readiness_report_path": "bronze/category_theory_pullback_notes_001_0002_equivalences_preserve_isomorphisms/readiness_report.json"
+    },
+    {
+      "item_id": "category_theory_pullback_notes_001_0003_pullbacks_commute_with_isomorphisms_bronze",
+      "unit_id": "category_theory_pullback_notes_001_0003_pullbacks_commute_with_isomorphisms",
+      "tier": "bronze",
+      "unit_path": "bronze/category_theory_pullback_notes_001_0003_pullbacks_commute_with_isomorphisms/unit.json",
+      "readiness_report_path": "bronze/category_theory_pullback_notes_001_0003_pullbacks_commute_with_isomorphisms/readiness_report.json"
+    },
+    {
+      "item_id": "category_theory_pullback_notes_001_0004_uniqueness_of_pullbacks_up_to_isomorphism_bronze",
+      "unit_id": "category_theory_pullback_notes_001_0004_uniqueness_of_pullbacks_up_to_isomorphism",
+      "tier": "bronze",
+      "unit_path": "bronze/category_theory_pullback_notes_001_0004_uniqueness_of_pullbacks_up_to_isomorphism/unit.json",
+      "readiness_report_path": "bronze/category_theory_pullback_notes_001_0004_uniqueness_of_pullbacks_up_to_isomorphism/readiness_report.json"
+    },
+    {
+      "item_id": "category_theory_pullback_notes_001_0005_pullback_cone_bronze",
+      "unit_id": "category_theory_pullback_notes_001_0005_pullback_cone",
+      "tier": "bronze",
+      "unit_path": "bronze/category_theory_pullback_notes_001_0005_pullback_cone/unit.json",
+      "readiness_report_path": "bronze/category_theory_pullback_notes_001_0005_pullback_cone/readiness_report.json"
+    },
+    {
+      "item_id": "category_theory_pullback_notes_001_0006_equivalence_vs_isomorphism_of_categories_bronze",
+      "unit_id": "category_theory_pullback_notes_001_0006_equivalence_vs_isomorphism_of_categories",
+      "tier": "bronze",
+      "unit_path": "bronze/category_theory_pullback_notes_001_0006_equivalence_vs_isomorphism_of_categories/unit.json",
+      "readiness_report_path": "bronze/category_theory_pullback_notes_001_0006_equivalence_vs_isomorphism_of_categories/readiness_report.json"
+    },
+    {
+      "item_id": "finite_tree_notes_001_0002_leaves_in_a_nontrivial_finite_tree_bronze",
+      "unit_id": "finite_tree_notes_001_0002_leaves_in_a_nontrivial_finite_tree",
+      "tier": "bronze",
+      "unit_path": "bronze/finite_tree_notes_001_0002_leaves_in_a_nontrivial_finite_tree/unit.json",
+      "readiness_report_path": "bronze/finite_tree_notes_001_0002_leaves_in_a_nontrivial_finite_tree/readiness_report.json"
+    },
+    {
+      "item_id": "finite_tree_notes_001_0003_unique_path_between_vertices_in_a_tree_bronze",
+      "unit_id": "finite_tree_notes_001_0003_unique_path_between_vertices_in_a_tree",
+      "tier": "bronze",
+      "unit_path": "bronze/finite_tree_notes_001_0003_unique_path_between_vertices_in_a_tree/unit.json",
+      "readiness_report_path": "bronze/finite_tree_notes_001_0003_unique_path_between_vertices_in_a_tree/readiness_report.json"
+    },
+    {
+      "item_id": "finite_tree_notes_001_0004_tree_with_fixed_leaf_count_bronze",
+      "unit_id": "finite_tree_notes_001_0004_tree_with_fixed_leaf_count",
+      "tier": "bronze",
+      "unit_path": "bronze/finite_tree_notes_001_0004_tree_with_fixed_leaf_count/unit.json",
+      "readiness_report_path": "bronze/finite_tree_notes_001_0004_tree_with_fixed_leaf_count/readiness_report.json"
+    },
+    {
+      "item_id": "finite_tree_notes_001_0005_leaf_bronze",
+      "unit_id": "finite_tree_notes_001_0005_leaf",
+      "tier": "bronze",
+      "unit_path": "bronze/finite_tree_notes_001_0005_leaf/unit.json",
+      "readiness_report_path": "bronze/finite_tree_notes_001_0005_leaf/readiness_report.json"
+    },
+    {
+      "item_id": "finite_tree_notes_001_0006_inductive_tree_deletions_bronze",
+      "unit_id": "finite_tree_notes_001_0006_inductive_tree_deletions",
+      "tier": "bronze",
+      "unit_path": "bronze/finite_tree_notes_001_0006_inductive_tree_deletions/unit.json",
+      "readiness_report_path": "bronze/finite_tree_notes_001_0006_inductive_tree_deletions/readiness_report.json"
     }
   ]
 }

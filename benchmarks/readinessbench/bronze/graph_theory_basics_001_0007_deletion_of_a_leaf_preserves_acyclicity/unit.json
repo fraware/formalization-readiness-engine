@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "graph_theory_basics_001_0007_deletion_of_a_leaf_preserves_acyclicity",
+  "source_id": "graph_theory_basics_001",
+  "statement": "If $v$ is a leaf in a graph $G$, then $G-v$ is acyclic whenever $G$ is acyclic.",
+  "proof": "Any cycle in $G-v$ would also be a cycle in $G$.",
+  "local_context": null,
+  "domain": "graph_theory",
+  "statement_span": {
+    "start": 1800,
+    "end": 1881
+  },
+  "proof_span": {
+    "start": 1907,
+    "end": 1957
+  },
+  "review_status": "candidate"
+}

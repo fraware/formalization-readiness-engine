@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "graph_theory_basics_001_0005_forest_edge_count",
+  "source_id": "graph_theory_basics_001",
+  "statement": "If a finite forest has $c$ connected components, then $|E| = |V| - c$.",
+  "proof": "Apply the tree edge-count theorem on each component and sum.",
+  "local_context": null,
+  "domain": "graph_theory",
+  "statement_span": {
+    "start": 1447,
+    "end": 1519
+  },
+  "proof_span": {
+    "start": 1547,
+    "end": 1609
+  },
+  "review_status": "candidate"
+}

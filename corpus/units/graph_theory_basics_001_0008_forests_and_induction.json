@@ -1,0 +1,15 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "graph_theory_basics_001_0008_forests_and_induction",
+  "source_id": "graph_theory_basics_001",
+  "statement": "Forests are often analyzed by deleting leaves, the same inductive pattern used for trees.",
+  "proof": null,
+  "local_context": null,
+  "domain": "graph_theory",
+  "statement_span": {
+    "start": 2007,
+    "end": 2098
+  },
+  "proof_span": null,
+  "review_status": "candidate"
+}

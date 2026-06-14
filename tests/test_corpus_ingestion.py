@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -28,10 +29,17 @@ CATEGORY_THEORY_TEX = REPO_ROOT / "corpus" / "sources" / "category_theory_pullba
 def test_load_main_catalog_has_reference_sources() -> None:
     catalog = load_corpus_catalog(MAIN_CATALOG)
 
-    assert len(catalog.sources) == 2
+    assert len(catalog.sources) == 5
     source_ids = {source.source_id for source in catalog.sources}
-    assert source_ids == {"finite_tree_notes_001", "category_theory_pullback_notes_001"}
-    assert all(source.release_mode == "full_text_allowed" for source in catalog.sources)
+    assert source_ids == {
+        "finite_tree_notes_001",
+        "category_theory_pullback_notes_001",
+        "graph_theory_basics_001",
+        "category_theory_limits_001",
+        "metadata_only_graph_sketch_001",
+    }
+    assert sum(source.release_mode == "full_text_allowed" for source in catalog.sources) == 4
+    assert sum(source.release_mode == "metadata_only" for source in catalog.sources) == 1
 
 
 def test_ingest_catalog_assigns_known_source_ids() -> None:
@@ -56,17 +64,11 @@ def test_ingest_main_catalog_reference_sources() -> None:
 
     units = ingest_catalog(catalog=catalog, repo_root=REPO_ROOT)
 
-    assert len(units) == 2
-    by_source = {unit.source_id: unit for unit in units}
-
-    finite_tree = by_source["finite_tree_notes_001"]
-    assert "finite tree" in finite_tree.statement.lower()
-    assert finite_tree.proof is not None
-
-    category_theory = by_source["category_theory_pullback_notes_001"]
-    assert "equivalence" in category_theory.statement.lower()
-    assert "pullback" in category_theory.statement.lower()
-    assert category_theory.proof is not None
+    assert len(units) >= 30
+    assert all(unit.statement_span is not None for unit in units)
+    finite_tree_units = [u for u in units if u.source_id == "finite_tree_notes_001"]
+    assert len(finite_tree_units) == 6
+    assert "finite tree" in finite_tree_units[0].statement.lower()
 
 
 def test_source_spans_preserved_through_catalog_ingest() -> None:
@@ -149,6 +151,7 @@ def test_validate_unit_sources_rejects_ingested_units_with_unknown_catalog() -> 
 
 def test_ingest_catalog_cli_runs_on_main_catalog(tmp_path: Path) -> None:
     output_dir = tmp_path / "units"
+    env = {**os.environ, "PYTHONPATH": os.pathsep.join([str(REPO_ROOT / "packages" / "fre_core" / "src"), str(REPO_ROOT)])}
     result = subprocess.run(
         [
             sys.executable,
@@ -163,11 +166,12 @@ def test_ingest_catalog_cli_runs_on_main_catalog(tmp_path: Path) -> None:
         check=False,
         capture_output=True,
         text=True,
+        env=env,
     )
 
     assert result.returncode == 0, result.stderr
     written = list(output_dir.glob("*.json"))
-    assert len(written) == 2
+    assert len(written) >= 30
     assert "ingested units" in result.stdout
 
 

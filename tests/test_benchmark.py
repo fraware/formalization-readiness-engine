@@ -4,17 +4,19 @@ import pytest
 
 from fre_core.benchmark import (
     BenchmarkValidationError,
+    create_bronze_readiness_placeholder,
     default_benchmark_root,
     default_manifest_path,
     load_manifest,
+    promote_benchmark_item,
     resolve_benchmark_path,
     run_readinessbench,
     validate_benchmark_item,
     validate_manifest,
 )
 from fre_core.evaluation import score_readiness_report
-from fre_core.schemas import BenchmarkItem, BenchmarkTier, ReviewStatus
-from fre_core.validation import load_readiness_report
+from fre_core.schemas import BenchmarkItem, BenchmarkTier, ReviewStatus, TheoremProofUnit
+from fre_core.validation import load_readiness_report, load_unit
 
 ROOT = Path(__file__).resolve().parents[1]
 BENCHMARK_ROOT = default_benchmark_root(repo_root=ROOT)
@@ -27,9 +29,23 @@ def test_default_manifest_loads_and_validates() -> None:
     gold_reports = validate_manifest(manifest=manifest, benchmark_root=BENCHMARK_ROOT)
 
     assert manifest.benchmark_id == "readinessbench"
-    assert len(manifest.items) == 13
+    assert len(manifest.items) == 43
+    bronze_items = [item for item in manifest.items if item.tier == BenchmarkTier.BRONZE]
+    assert len(bronze_items) == 31
     assert len(gold_reports) == 11
     assert gold_reports[0].review_status == ReviewStatus.EXPERT_REVIEWED
+
+
+def test_bronze_items_reject_generated_artifact_paths() -> None:
+    manifest = load_manifest(MANIFEST_PATH)
+    for item in manifest.items:
+        if item.tier != BenchmarkTier.BRONZE:
+            continue
+        resolve_benchmark_path(
+            benchmark_root=BENCHMARK_ROOT,
+            relative_path=item.unit_path,
+            context=f"item {item.item_id!r} unit_path",
+        )
 
 
 def test_gold_item_rejects_candidate_review_status(tmp_path: Path) -> None:
@@ -114,3 +130,53 @@ def test_run_readinessbench_is_repeatable() -> None:
     )
 
     assert first.model_dump() == second.model_dump()
+
+
+def test_create_bronze_readiness_placeholder_is_candidate() -> None:
+    unit = TheoremProofUnit.model_validate_json(
+        (ROOT / "corpus" / "units" / "finite_tree_notes_001_0001_edge_count_in_a_finite_tree.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    report = create_bronze_readiness_placeholder(unit)
+
+    assert report.unit_id == unit.unit_id
+    assert report.review_status == ReviewStatus.CANDIDATE
+    assert report.statement_readiness.status == "pending"
+
+
+def test_promote_benchmark_item_writes_bronze_artifacts(tmp_path: Path) -> None:
+    benchmark_root = tmp_path / "readinessbench"
+    benchmark_root.mkdir(parents=True)
+    manifest_path = benchmark_root / "manifest.json"
+    manifest_path.write_text(
+        (
+            '{"schema_version":"0.1","benchmark_id":"readinessbench","items":[{'
+            '"item_id":"finite_tree_edge_count_gold","unit_id":"finite_tree_edge_count","tier":"gold",'
+            '"unit_path":"gold/finite_tree_edge_count/unit.json",'
+            '"readiness_report_path":"gold/finite_tree_edge_count/readiness_report.json"}]}'
+        ),
+        encoding="utf-8",
+    )
+    gold_dir = benchmark_root / "gold" / "finite_tree_edge_count"
+    gold_dir.mkdir(parents=True)
+    (gold_dir / "unit.json").write_text(
+        (BENCHMARK_ROOT / "gold" / "finite_tree_edge_count" / "unit.json").read_text(encoding="utf-8"),
+        encoding="utf-8",
+    )
+    (gold_dir / "readiness_report.json").write_text(
+        (BENCHMARK_ROOT / "gold" / "finite_tree_edge_count" / "readiness_report.json").read_text(
+            encoding="utf-8"
+        ),
+        encoding="utf-8",
+    )
+
+    unit = load_unit(ROOT / "corpus" / "units" / "graph_theory_basics_001_0001_handshaking_lemma.json")
+    manifest = load_manifest(manifest_path)
+    item = promote_benchmark_item(unit=unit, manifest=manifest, benchmark_root=benchmark_root)
+
+    assert item.tier == BenchmarkTier.BRONZE
+    assert (benchmark_root / item.unit_path).is_file()
+    assert (benchmark_root / item.readiness_report_path).is_file()
+    promoted_unit = load_unit(benchmark_root / item.unit_path)
+    assert promoted_unit.review_status == ReviewStatus.CANDIDATE

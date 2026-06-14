@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "category_theory_limits_001_0002_identity_pullback",
+  "source_id": "category_theory_limits_001",
+  "statement": "For any morphism $f : X \\to Y$, the square with $X \\xrightarrow{id} X$ and $X \\xrightarrow{f} Y$ on the other leg is a pullback of $(f, id_Y)$.",
+  "proof": "A cone over $(f, id_Y)$ is a map $q : Q \\to X$ with $f q = q$, hence $q$ mediates uniquely to $X$.",
+  "local_context": null,
+  "domain": "category_theory",
+  "statement_span": {
+    "start": 690,
+    "end": 835
+  },
+  "proof_span": {
+    "start": 861,
+    "end": 961
+  },
+  "review_status": "candidate"
+}

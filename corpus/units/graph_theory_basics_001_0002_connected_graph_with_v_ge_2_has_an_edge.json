@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "graph_theory_basics_001_0002_connected_graph_with_v_ge_2_has_an_edge",
+  "source_id": "graph_theory_basics_001",
+  "statement": "If a finite graph is connected and has at least two vertices, then it has at least one edge.",
+  "proof": "Pick distinct vertices $u$ and $v$. Connectedness gives a path from $u$ to $v$, which contains an edge.",
+  "local_context": null,
+  "domain": "graph_theory",
+  "statement_span": {
+    "start": 613,
+    "end": 707
+  },
+  "proof_span": {
+    "start": 733,
+    "end": 838
+  },
+  "review_status": "candidate"
+}

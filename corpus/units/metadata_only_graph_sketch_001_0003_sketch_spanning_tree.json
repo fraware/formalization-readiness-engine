@@ -1,0 +1,15 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "metadata_only_graph_sketch_001_0003_sketch_spanning_tree",
+  "source_id": "metadata_only_graph_sketch_001",
+  "statement": "A spanning tree of a connected graph is a subgraph that is a tree and includes all vertices.",
+  "proof": null,
+  "local_context": null,
+  "domain": "graph_theory",
+  "statement_span": {
+    "start": 517,
+    "end": 611
+  },
+  "proof_span": null,
+  "review_status": "candidate"
+}

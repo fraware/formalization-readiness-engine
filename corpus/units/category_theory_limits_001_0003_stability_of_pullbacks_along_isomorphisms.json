@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "category_theory_limits_001_0003_stability_of_pullbacks_along_isomorphisms",
+  "source_id": "category_theory_limits_001",
+  "statement": "If $(P, \\pi_1, \\pi_2)$ is a pullback and $i : X' \\to X$ is an isomorphism, then replacing $X$ by $X'$ and $f$ by $f i^{-1}$ yields an isomorphic pullback.",
+  "proof": "Precompose cones with $i$ and postcompose mediating maps with $i^{-1}$.",
+  "local_context": null,
+  "domain": "category_theory",
+  "statement_span": {
+    "start": 1036,
+    "end": 1192
+  },
+  "proof_span": {
+    "start": 1224,
+    "end": 1297
+  },
+  "review_status": "candidate"
+}

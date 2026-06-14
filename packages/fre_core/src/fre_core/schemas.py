@@ -30,6 +30,19 @@ class SourceDocument(BaseModel):
     release_mode: str
     domain: str
     path: str
+    curator: str | None = None
+    permission_reference: str | None = None
+
+
+class RepairedUnitSpan(BaseModel):
+    statement: str
+    proof: str | None = None
+    statement_span: SourceSpan
+    proof_span: SourceSpan | None = None
+
+
+class SegmentationRepairResult(BaseModel):
+    units: list[RepairedUnitSpan] = Field(default_factory=list)
 
 
 class SourceSpan(BaseModel):

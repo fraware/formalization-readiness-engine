@@ -3,7 +3,7 @@ PYTHONPATH_VALUE := packages/fre_core/src:.
 
 .PHONY: setup setup-models docs setup-api test demo demo-live demo-finite-tree demo-category-theory \
 	validate-examples export-schemas lint check setup-lean build-lean \
-	render-finite-tree-leantask check-lean-finite-tree \
+	render-finite-tree-leantask check-lean-finite-tree validate-corpus-catalog ingest-catalog \
 	extract-finite-tree-proofgraph extract-finite-tree-atlas lookup-finite-tree-declarations \
 	generate-finite-tree-leantask generate-category-theory-leantask \
 	validate-readinessbench run-readinessbench validate-review-submission validate-gold-changelog \
@@ -47,6 +47,12 @@ demo-finite-tree:
 
 demo-category-theory:
 	DEMO_SKIP_LEAN=1 PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli demo --offline --example category_theory_pullback
+
+validate-corpus-catalog:
+	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli validate-corpus-catalog corpus/catalog.json --repo-root .
+
+ingest-catalog:
+	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli ingest-catalog corpus/catalog.json corpus/units --repo-root .
 
 ingest-corpus:
 	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli ingest-catalog examples/corpus_shareable/catalog.json examples/corpus_shareable/ingested --repo-root .

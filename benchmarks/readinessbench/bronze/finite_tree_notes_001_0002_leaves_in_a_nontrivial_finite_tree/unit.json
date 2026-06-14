@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "finite_tree_notes_001_0002_leaves_in_a_nontrivial_finite_tree",
+  "source_id": "finite_tree_notes_001",
+  "statement": "Every finite tree with at least two vertices has a leaf.",
+  "proof": "If the tree is a path, its endpoints are leaves. Otherwise, take a longest simple path; its endpoints cannot have additional neighbors outside the path, so they are leaves.",
+  "local_context": null,
+  "domain": "graph_theory",
+  "statement_span": {
+    "start": 687,
+    "end": 745
+  },
+  "proof_span": {
+    "start": 770,
+    "end": 944
+  },
+  "review_status": "candidate"
+}

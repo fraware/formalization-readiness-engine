@@ -1,0 +1,15 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "finite_tree_notes_001_0006_inductive_tree_deletions",
+  "source_id": "finite_tree_notes_001",
+  "statement": "Many tree proofs proceed by deleting a leaf and applying induction on $|V|$.",
+  "proof": null,
+  "local_context": null,
+  "domain": "graph_theory",
+  "statement_span": {
+    "start": 1799,
+    "end": 1877
+  },
+  "proof_span": null,
+  "review_status": "candidate"
+}

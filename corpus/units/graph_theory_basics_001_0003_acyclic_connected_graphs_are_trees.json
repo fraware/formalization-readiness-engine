@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "graph_theory_basics_001_0003_acyclic_connected_graphs_are_trees",
+  "source_id": "graph_theory_basics_001",
+  "statement": "A finite connected acyclic graph is a tree.",
+  "proof": "By definition a tree is connected and acyclic; conversely, connected acyclic graphs satisfy the tree edge-count identity and unique-path property.",
+  "local_context": null,
+  "domain": "graph_theory",
+  "statement_span": {
+    "start": 906,
+    "end": 951
+  },
+  "proof_span": {
+    "start": 983,
+    "end": 1131
+  },
+  "review_status": "candidate"
+}
