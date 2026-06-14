@@ -2,6 +2,16 @@
 
 ReadinessBench is the artifact-first benchmark for readiness-report extraction. Items are organized into explicit Bronze, Silver, and Gold tiers. Generated model output never enters this tree without review, and evaluation always scores predictions against Gold items only.
 
+## Manifest scale (v0.2.0)
+
+The committed manifest (`manifest.json`) lists 43 items:
+
+| Tier | Count | Scored in evaluation? |
+|------|-------|----------------------|
+| gold | 11 | Yes |
+| silver | 1 | No (promotion example) |
+| bronze | 31 | No (corpus-scale candidates) |
+
 ## Tier definitions
 
 | Tier | `review_status` allowed | Purpose |

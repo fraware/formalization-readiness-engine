@@ -2,6 +2,17 @@
 
 This document explains how external users inspect examples, run ReadinessBench, and consume public JSONL exports from the Formalization Readiness Engine.
 
+## v0.2.0 release
+
+The committed public release is version v0.2.0:
+
+- Release manifest: `releases/v0.2.0/manifest.json`
+- ReadinessBench: 43 manifest items (11 gold, 1 silver, 31 bronze)
+- Public exports: `public_exports/readinessbench.jsonl`, `public_exports/atlas.jsonl`, `public_exports/atlas_clusters.json`
+- JSON Schemas: `schemas/`
+
+Regenerate exports locally with `make export-public-benchmark` and `make export-public-atlas`, then rebuild the release manifest with `build-release-manifest` if publishing a new version.
+
 ## What is published
 
 The repository publishes structured artifacts, not chat transcripts.
@@ -10,9 +21,10 @@ The repository publishes structured artifacts, not chat transcripts.
 |--------|------|----------|
 | ReadinessBench | `public_exports/readinessbench.jsonl` | Bronze, Silver, and Gold benchmark items with shareable units and readiness reports |
 | Formalization Gap Atlas | `public_exports/atlas.jsonl` | Curated Atlas records from reference examples and reviewed benchmark items |
+| Atlas clusters | `public_exports/atlas_clusters.json` | Deterministic blocker clusters from gold readiness reports |
 | JSON Schemas | `schemas/` | Public artifact contracts exported from Pydantic models |
 
-Each export has a companion manifest (`*.manifest.json`) documenting `export_id`, `export_type`, `record_count`, and `output_path`.
+Each JSONL export has a companion manifest (`*.manifest.json`) documenting `export_id`, `export_type`, `record_count`, and `output_path`.
 
 ## Generate exports locally
 
@@ -54,6 +66,8 @@ make run-readinessbench PREDICTIONS_DIR=path/to/predictions
 
 Predictions may be nested as `predictions/<unit_id>/readiness_report.json` or flat as `predictions/<unit_id>.json`.
 
+Only gold items participate in scoring. See `benchmarks/readinessbench/README.md` for tier definitions.
+
 ## Inspect reference examples
 
 Hand-authored artifact stacks live under:
@@ -88,7 +102,7 @@ Open `http://127.0.0.1:8080`. The UI loads example artifacts and posts review su
 - `POST /validate/review-submission`
 - `POST /align/readiness-report`
 
-See `apps/review-ui/README.md` for details.
+See `apps/review-ui/README.md` for details. For Docker deployment, see `docs/DOCKER.md`.
 
 ## mathlib alignment
 
@@ -114,6 +128,8 @@ CI runs a licensing leak test ensuring metadata-only sources never appear with f
 ```bash
 PYTHONPATH=packages/fre_core/src:. pytest tests/test_public_export.py -q -k "licensing or metadata_only"
 ```
+
+See `docs/CORPUS_GOVERNANCE.md` for catalog policy.
 
 ## JSONL record shapes
 
@@ -146,3 +162,21 @@ PYTHONPATH=packages/fre_core/src:. pytest tests/test_public_export.py -q -k "lic
 ```
 
 Schema files: `schemas/public_benchmark_export_record.schema.json`, `schemas/public_atlas_export_record.schema.json`, `schemas/public_export_manifest.schema.json`.
+
+## Citation
+
+```text
+Formalization Readiness Engine (v0.2.0).
+https://github.com/fraware/formalization-readiness-engine
+Release manifest: releases/v0.2.0/manifest.json
+```
+
+## Public release checklist
+
+Before tagging a new public release:
+
+1. Run `make check` and `make demo`.
+2. Regenerate `public_exports/` and verify licensing leak tests pass.
+3. Run `build-release-manifest` and commit `releases/<version>/manifest.json`.
+4. Update `docs/TECHNICAL_REPORT.md` and ReadinessBench counts in `README.md`.
+5. Run `make docs` and confirm the site builds.

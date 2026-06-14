@@ -84,3 +84,5 @@ lean/
 ## CI
 
 Normal Python CI does not build mathlib. An optional workflow `.github/workflows/lean.yml` runs Lean checks on `workflow_dispatch` only.
+
+The offline demo (`make demo`) renders and optionally typechecks L1 scaffolds for both reference examples. CI sets `DEMO_SKIP_LEAN=1` to skip Lean during automated runs.

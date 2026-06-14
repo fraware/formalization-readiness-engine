@@ -81,6 +81,6 @@ Gold and silver tiers remain expert-reviewed subsets; bronze holds corpus-scale 
 ## Phase 2 exit criteria
 
 - Five catalog sources with mixed release modes
-- Thirty or more ingested units with preserved spans
-- Bronze manifest populated from corpus units
+- Thirty ingested units with preserved spans (`corpus/units/`)
+- Bronze manifest populated from corpus units (31 bronze items in ReadinessBench)
 - Metadata-only source included for licensing leak tests

@@ -1,8 +1,12 @@
 # Next Engineering Sprints
 
-This document gives the recommended PR sequence after the initial handoff.
+This document records completed engineering sprints and optional follow-on work after the June 2026 public release.
+
+**Status:** Sprints 1–7, category-theory example, LeanTask generation, Phase 5–6, E2E demo, and Waves 0–6 scale-up are complete on `main`. New contributors should branch from `main` and pick items from [Optional follow-on work](#optional-follow-on-work) below.
 
 ## Sprint 1: first live extraction loop
+
+**Status:** Complete on `main`.
 
 Goal: run the first live model extraction and compare it against the hand-authored finite-tree artifact stack.
 
@@ -23,6 +27,8 @@ Acceptance criteria:
 - generated output is clearly marked as candidate data.
 
 ## Sprint 2: pinned Lean project
+
+**Status:** Complete on `main`.
 
 Goal: make LeanTask checking real, reproducible, and separate from lightweight Python CI.
 
@@ -240,3 +246,67 @@ Acceptance criteria:
 - L1 packages without `formal_target` are rejected;
 - generated artifacts remain separate from reviewed examples;
 - all existing tests pass.
+
+## Optional follow-on work
+
+These items are not blockers for the v0.2.0 public release. They extend coverage, reviewer tooling, or deployment depth.
+
+### Annotation workflow in review UI
+
+Goal: let reviewers produce Silver and Gold artifacts through the web interface instead of manual JSON editing.
+
+Tasks:
+
+1. Add versioned reviewer edits with audit trail.
+2. Wire Bronze/Silver/Gold tagging into the review UI.
+3. Connect submission validation to benchmark promotion CLI.
+
+### L2 LeanTask for selected Gold examples
+
+Goal: move selected gold items from L1 statement scaffolds to partial proof skeletons without `sorry`.
+
+Tasks:
+
+1. Define L2 promotion criteria in `docs/review/`.
+2. Add gold-tier L2 LeanTask fixtures and Lean check targets.
+3. Document proof-completion policy in `lean/README.md`.
+
+### Baseline comparison harness (Wave 3)
+
+Goal: replace the `run_baselines` job stub with a reproducible multi-baseline evaluation loop.
+
+Tasks:
+
+1. Implement direct extraction, retrieval-augmented, and ablated baselines.
+2. Aggregate errors with `docs/ERROR_TAXONOMY.md` categories.
+3. Add CI fixtures for deterministic baseline reports.
+
+### Category-theory ReadinessBench promotion
+
+Goal: promote `examples/category_theory_pullback/` through external review into the gold tier.
+
+Tasks:
+
+1. Complete external review per `docs/review/REVIEWER_GUIDE.md`.
+2. Copy reviewed artifacts into `benchmarks/readinessbench/gold/`.
+3. Update `manifest.json` and Gold changelog.
+
+### PostgreSQL and object storage
+
+Goal: move job metadata and artifact storage off SQLite/local disk for multi-user deployments.
+
+Tasks:
+
+1. Add PostgreSQL service to Docker Compose.
+2. Migrate `FRE_JOBS_DB` schema.
+3. Document backup and retention policy.
+
+### Technical report automation
+
+Goal: generate release notes and evaluation summaries from manifest and cluster artifacts.
+
+Tasks:
+
+1. Wire `build-release-manifest` into release CI.
+2. Add evaluator-facing report templates under `docs/`.
+3. Version reports alongside `releases/<version>/`.

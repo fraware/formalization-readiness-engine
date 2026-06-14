@@ -1,45 +1,36 @@
-# Engineering branch merge status
+# Engineering branch status
 
-Snapshot for Wave 0 hygiene (2026-06-14). Use this before deleting branches or starting scale-up work.
+Historical record for the June 2026 public release. All engineering work described below is merged on `main`.
 
-## Base branch
+## Current state
 
-`main` is at `a44b4f1` (initial handoff: schemas, finite-tree example, first engineering docs). It does **not** yet include Sprints 1–7, category theory, LeanTask generation, Phase 5–6, or E2E demo work.
+`main` includes Waves 0–6, Docker/RQ infrastructure, ReadinessBench v0.2.0 scale-up, and both reference examples. Temporary `engineering-*` branches were squash-merged and deleted from the remote after consolidation.
 
-## Unmerged engineering branches (ahead of `main`)
+There are no active engineering sprint branches. New work should branch from `main`.
 
-All branches below are **0 commits behind** `main` unless noted. They form a linear stack ending at `engineering-e2e-demo-integration`.
+## What was merged
 
-| Branch | Commits ahead of `main` | Summary |
-|--------|-------------------------|---------|
-| `engineering-sprint1-readiness-harness` | 1 (also 1 behind) | Readiness harness + handoff docs; diverged from later sprint history |
-| `engineering-sprint2-pinned-lean` | 2 (also 2 behind) | Lean v4.8.0 + mathlib pin, `lake-manifest.json`, Generated finite-tree scaffold |
-| `engineering-sprint3-corpus-catalog` | 1 | Corpus catalog ingestion and shareable export |
-| `engineering-sprint4-graph-atlas-extraction` | 2 | ProofGraph and Atlas extraction |
-| `engineering-sprint5-mathlib-index` | 3 | Mathlib declaration index v0 |
-| `engineering-sprint6-readinessbench-tiers` | 4 | ReadinessBench tier layout and evaluation runner |
-| `engineering-sprint7-review-workflow` | 5 | External review workflow |
-| `engineering-category-theory-example` | 6 | Category-theory pullback reference example |
-| `engineering-leantask-generation` | 7 | LeanTask generation from readiness reports |
-| `engineering-phase5-6-north-star` | 10 | Alignment service, review API/UI, public export |
-| `engineering-e2e-demo-integration` | 11 | End-to-end offline demo for both reference examples |
+The following capabilities arrived through a linear stack of short-lived branches, consolidated before public release:
 
-**Recommended consolidation tip:** merge or squash-merge `engineering-e2e-demo-integration` into `main`, then re-apply Sprint 2 Lean pin files if absent (`lean-toolchain`, `lake-manifest.json`, `lean/README.md`, `lean/FRETasks/Generated/`).
+| Capability | Summary |
+|------------|---------|
+| Readiness harness | Live extraction loop, evaluation metrics, baseline notes template |
+| Pinned Lean | Lean v4.8.0 + mathlib pin, `lake-manifest.json`, Generated scaffolds |
+| Corpus catalog | Catalog ingestion, shareable export, release-mode filtering |
+| ProofGraph and Atlas extraction | Model-assisted extraction with post-extraction semantic validation |
+| mathlib index v0 | Declaration index fixtures and lexical lookup |
+| ReadinessBench tiers | Bronze/Silver/Gold layout, manifest validation, evaluation runner |
+| External review | Reviewer docs, submission template, Gold changelog |
+| Category-theory example | Second hand-authored reference stack |
+| LeanTask generation | Model-assisted LeanTask packages from readiness reports |
+| Phase 5–6 | Alignment service, review API/UI, public export, licensing leak tests |
+| E2E demo | Offline and live demos for both reference examples |
+| Wave 1–6 scale-up | Corpus expansion (30 units), gold benchmark growth (11 items), Docker/RQ jobs |
 
-## Wave 0 hygiene branch
+## Branch cleanup
 
-`engineering/wave0-hygiene` extends `engineering-e2e-demo-integration` with:
+Merged engineering branches were removed from GitHub after confirmation that `main` contained their commits. See `docs/BRANCH_CLEANUP.md` for the completed cleanup record.
 
-- Sprint 2 Lean pin essentials restored on the consolidated tip
-- Live baseline `artifacts/generated/finite_tree/NOTES.md` template
-- Updated handoff and branch documentation
-- Lean pin smoke tests
+## For new contributors
 
-## Branches already documented for deletion (merged into original handoff `main`)
-
-See `docs/BRANCH_CLEANUP.md` for the first-sprint branches (`engineering-core-validation`, etc.).
-
-## After Wave 0 merges to `main`
-
-1. Delete merged `engineering-sprint*` and `engineering-e2e-demo-integration` branches per `docs/BRANCH_CLEANUP.md`.
-2. Rebase active wave branches (`engineering/wave1-*`, etc.) onto updated `main`.
+Do not look for `engineering-sprint*` branches. Start from `main`, read `docs/ENGINEERING_HANDOFF.md`, and consult `docs/NEXT_SPRINTS.md` for optional follow-on work.

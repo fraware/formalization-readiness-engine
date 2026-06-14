@@ -55,7 +55,7 @@ Pipeline per example:
 3. **enrich-report-candidates** — write an enriched readiness report with index-backed theorem candidates.
 4. **render-leantask** — render the L1 Lean skeleton from `leantask_L1.json`.
 5. **check-lean** — optional `lake env lean` check through the pinned `lean/` project (skipped when `DEMO_SKIP_LEAN=1` or `lake` is not on `PATH`).
-6. **run-readinessbench** — score fixture predictions under `tests/fixtures/readinessbench_predictions/` against ReadinessBench gold (currently one gold item: `finite_tree_edge_count`).
+6. **run-readinessbench** — score fixture predictions under `tests/fixtures/readinessbench_predictions/` against ReadinessBench gold (11 gold items in the manifest; fixture predictions currently cover `finite_tree_edge_count`).
 7. **export-public-benchmark / export-public-atlas** — dry-run public JSONL export to a temporary directory (not written to `public_exports/`).
 
 Demo outputs are written under:

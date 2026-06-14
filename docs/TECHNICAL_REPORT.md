@@ -2,13 +2,25 @@
 
 ## Summary
 
-Wave 6 delivers a public release of ReadinessBench gold fixtures, deterministic Atlas blocker clustering, versioned release manifests, and published documentation for external evaluators.
+Wave 6 delivers the v0.2.0 public release: ReadinessBench gold fixtures at benchmark scale, deterministic Atlas blocker clustering, versioned release manifests, Docker/RQ infrastructure, and published documentation for external evaluators.
 
-## ReadinessBench gold expansion
+## ReadinessBench scale
 
-The benchmark manifest now includes eleven expert-reviewed gold items spanning graph theory, category theory, algebra, topology, analysis, number theory, linear algebra, measure theory, logic, and set theory. Each gold item includes a reviewed theorem/proof unit, readiness report, and Atlas record suitable for public export.
+The benchmark manifest includes 43 items across three tiers:
 
-Bronze and silver tiers remain for the finite-tree reference item to preserve tier invariants and promotion workflow examples.
+| Tier | Count | Role |
+|------|-------|------|
+| Gold | 11 | Expert-reviewed evaluated truth |
+| Silver | 1 | Promotion workflow example |
+| Bronze | 31 | Corpus-scale candidate units |
+
+Gold items span graph theory, category theory, algebra, topology, analysis, number theory, linear algebra, measure theory, logic, and set theory. Each gold item includes a reviewed theorem/proof unit, readiness report, and Atlas record suitable for public export.
+
+The hand-authored reference stacks at `examples/finite_tree/` and `examples/category_theory_pullback/` remain the primary onboarding path. The category-theory example is examples-only until promoted through external review.
+
+## Corpus ingestion
+
+Wave 1 shipped five author-permitted LaTeX sources under `corpus/sources/` with mixed release modes. Deterministic ingestion produced 30 theorem/proof units with preserved source spans. Bronze benchmark promotion populated 31 bronze manifest entries from corpus units.
 
 ## Atlas blocker clustering
 
@@ -18,21 +30,25 @@ The `generate-atlas-clusters` CLI command writes `public_exports/atlas_clusters.
 
 ## Release manifests
 
-The `build-release-manifest` CLI command checksums public export artifacts and records schema versions in `releases/<version>/manifest.json`. This supports reproducible public releases and audit trails for benchmark consumers.
+The `build-release-manifest` CLI command checksums public export artifacts and records schema versions in `releases/<version>/manifest.json`. The v0.2.0 manifest lives at `releases/v0.2.0/manifest.json`.
+
+## Infrastructure
+
+Docker Compose provides API (`:8000`), review UI (`:8080`), Redis-backed RQ worker, and an optional Lean profile. Job metadata uses SQLite at `FRE_JOBS_DB` for v0; PostgreSQL remains deferred. See `docs/DOCKER.md`.
 
 ## Documentation and CI
 
-MkDocs builds the public documentation site from `docs/` with Wave 6 navigation entries. CI runs the documentation build on every push and pull request.
+MkDocs builds the public documentation site from `docs/` with navigation for architecture, demo, release, Docker, corpus governance, and review workflows. CI runs the documentation build on every push and pull request. The test suite includes 165 unit tests.
 
 ## Evaluation guidance
 
 External evaluators should:
 
-1. Validate the committed ReadinessBench manifest.
+1. Validate the committed ReadinessBench manifest (`make validate-readinessbench`).
 2. Produce schema-valid predicted readiness reports for each gold `unit_id`.
 3. Run `make run-readinessbench` with a predictions directory.
 4. Compare Atlas cluster reports across model versions to track blocker regressions.
 
 ## Limitations
 
-Wave 6 does not claim end-to-end automated formalization. Model outputs remain candidate artifacts until reviewed. Lean typechecking for L1/L2 tasks remains a local or optional CI workflow.
+Wave 6 does not claim end-to-end automated formalization. Model outputs remain candidate artifacts until reviewed. Lean typechecking for L1/L2 tasks remains a local or optional CI workflow (`workflow_dispatch`). The review UI is a thin inspection surface; full in-browser annotation is optional follow-on work.

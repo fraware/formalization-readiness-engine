@@ -241,6 +241,8 @@ The original Phase 0 target of one theorem/proof unit through Lean check is cove
 
 Target duration: 2 to 4 weeks.
 
+**Status:** Complete on `main`.
+
 Deliverables:
 
 - `SourceDocument` schema;
@@ -261,6 +263,8 @@ All examples validate, and schemas are stable enough for extraction work.
 
 Target duration: 4 to 6 weeks.
 
+**Status:** Complete for v0.2.0 scope (30 ingested units from 5 catalog sources).
+
 Deliverables:
 
 - LaTeX ingestion;
@@ -276,6 +280,8 @@ Thirty theorem/proof units extracted from three to five sources with source span
 ### Phase 3: Extraction baselines
 
 Target duration: 6 to 8 weeks.
+
+**Status:** Partial. Live extraction and error taxonomy are implemented; full multi-baseline comparison harness remains optional follow-on work (see `docs/NEXT_SPRINTS.md`).
 
 Deliverables:
 
@@ -293,7 +299,7 @@ Thirty units produce schema-valid reports and proof graphs, with errors categori
 
 Target duration: 8 to 10 weeks.
 
-**Progress snapshot:** mathlib declaration index v0, lexical lookup, readiness-report candidate enrichment, and LeanTask L0/L1 generation orchestration (`extract_leantask.py`, `generate-leantask` CLI) are implemented. L2 remains for selected Gold examples only.
+**Status:** L0/L1 path complete on `main` for both reference examples. L2 partial proof skeletons for selected Gold examples remain optional follow-on work.
 
 Deliverables:
 
@@ -312,7 +318,7 @@ The finite-tree example reaches L1 or L2 alignment, and at least ten aligned uni
 
 Target duration: 8 to 10 weeks.
 
-**Progress snapshot:** FastAPI backend (`apps/api/`) with artifact-first validation and alignment endpoints; minimal static review UI (`apps/review-ui/`); structured review submission validation via existing `review_workflow.py`. Full annotation workflow and versioned reviewer edits remain for follow-on work.
+**Status:** Foundation complete (API, thin UI, external review docs, submission validation). Full in-browser annotation workflow and versioned reviewer edits remain optional follow-on work.
 
 Deliverables:
 
@@ -329,7 +335,7 @@ Reviewers can produce Silver and Gold artifacts through the interface.
 
 Target duration: 6 to 8 weeks.
 
-**Progress snapshot:** ReadinessBench evaluation runner and manifest validation are implemented. Public JSONL export (`public_export.py`), Atlas curation export from examples and gold benchmark items, licensing leak test in CI, and `docs/PUBLIC_RELEASE.md` are implemented. Full technical report generation remains for follow-on work.
+**Status:** v0.2.0 public release complete. ReadinessBench (43 items: 11 gold, 1 silver, 31 bronze), Atlas clustering, public JSONL exports, licensing leak tests, MkDocs site, and `releases/v0.2.0/manifest.json` are on `main`. Automated technical report generation remains optional follow-on work.
 
 Deliverables:
 

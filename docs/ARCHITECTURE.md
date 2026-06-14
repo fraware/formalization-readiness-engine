@@ -1,6 +1,6 @@
 # Architecture
 
-This document describes the current Formalization Readiness Engine architecture. For the long-term roadmap, see `IMPLEMENTATION_PLAN.md`. For the next PR sequence, see `NEXT_SPRINTS.md`.
+This document describes the Formalization Readiness Engine architecture as implemented on `main` (June 2026 public release). For the long-term roadmap, see `IMPLEMENTATION_PLAN.md`. For completed sprints and optional follow-on work, see `NEXT_SPRINTS.md`.
 
 ## Design principle
 

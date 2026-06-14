@@ -3,11 +3,26 @@ site_description: Public documentation for the Formalization Readiness Engine be
 repo_url: https://github.com/fraware/formalization-readiness-engine
 docs_dir: ../../docs
 site_dir: ../../site
+exclude_docs: |
+  BRANCH_CLEANUP.md
+  ENGINEERING_BRANCH_STATUS.md
 theme:
   name: mkdocs
 nav:
   - Home: index.md
   - Architecture: ARCHITECTURE.md
+  - End-to-end demo: DEMO.md
   - Public release: PUBLIC_RELEASE.md
   - Technical report: TECHNICAL_REPORT.md
+  - Docker Compose: DOCKER.md
+  - Corpus governance: CORPUS_GOVERNANCE.md
+  - OpenAI usage: OPENAI_USAGE.md
+  - Error taxonomy: ERROR_TAXONOMY.md
   - Engineering handoff: ENGINEERING_HANDOFF.md
+  - Implementation plan: IMPLEMENTATION_PLAN.md
+  - Next sprints: NEXT_SPRINTS.md
+  - Review:
+      - Reviewer guide: review/REVIEWER_GUIDE.md
+      - Review form: review/READINESS_REPORT_REVIEW_FORM.md
+      - Usefulness rubric: review/USEFULNESS_RUBRIC.md
+      - Edit examples: review/EDIT_EXAMPLES.md

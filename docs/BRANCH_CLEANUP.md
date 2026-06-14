@@ -1,41 +1,24 @@
-# Branch Cleanup
+# Branch cleanup
 
-The initial engineering sprint used short-lived branches for focused PRs. All accepted work was squash-merged into `main`.
+Completed June 2026. This document records the removal of temporary engineering branches after the public release merge to `main`.
 
-## Branches that can be removed (first handoff, merged into original `main`)
+## Outcome
 
-After confirming `main` is current, the following branches can be removed from GitHub:
+All accepted engineering work was squash-merged into `main`. The following branch families were deleted from the remote after verification:
 
-- `engineering-core-validation`
-- `engineering-schema-export`
-- `engineering-latex-ingestion`
-- `engineering-leantask-renderer`
-- `engineering-corpus-catalog`
-- `engineering-lean-check-runner`
-- `engineering-readinessbench-metrics`
+- First-handoff branches: `engineering-core-validation`, `engineering-schema-export`, `engineering-latex-ingestion`, `engineering-leantask-renderer`, `engineering-corpus-catalog`, `engineering-lean-check-runner`, `engineering-readinessbench-metrics`
+- Sprint stack: `engineering-sprint1-readiness-harness` through `engineering-sprint7-review-workflow`
+- Feature branches: `engineering-category-theory-example`, `engineering-leantask-generation`, `engineering-phase5-6-north-star`, `engineering-e2e-demo-integration`
+- Hygiene branch: `engineering/wave0-hygiene`
 
-## Branches to remove after Wave 0 merges to `main`
+Only `main` and new feature branches should remain active.
 
-Once `engineering/wave0-hygiene` (or equivalent consolidation PR) is merged, delete the stacked sprint and demo branches if they are fully contained in `main`:
+## Verification before deletion
 
-- `engineering-sprint1-readiness-harness` through `engineering-sprint7-review-workflow`
-- `engineering-category-theory-example`
-- `engineering-leantask-generation`
-- `engineering-phase5-6-north-star`
-- `engineering-e2e-demo-integration`
-
-See `docs/ENGINEERING_BRANCH_STATUS.md` for the ahead/behind matrix before deletion.
-
-Remove branches through the GitHub UI or with a local Git client.
-
-## UI cleanup
-
-1. Open the repository on GitHub.
-2. Go to the branches view.
-3. Confirm each branch above has a merged pull request.
-4. Remove each merged engineering branch.
-5. Keep only `main` and any new active engineering branch.
+1. Confirm `main` passes CI (`make check`, docs build, offline demo).
+2. Confirm required files exist on `main` (Lean pins, corpus catalog, ReadinessBench manifest, public exports).
+3. Remove merged branches through the GitHub UI or a local Git client.
 
 ## Future rule
 
-Use one branch per PR. Remove branches after merge unless the branch is a long-running release branch. Avoid leaving merged engineering branches in the repository because they make takeover status harder to read.
+Use one branch per pull request. Delete branches after merge unless the branch is a long-running release branch. Avoid leaving merged engineering branches in the repository because they obscure release status for new contributors.
