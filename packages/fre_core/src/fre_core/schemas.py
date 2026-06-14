@@ -177,6 +177,11 @@ class BenchmarkItemScore(BaseModel):
     existing_theorem_candidates_f1: float
     constructive_path_f1: float
     blockers_f1: float
+    notation_readiness_f1: float | None = None
+    proofgraph_f1: float | None = None
+    atlas_f1: float | None = None
+    leantask_f1: float | None = None
+    full_macro_f1: float | None = None
 
 
 class BenchmarkEvaluationReport(BaseModel):
@@ -188,6 +193,7 @@ class BenchmarkEvaluationReport(BaseModel):
     scored_item_count: int
     items: list[BenchmarkItemScore] = Field(default_factory=list)
     macro_f1_mean: float
+    full_macro_f1_mean: float | None = None
 
 
 class ReadinessDimensionReview(BaseModel):

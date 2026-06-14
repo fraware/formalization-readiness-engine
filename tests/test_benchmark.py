@@ -114,3 +114,22 @@ def test_run_readinessbench_is_repeatable() -> None:
     )
 
     assert first.model_dump() == second.model_dump()
+
+
+BASELINE_PREDICTIONS_DIR = ROOT / "tests" / "fixtures" / "baseline_predictions"
+
+
+def test_run_benchmark_evaluation_scores_full_macro_f1() -> None:
+    from fre_core.benchmark import run_benchmark_evaluation
+
+    report = run_benchmark_evaluation(
+        manifest_path=MANIFEST_PATH,
+        predictions_dir=BASELINE_PREDICTIONS_DIR,
+        benchmark_root=BENCHMARK_ROOT,
+        repo_root=ROOT,
+    )
+
+    assert report.scored_item_count == 1
+    assert report.full_macro_f1_mean is not None
+    assert report.items[0].full_macro_f1 is not None
+

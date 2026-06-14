@@ -4,7 +4,11 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from fre_core.baseline_runner import default_baseline_manifest_path, load_baseline_manifest
 from fre_core.evaluation import score_readiness_report
+from fre_core.evaluation_atlas import score_atlas_record
+from fre_core.evaluation_leantask import score_leantask_package
+from fre_core.evaluation_proofgraph import score_proofgraph
 from fre_core.schemas import (
     BenchmarkEvaluationReport,
     BenchmarkItem,
@@ -14,7 +18,13 @@ from fre_core.schemas import (
     ReadinessReport,
     ReviewStatus,
 )
-from fre_core.validation import load_readiness_report, load_unit
+from fre_core.validation import (
+    load_atlas_record,
+    load_leantask_package,
+    load_proofgraph,
+    load_readiness_report,
+    load_unit,
+)
 
 TIER_ALLOWED_REVIEW_STATUSES: dict[BenchmarkTier, frozenset[ReviewStatus]] = {
     BenchmarkTier.BRONZE: frozenset({ReviewStatus.CANDIDATE, ReviewStatus.MACHINE_VALIDATED}),
@@ -24,6 +34,9 @@ TIER_ALLOWED_REVIEW_STATUSES: dict[BenchmarkTier, frozenset[ReviewStatus]] = {
 
 GENERATED_ARTIFACT_SEGMENT = "artifacts/generated"
 PREDICTION_REPORT_FILENAME = "readiness_report.json"
+PREDICTION_PROOFGRAPH_FILENAME = "proofgraph.json"
+PREDICTION_ATLAS_FILENAME = "atlas_record.json"
+PREDICTION_LEANTASK_FILENAME = "leantask.json"
 
 
 class BenchmarkValidationError(ValueError):
@@ -196,6 +209,103 @@ def resolve_prediction_report_path(*, predictions_dir: Path, unit_id: str) -> Pa
     )
 
 
+def resolve_prediction_artifact_path(
+    *, predictions_dir: Path, unit_id: str, filename: str
+) -> Path | None:
+    """Resolve an optional predicted artifact path for one unit."""
+    nested = predictions_dir / unit_id / filename
+    if nested.exists():
+        return nested
+    flat = predictions_dir / f"{unit_id}_{filename}"
+    if flat.exists():
+        return flat
+    return None
+
+
+def _gold_example_dir_for_unit(*, unit_id: str, repo_root: Path) -> Path | None:
+    manifest_path = default_baseline_manifest_path(repo_root=repo_root)
+    if not manifest_path.exists():
+        return None
+    manifest = load_baseline_manifest(manifest_path)
+    for entry in manifest.units:
+        if entry.unit_id == unit_id:
+            candidate = (repo_root / entry.example_dir).resolve()
+            if candidate.is_dir():
+                return candidate
+    return None
+
+
+def _score_optional_artifacts(
+    *,
+    unit_id: str,
+    predictions_dir: Path,
+    repo_root: Path,
+) -> dict[str, float | None]:
+    scores: dict[str, float | None] = {
+        "proofgraph_f1": None,
+        "atlas_f1": None,
+        "leantask_f1": None,
+    }
+    gold_dir = _gold_example_dir_for_unit(unit_id=unit_id, repo_root=repo_root)
+    if gold_dir is None:
+        return scores
+
+    predicted_graph = resolve_prediction_artifact_path(
+        predictions_dir=predictions_dir,
+        unit_id=unit_id,
+        filename=PREDICTION_PROOFGRAPH_FILENAME,
+    )
+    gold_graph = gold_dir / PREDICTION_PROOFGRAPH_FILENAME
+    if predicted_graph is not None and gold_graph.exists():
+        graph_scores = score_proofgraph(
+            predicted=load_proofgraph(predicted_graph),
+            gold=load_proofgraph(gold_graph),
+        )
+        scores["proofgraph_f1"] = _round_metric(graph_scores.macro_f1)
+
+    predicted_atlas = resolve_prediction_artifact_path(
+        predictions_dir=predictions_dir,
+        unit_id=unit_id,
+        filename=PREDICTION_ATLAS_FILENAME,
+    )
+    gold_atlas = gold_dir / PREDICTION_ATLAS_FILENAME
+    if predicted_atlas is not None and gold_atlas.exists():
+        atlas_scores = score_atlas_record(
+            predicted=load_atlas_record(predicted_atlas),
+            gold=load_atlas_record(gold_atlas),
+        )
+        scores["atlas_f1"] = _round_metric(atlas_scores.f1)
+
+    predicted_leantask = resolve_prediction_artifact_path(
+        predictions_dir=predictions_dir,
+        unit_id=unit_id,
+        filename=PREDICTION_LEANTASK_FILENAME,
+    )
+    gold_leantask = gold_dir / PREDICTION_LEANTASK_FILENAME
+    if predicted_leantask is not None and gold_leantask.exists():
+        leantask_scores = score_leantask_package(
+            predicted=load_leantask_package(predicted_leantask),
+            gold=load_leantask_package(gold_leantask),
+        )
+        scores["leantask_f1"] = _round_metric(leantask_scores.f1)
+
+    return scores
+
+
+def _full_macro_f1(
+    *,
+    readiness_macro_f1: float,
+    proofgraph_f1: float | None,
+    atlas_f1: float | None,
+    leantask_f1: float | None,
+) -> float | None:
+    components = [readiness_macro_f1, proofgraph_f1, atlas_f1, leantask_f1]
+    present = [value for value in components if value is not None]
+    if len(present) <= 1:
+        return None
+    return _round_metric(sum(present) / len(present))
+
+
 def _round_metric(value: float) -> float:
     return round(value, 6)
 
@@ -205,9 +315,11 @@ def run_readinessbench(
     manifest_path: Path,
     predictions_dir: Path,
     benchmark_root: Path | None = None,
+    repo_root: Path | None = None,
 ) -> BenchmarkEvaluationReport:
     """Score predicted readiness reports against manifest gold items."""
     root = benchmark_root or manifest_path.parent
+    resolved_repo_root = repo_root or _repo_root_from_module()
     manifest = load_manifest(manifest_path)
     validate_manifest(manifest=manifest, benchmark_root=root)
 
@@ -233,19 +345,40 @@ def run_readinessbench(
         predicted = load_readiness_report(prediction_path)
 
         scores = score_readiness_report(predicted=predicted, gold=gold)
+        optional_scores = _score_optional_artifacts(
+            unit_id=item.unit_id,
+            predictions_dir=predictions_dir,
+            repo_root=resolved_repo_root,
+        )
+        readiness_macro_f1 = _round_metric(scores.macro_f1)
+        full_macro_f1 = _full_macro_f1(
+            readiness_macro_f1=readiness_macro_f1,
+            proofgraph_f1=optional_scores["proofgraph_f1"],
+            atlas_f1=optional_scores["atlas_f1"],
+            leantask_f1=optional_scores["leantask_f1"],
+        )
         item_scores.append(
             BenchmarkItemScore(
                 item_id=item.item_id,
                 unit_id=item.unit_id,
-                macro_f1=_round_metric(scores.macro_f1),
+                macro_f1=readiness_macro_f1,
                 existing_theorem_candidates_f1=_round_metric(scores.existing_theorem_candidates.f1),
                 constructive_path_f1=_round_metric(scores.constructive_path.f1),
                 blockers_f1=_round_metric(scores.blockers.f1),
+                notation_readiness_f1=_round_metric(scores.notation_readiness.f1),
+                proofgraph_f1=optional_scores["proofgraph_f1"],
+                atlas_f1=optional_scores["atlas_f1"],
+                leantask_f1=optional_scores["leantask_f1"],
+                full_macro_f1=full_macro_f1,
             )
         )
 
     gold_item_count = sum(1 for item in manifest.items if item.tier == BenchmarkTier.GOLD)
     macro_f1_mean = _round_metric(sum(score.macro_f1 for score in item_scores) / len(item_scores))
+    full_values = [score.full_macro_f1 for score in item_scores if score.full_macro_f1 is not None]
+    full_macro_f1_mean = (
+        _round_metric(sum(full_values) / len(full_values)) if full_values else None
+    )
 
     return BenchmarkEvaluationReport(
         benchmark_id=manifest.benchmark_id,
@@ -253,4 +386,21 @@ def run_readinessbench(
         scored_item_count=len(item_scores),
         items=item_scores,
         macro_f1_mean=macro_f1_mean,
+        full_macro_f1_mean=full_macro_f1_mean,
+    )
+
+
+def run_benchmark_evaluation(
+    *,
+    manifest_path: Path,
+    predictions_dir: Path,
+    benchmark_root: Path | None = None,
+    repo_root: Path | None = None,
+) -> BenchmarkEvaluationReport:
+    """Score all artifact types where gold references exist."""
+    return run_readinessbench(
+        manifest_path=manifest_path,
+        predictions_dir=predictions_dir,
+        benchmark_root=benchmark_root,
+        repo_root=repo_root,
     )

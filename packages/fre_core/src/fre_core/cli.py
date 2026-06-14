@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import json
+
 import typer
 from rich import print
 
@@ -17,6 +19,7 @@ from fre_core.corpus import (
 from fre_core.extract_atlas import extract_atlas_record
 from fre_core.extract_leantask import extract_leantask_package
 from fre_core.extract_proofgraph import extract_proofgraph
+from fre_core.evaluation_taxonomy import aggregate_error_summaries, categorize_baseline_run
 from fre_core.extraction import extract_readiness_report
 from fre_core.latex_ingestion import ingest_latex_file
 from fre_core.lean_runner import check_lean_file
@@ -40,9 +43,11 @@ from fre_core.public_export import (
     export_public_benchmark,
     write_export_manifest,
 )
+from fre_core.baseline_runner import BaselineCondition, resolve_baseline_conditions, run_baselines
 from fre_core.benchmark import (
     default_manifest_path,
     load_manifest,
+    run_benchmark_evaluation,
     run_readinessbench,
     validate_manifest,
 )
@@ -524,6 +529,115 @@ def run_readinessbench_cmd(
         print(f"[green]wrote evaluation report[/green] {output_path}")
     print(payload)
     print(f"[green]macro_f1_mean[/green] {report.macro_f1_mean}")
+
+
+
+@app.command("run-benchmark-evaluation")
+def run_benchmark_evaluation_cmd(
+    predictions_dir: Path = typer.Argument(..., help="Directory of predicted artifacts."),
+    manifest_path: Path = typer.Option(
+        default_manifest_path(),
+        help="Path to ReadinessBench manifest JSON.",
+    ),
+    output_path: Path | None = typer.Option(
+        None,
+        help="Optional path for the evaluation report JSON.",
+    ),
+    benchmark_root: Path | None = typer.Option(
+        None,
+        help="Benchmark root directory (defaults to manifest parent).",
+    ),
+    repo_root: Path = typer.Option(Path("."), help="Repository root for gold example lookup."),
+) -> None:
+    """Score predicted artifacts against ReadinessBench gold and reference examples."""
+    root = benchmark_root or manifest_path.parent
+    report = run_benchmark_evaluation(
+        manifest_path=manifest_path,
+        predictions_dir=predictions_dir,
+        benchmark_root=root,
+        repo_root=repo_root.resolve(),
+    )
+    payload = report.model_dump_json(indent=2)
+    if output_path is not None:
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text(payload + "\n", encoding="utf-8")
+        print(f"[green]wrote evaluation report[/green] {output_path}")
+    print(payload)
+    print(f"[green]full_macro_f1_mean[/green] {report.full_macro_f1_mean}")
+
+
+@app.command("run-baselines")
+def run_baselines_cmd(
+    output_dir: Path = typer.Option(
+        Path("artifacts/generated/baselines"),
+        help="Output directory for baseline run artifacts.",
+    ),
+    catalog_path: Path = typer.Option(
+        Path("benchmarks/baselines/manifest.json"),
+        help="Baseline manifest JSON path.",
+    ),
+    conditions: str = typer.Option(
+        "all",
+        help="Comma-separated conditions: direct, with_alignment, no_alignment, or all.",
+    ),
+    run_id: str = typer.Option("local_run", help="Run identifier for manifest output."),
+    model: str | None = typer.Option(None, help="Optional model override."),
+    repo_root: Path = typer.Option(Path("."), help="Repository root."),
+) -> None:
+    """Run baseline artifact generation for reference examples."""
+    repo = repo_root.resolve()
+    selected = resolve_baseline_conditions(conditions=conditions)
+    provider = OpenAIResponsesProvider(model=model)
+    run_output = output_dir / run_id
+    result = run_baselines(
+        output_dir=run_output,
+        model_client=provider,
+        repo_root=repo,
+        manifest_path=(repo / catalog_path).resolve(),
+        run_id=run_id,
+        conditions=selected,
+        model_name=provider.model,
+    )
+    print(
+        f"[green]baseline run complete[/green] units={result.unit_count} "
+        f"conditions={result.condition_count} -> {result.output_dir}"
+    )
+
+
+@app.command("categorize-baseline-errors")
+def categorize_baseline_errors_cmd(
+    predicted_root: Path = typer.Argument(..., help="Root directory of predicted baseline runs."),
+    repo_root: Path = typer.Option(Path("."), help="Repository root."),
+    output_path: Path | None = typer.Option(
+        None,
+        help="Optional JSON output path for aggregated summary.",
+    ),
+) -> None:
+    """Categorize baseline prediction errors against reference gold examples."""
+    repo = repo_root.resolve()
+    manifest_path = repo / "benchmarks" / "baselines" / "manifest.json"
+    from fre_core.baseline_runner import load_baseline_units
+
+    units = load_baseline_units(repo_root=repo, manifest_path=manifest_path)
+    summaries = []
+    for unit in units:
+        predicted_dir = predicted_root / unit.unit_id
+        if not predicted_dir.is_dir():
+            predicted_dir = predicted_root / BaselineCondition.DIRECT.value / unit.unit_id
+        summaries.append(
+            categorize_baseline_run(
+                predicted_dir=predicted_dir,
+                gold_dir=unit.example_dir,
+                unit_id=unit.unit_id,
+            )
+        )
+    payload = aggregate_error_summaries(summaries=summaries)
+    encoded = json.dumps(payload, indent=2)
+    if output_path is not None:
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text(encoded + "\n", encoding="utf-8")
+        print(f"[green]wrote error summary[/green] {output_path}")
+    print(encoded)
 
 
 @app.command("validate-review-submission")
