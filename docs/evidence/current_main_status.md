@@ -16,7 +16,7 @@ Operational proof record for the stabilization sprint. Regenerate after signific
 | Workflow | Status | Link |
 |----------|--------|------|
 | `ci.yml` (last run on this SHA) | success | [Run 27514905898](https://github.com/fraware/formalization-readiness-engine/actions/runs/27514905898) |
-| `lean.yml` (manual dispatch) | success (prior run) | [Run 27514195954](https://github.com/fraware/formalization-readiness-engine/actions/runs/27514195954) |
+| `lean.yml` (manual dispatch) | success | [Run 27514933703](https://github.com/fraware/formalization-readiness-engine/actions/runs/27514933703) |
 
 Lean CI does not run on every push. It is path-filtered to generated Lean tasks, the pinned toolchain, and `leantask*.py`. Trigger manually when those paths are unchanged:
 
