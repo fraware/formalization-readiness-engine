@@ -1,0 +1,13 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "topology_compact_continuous_image",
+  "blocker_type": "library_alignment",
+  "mathematical_pattern": "topology",
+  "evidence": "definition alignment for compactness",
+  "candidate_formal_object": null,
+  "likely_library_location": null,
+  "severity": "high",
+  "status": "reviewed",
+  "recommended_action": "Prefer existing compactness image lemma if available.",
+  "review_status": "expert_reviewed"
+}

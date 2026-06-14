@@ -1,0 +1,55 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "topology_compact_continuous_image",
+  "statement_readiness": {
+    "status": "clear",
+    "recovered": [
+      "statement isolated"
+    ],
+    "unresolved": [],
+    "notes": "Reviewed for Wave 6 gold seed."
+  },
+  "context_readiness": {
+    "status": "partial",
+    "recovered": [
+      "domain context"
+    ],
+    "unresolved": [
+      "library definition alignment"
+    ],
+    "notes": "Context requires mathlib alignment."
+  },
+  "notation_readiness": {
+    "status": "partial",
+    "recovered": [
+      "standard notation"
+    ],
+    "unresolved": [
+      "informal symbols"
+    ],
+    "notes": "Notation must map to mathlib."
+  },
+  "dependency_readiness": {
+    "status": "partial",
+    "recovered": [
+      "proof strategy"
+    ],
+    "unresolved": [
+      "missing lemmas"
+    ],
+    "notes": "Dependencies reviewed for formalization path."
+  },
+  "existing_theorem_candidates": [
+    "IsCompact.image"
+  ],
+  "constructive_path": [
+    "align compactness",
+    "prove image cover argument"
+  ],
+  "blockers": [
+    "definition alignment for compactness",
+    "open cover transport under continuous maps"
+  ],
+  "recommended_next_action": "Prefer existing compactness image lemma if available.",
+  "review_status": "expert_reviewed"
+}

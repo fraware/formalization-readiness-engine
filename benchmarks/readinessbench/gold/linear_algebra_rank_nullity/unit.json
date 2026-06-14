@@ -1,0 +1,12 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "linear_algebra_rank_nullity",
+  "source_id": "wave6_seed_linear_algebra_001",
+  "statement": "For a linear map between finite-dimensional vector spaces, dim ker f + dim im f = dim domain.",
+  "proof": "Choose a basis of the kernel, extend to the domain, and compare dimensions.",
+  "local_context": "Wave 6 seeded linear algebra gold item.",
+  "domain": "linear_algebra",
+  "statement_span": null,
+  "proof_span": null,
+  "review_status": "expert_reviewed"
+}

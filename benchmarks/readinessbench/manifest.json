@@ -10,6 +10,76 @@
       "readiness_report_path": "gold/finite_tree_edge_count/readiness_report.json"
     },
     {
+      "item_id": "category_theory_pullback_equivalence_gold",
+      "unit_id": "category_theory_pullback_equivalence",
+      "tier": "gold",
+      "unit_path": "gold/category_theory_pullback_equivalence/unit.json",
+      "readiness_report_path": "gold/category_theory_pullback_equivalence/readiness_report.json"
+    },
+    {
+      "item_id": "simple_graph_handshake_lemma_gold",
+      "unit_id": "simple_graph_handshake_lemma",
+      "tier": "gold",
+      "unit_path": "gold/simple_graph_handshake_lemma/unit.json",
+      "readiness_report_path": "gold/simple_graph_handshake_lemma/readiness_report.json"
+    },
+    {
+      "item_id": "commutative_ring_prime_ideal_gold",
+      "unit_id": "commutative_ring_prime_ideal",
+      "tier": "gold",
+      "unit_path": "gold/commutative_ring_prime_ideal/unit.json",
+      "readiness_report_path": "gold/commutative_ring_prime_ideal/readiness_report.json"
+    },
+    {
+      "item_id": "topology_compact_continuous_image_gold",
+      "unit_id": "topology_compact_continuous_image",
+      "tier": "gold",
+      "unit_path": "gold/topology_compact_continuous_image/unit.json",
+      "readiness_report_path": "gold/topology_compact_continuous_image/readiness_report.json"
+    },
+    {
+      "item_id": "real_analysis_uniform_limit_continuity_gold",
+      "unit_id": "real_analysis_uniform_limit_continuity",
+      "tier": "gold",
+      "unit_path": "gold/real_analysis_uniform_limit_continuity/unit.json",
+      "readiness_report_path": "gold/real_analysis_uniform_limit_continuity/readiness_report.json"
+    },
+    {
+      "item_id": "number_theory_gcd_lcm_identity_gold",
+      "unit_id": "number_theory_gcd_lcm_identity",
+      "tier": "gold",
+      "unit_path": "gold/number_theory_gcd_lcm_identity/unit.json",
+      "readiness_report_path": "gold/number_theory_gcd_lcm_identity/readiness_report.json"
+    },
+    {
+      "item_id": "linear_algebra_rank_nullity_gold",
+      "unit_id": "linear_algebra_rank_nullity",
+      "tier": "gold",
+      "unit_path": "gold/linear_algebra_rank_nullity/unit.json",
+      "readiness_report_path": "gold/linear_algebra_rank_nullity/readiness_report.json"
+    },
+    {
+      "item_id": "measure_theory_monotone_convergence_gold",
+      "unit_id": "measure_theory_monotone_convergence",
+      "tier": "gold",
+      "unit_path": "gold/measure_theory_monotone_convergence/unit.json",
+      "readiness_report_path": "gold/measure_theory_monotone_convergence/readiness_report.json"
+    },
+    {
+      "item_id": "propositional_logic_iff_chain_gold",
+      "unit_id": "propositional_logic_iff_chain",
+      "tier": "gold",
+      "unit_path": "gold/propositional_logic_iff_chain/unit.json",
+      "readiness_report_path": "gold/propositional_logic_iff_chain/readiness_report.json"
+    },
+    {
+      "item_id": "set_theory_image_preimage_gold",
+      "unit_id": "set_theory_image_preimage",
+      "tier": "gold",
+      "unit_path": "gold/set_theory_image_preimage/unit.json",
+      "readiness_report_path": "gold/set_theory_image_preimage/readiness_report.json"
+    },
+    {
       "item_id": "finite_tree_edge_count_silver",
       "unit_id": "finite_tree_edge_count",
       "tier": "silver",

@@ -1,0 +1,30 @@
+{
+  "schema_version": "0.1",
+  "release_version": "v0.2.0",
+  "git_commit": "51406ce9360e1fbb0bd3195f059ef461a77f5fe2",
+  "schema_versions": {
+    "readiness_report": "0.1",
+    "theorem_proof_unit": "0.1",
+    "atlas_record": "0.1",
+    "atlas_cluster_report": "0.1",
+    "benchmark_manifest": "0.1",
+    "public_export_manifest": "0.1"
+  },
+  "artifacts": [
+    {
+      "path": "C:/Users/mateo/formalization-readiness-engine/public_exports/atlas.jsonl",
+      "sha256": "672f44254edd65437168653036e9c49caf6b0d111145025bab52125a18748b89",
+      "byte_size": 13388
+    },
+    {
+      "path": "C:/Users/mateo/formalization-readiness-engine/public_exports/atlas_clusters.json",
+      "sha256": "799cb9eefef095df5abbe56d463fd9ad586c1250d205036931d02fc7d3a75962",
+      "byte_size": 15747
+    },
+    {
+      "path": "C:/Users/mateo/formalization-readiness-engine/public_exports/readinessbench.jsonl",
+      "sha256": "2b70e4044e01a2ba0571ea18f58ea67eecae831b98e105566ec0742f8d420289",
+      "byte_size": 71614
+    }
+  ]
+}

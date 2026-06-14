@@ -1,0 +1,12 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "propositional_logic_iff_chain",
+  "source_id": "wave6_seed_logic_001",
+  "statement": "If P iff Q and Q iff R, then P iff R.",
+  "proof": "Case split on truth of P and propagate equivalences through Q to R.",
+  "local_context": "Wave 6 seeded logic gold item.",
+  "domain": "logic",
+  "statement_span": null,
+  "proof_span": null,
+  "review_status": "expert_reviewed"
+}

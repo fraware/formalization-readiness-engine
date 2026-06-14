@@ -1,0 +1,55 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "commutative_ring_prime_ideal",
+  "statement_readiness": {
+    "status": "clear",
+    "recovered": [
+      "statement isolated"
+    ],
+    "unresolved": [],
+    "notes": "Reviewed for Wave 6 gold seed."
+  },
+  "context_readiness": {
+    "status": "partial",
+    "recovered": [
+      "domain context"
+    ],
+    "unresolved": [
+      "library definition alignment"
+    ],
+    "notes": "Context requires mathlib alignment."
+  },
+  "notation_readiness": {
+    "status": "partial",
+    "recovered": [
+      "standard notation"
+    ],
+    "unresolved": [
+      "informal symbols"
+    ],
+    "notes": "Notation must map to mathlib."
+  },
+  "dependency_readiness": {
+    "status": "partial",
+    "recovered": [
+      "proof strategy"
+    ],
+    "unresolved": [
+      "missing lemmas"
+    ],
+    "notes": "Dependencies reviewed for formalization path."
+  },
+  "existing_theorem_candidates": [
+    "CommRing.nilradical_eq_sInf_isPrime"
+  ],
+  "constructive_path": [
+    "import nilradical definition",
+    "apply characterization theorem"
+  ],
+  "blockers": [
+    "definition alignment for nilradical",
+    "library route for prime ideal intersection"
+  ],
+  "recommended_next_action": "Search mathlib for nilradical-prime intersection theorem.",
+  "review_status": "expert_reviewed"
+}

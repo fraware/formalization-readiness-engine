@@ -27,8 +27,8 @@ def test_default_manifest_loads_and_validates() -> None:
     gold_reports = validate_manifest(manifest=manifest, benchmark_root=BENCHMARK_ROOT)
 
     assert manifest.benchmark_id == "readinessbench"
-    assert len(manifest.items) == 3
-    assert len(gold_reports) == 1
+    assert len(manifest.items) == 13
+    assert len(gold_reports) == 11
     assert gold_reports[0].review_status == ReviewStatus.EXPERT_REVIEWED
 
 
@@ -94,11 +94,11 @@ def test_run_readinessbench_produces_deterministic_macro_f1() -> None:
         benchmark_root=BENCHMARK_ROOT,
     )
 
-    assert report.scored_item_count == 1
-    assert report.gold_item_count == 1
-    assert report.macro_f1_mean == expected_macro_f1
-    assert report.items[0].macro_f1 == expected_macro_f1
-    assert report.items[0].unit_id == "finite_tree_edge_count"
+    assert report.scored_item_count == 11
+    assert report.gold_item_count == 11
+    assert report.macro_f1_mean == 1.0
+    finite_tree_score = next(item for item in report.items if item.unit_id == "finite_tree_edge_count")
+    assert finite_tree_score.macro_f1 == expected_macro_f1
 
 
 def test_run_readinessbench_is_repeatable() -> None:

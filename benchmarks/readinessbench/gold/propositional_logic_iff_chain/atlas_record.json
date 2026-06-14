@@ -1,0 +1,13 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "propositional_logic_iff_chain",
+  "blocker_type": "library_alignment",
+  "mathematical_pattern": "logic",
+  "evidence": "definition alignment for propositional equivalence",
+  "candidate_formal_object": null,
+  "likely_library_location": null,
+  "severity": "high",
+  "status": "reviewed",
+  "recommended_action": "Use Iff.trans unless a custom propositional lemma is required.",
+  "review_status": "expert_reviewed"
+}

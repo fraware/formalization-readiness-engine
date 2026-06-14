@@ -1,0 +1,12 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "simple_graph_handshake_lemma",
+  "source_id": "wave6_seed_graph_001",
+  "statement": "In any finite graph, the sum of vertex degrees equals twice the number of edges.",
+  "proof": "Each edge contributes one to the degree of each endpoint, so summing degrees counts every edge twice.",
+  "local_context": "Wave 6 seeded graph-theory gold item.",
+  "domain": "graph_theory",
+  "statement_span": null,
+  "proof_span": null,
+  "review_status": "expert_reviewed"
+}

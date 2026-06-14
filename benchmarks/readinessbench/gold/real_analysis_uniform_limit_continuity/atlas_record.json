@@ -1,0 +1,13 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "real_analysis_uniform_limit_continuity",
+  "blocker_type": "library_alignment",
+  "mathematical_pattern": "analysis",
+  "evidence": "definition alignment for uniform convergence",
+  "candidate_formal_object": null,
+  "likely_library_location": null,
+  "severity": "high",
+  "status": "reviewed",
+  "recommended_action": "Check mathlib uniform convergence lemmas on compact sets.",
+  "review_status": "expert_reviewed"
+}

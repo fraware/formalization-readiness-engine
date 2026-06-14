@@ -1,0 +1,55 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "measure_theory_monotone_convergence",
+  "statement_readiness": {
+    "status": "clear",
+    "recovered": [
+      "statement isolated"
+    ],
+    "unresolved": [],
+    "notes": "Reviewed for Wave 6 gold seed."
+  },
+  "context_readiness": {
+    "status": "partial",
+    "recovered": [
+      "domain context"
+    ],
+    "unresolved": [
+      "library definition alignment"
+    ],
+    "notes": "Context requires mathlib alignment."
+  },
+  "notation_readiness": {
+    "status": "partial",
+    "recovered": [
+      "standard notation"
+    ],
+    "unresolved": [
+      "informal symbols"
+    ],
+    "notes": "Notation must map to mathlib."
+  },
+  "dependency_readiness": {
+    "status": "partial",
+    "recovered": [
+      "proof strategy"
+    ],
+    "unresolved": [
+      "missing lemmas"
+    ],
+    "notes": "Dependencies reviewed for formalization path."
+  },
+  "existing_theorem_candidates": [
+    "MeasureTheory.lintegral_iSup"
+  ],
+  "constructive_path": [
+    "align measurability",
+    "apply MCT"
+  ],
+  "blockers": [
+    "definition alignment for measurable functions",
+    "monotone convergence theorem packaging"
+  ],
+  "recommended_next_action": "Locate mathlib monotone convergence lemma for lintegral.",
+  "review_status": "expert_reviewed"
+}

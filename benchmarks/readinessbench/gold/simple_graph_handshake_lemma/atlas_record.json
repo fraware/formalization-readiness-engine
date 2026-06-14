@@ -1,0 +1,13 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "simple_graph_handshake_lemma",
+  "blocker_type": "library_alignment",
+  "mathematical_pattern": "graph_theory",
+  "evidence": "definition alignment for finite simple graph",
+  "candidate_formal_object": null,
+  "likely_library_location": null,
+  "severity": "high",
+  "status": "reviewed",
+  "recommended_action": "Confirm mathlib degree-sum lemma before decomposition.",
+  "review_status": "expert_reviewed"
+}

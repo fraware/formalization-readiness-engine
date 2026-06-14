@@ -1,7 +1,7 @@
 PYTHON ?= python
 PYTHONPATH_VALUE := packages/fre_core/src:.
 
-.PHONY: setup setup-models setup-api test demo demo-live demo-finite-tree demo-category-theory \
+.PHONY: setup setup-models docs setup-api test demo demo-live demo-finite-tree demo-category-theory \
 	validate-examples export-schemas lint check \
 	extract-finite-tree-proofgraph extract-finite-tree-atlas lookup-finite-tree-declarations \
 	generate-finite-tree-leantask generate-category-theory-leantask \
@@ -9,6 +9,11 @@ PYTHONPATH_VALUE := packages/fre_core/src:.
 	run-api run-review-ui export-public-benchmark export-public-atlas
 
 PREDICTIONS_DIR ?= tests/fixtures/readinessbench_predictions
+
+
+docs:
+	$(PYTHON) -m pip install -r requirements-docs.txt
+	$(PYTHON) -m mkdocs build -f apps/docs-site/mkdocs.yml
 
 setup:
 	$(PYTHON) -m pip install -r requirements.txt

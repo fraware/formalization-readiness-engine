@@ -1,0 +1,12 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "measure_theory_monotone_convergence",
+  "source_id": "wave6_seed_measure_001",
+  "statement": "For a non-decreasing sequence of non-negative measurable functions, the integral of the limit equals the limit of integrals.",
+  "proof": "Apply monotone convergence from below and measure-theoretic approximation by simple functions.",
+  "local_context": "Wave 6 seeded measure theory gold item.",
+  "domain": "measure_theory",
+  "statement_span": null,
+  "proof_span": null,
+  "review_status": "expert_reviewed"
+}

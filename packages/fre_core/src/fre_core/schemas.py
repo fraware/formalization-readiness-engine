@@ -177,6 +177,11 @@ class BenchmarkItemScore(BaseModel):
     existing_theorem_candidates_f1: float
     constructive_path_f1: float
     blockers_f1: float
+    notation_readiness_f1: float | None = None
+    proofgraph_f1: float | None = None
+    atlas_f1: float | None = None
+    leantask_f1: float | None = None
+    full_macro_f1: float | None = None
 
 
 class BenchmarkEvaluationReport(BaseModel):
@@ -188,6 +193,7 @@ class BenchmarkEvaluationReport(BaseModel):
     scored_item_count: int
     items: list[BenchmarkItemScore] = Field(default_factory=list)
     macro_f1_mean: float
+    full_macro_f1_mean: float | None = None
 
 
 class ReadinessDimensionReview(BaseModel):
@@ -305,3 +311,50 @@ class PublicExportManifest(BaseModel):
     record_count: int
     output_path: str
     description: str | None = None
+
+
+class AtlasBlockerOccurrence(BaseModel):
+    """One blocker string observed on a gold ReadinessBench item."""
+
+    unit_id: str
+    item_id: str
+    domain: str
+    blocker_text: str
+    normalized_text: str
+
+
+class AtlasCluster(BaseModel):
+    """Deterministic cluster of equivalent blocker occurrences."""
+
+    cluster_id: str
+    representative_text: str
+    normalized_text: str
+    occurrence_count: int
+    occurrences: list[AtlasBlockerOccurrence] = Field(default_factory=list)
+
+
+class AtlasClusterReport(BaseModel):
+    """Cluster report generated from gold benchmark blockers."""
+
+    schema_version: Literal["0.1"] = "0.1"
+    generated_from: str | None = None
+    cluster_count: int
+    clusters: list[AtlasCluster] = Field(default_factory=list)
+
+
+class ReleaseArtifactChecksum(BaseModel):
+    """Checksum metadata for one release artifact file."""
+
+    path: str
+    sha256: str
+    byte_size: int
+
+
+class ReleaseManifest(BaseModel):
+    """Versioned public release manifest with artifact checksums."""
+
+    schema_version: Literal["0.1"] = "0.1"
+    release_version: str
+    git_commit: str | None = None
+    schema_versions: dict[str, str] = Field(default_factory=dict)
+    artifacts: list[ReleaseArtifactChecksum] = Field(default_factory=list)

@@ -1,0 +1,13 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "set_theory_image_preimage",
+  "blocker_type": "library_alignment",
+  "mathematical_pattern": "set_theory",
+  "evidence": "definition alignment for image and preimage",
+  "candidate_formal_object": null,
+  "likely_library_location": null,
+  "severity": "high",
+  "status": "reviewed",
+  "recommended_action": "Import standard image-preimage lemmas from mathlib.",
+  "review_status": "expert_reviewed"
+}
