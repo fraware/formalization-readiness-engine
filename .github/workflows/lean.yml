@@ -33,8 +33,19 @@ jobs:
           lake build
 
       - name: Check rendered finite-tree LeanTask
+        env:
+          PYTHONPATH: packages/fre_core/src
         run: |
           python -m fre_core.cli check-lean \
             lean/FRETasks/Generated/FiniteTree.lean \
+            --project-dir lean \
+            --timeout-seconds 300
+
+      - name: Check rendered category-theory LeanTask
+        env:
+          PYTHONPATH: packages/fre_core/src
+        run: |
+          python -m fre_core.cli check-lean \
+            lean/FRETasks/Generated/CategoryTheoryPullback.lean \
             --project-dir lean \
             --timeout-seconds 300

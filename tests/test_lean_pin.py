@@ -1,4 +1,4 @@
-"""Smoke tests for pinned Lean project essentials (Wave 0 / Sprint 2)."""
+"""Smoke tests for pinned Lean project essentials."""
 
 from pathlib import Path
 
@@ -13,6 +13,7 @@ PINNED_FILES = (
     LEAN_DIR / "README.md",
     LEAN_DIR / "lakefile.lean",
     LEAN_DIR / "FRETasks" / "Generated" / "FiniteTree.lean",
+    LEAN_DIR / "FRETasks" / "Generated" / "CategoryTheoryPullback.lean",
 )
 
 
@@ -29,3 +30,10 @@ def test_lean_toolchain_pins_v4_8_0() -> None:
 def test_lakefile_pins_mathlib_v4_8_0() -> None:
     content = (LEAN_DIR / "lakefile.lean").read_text(encoding="utf-8")
     assert ' @ "v4.8.0"' in content
+
+
+def test_lean_workflow_is_manual_dispatch_only() -> None:
+    workflow = (REPO_ROOT / ".github" / "workflows" / "lean.yml").read_text(encoding="utf-8")
+
+    assert "workflow_dispatch" in workflow
+    assert "pull_request" not in workflow

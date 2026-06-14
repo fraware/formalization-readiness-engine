@@ -119,6 +119,14 @@ class AtlasRecord(BaseModel):
     review_status: ReviewStatus = ReviewStatus.CANDIDATE
 
 
+class LeanSubLemma(BaseModel):
+    """One missing-lemma obligation in an L2 LeanTask decomposition."""
+
+    lemma_id: str
+    statement: str
+    hypotheses: list[str] = Field(default_factory=list)
+
+
 class LeanTaskPackage(BaseModel):
     schema_version: Literal["0.1"] = "0.1"
     leantask_id: str
@@ -128,6 +136,8 @@ class LeanTaskPackage(BaseModel):
     imports: list[str] = Field(default_factory=list)
     formal_target: str | None = None
     hypotheses: list[str] = Field(default_factory=list)
+    alignment_declarations: list[str] = Field(default_factory=list)
+    sub_lemmas: list[LeanSubLemma] = Field(default_factory=list)
     proof_path: str | None = None
     fallback_path: str | None = None
     next_action: str

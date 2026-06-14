@@ -5,11 +5,10 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from fre_core.schemas import LeanTaskLevel, LeanTaskPackage
+from fre_core.schemas import LeanSubLemma, LeanTaskLevel, LeanTaskPackage
 
 
 def _safe_identifier(value: str) -> str:
-    """Convert an arbitrary task identifier into a Lean-friendly identifier suffix."""
     cleaned = re.sub(r"[^A-Za-z0-9_]+", "_", value).strip("_")
     if not cleaned:
         return "generated_task"
@@ -19,7 +18,6 @@ def _safe_identifier(value: str) -> str:
 
 
 def _render_hypothesis(hypothesis: str) -> str:
-    """Render a Lean hypothesis without breaking typeclass bracket syntax."""
     stripped = hypothesis.strip()
     if not stripped:
         return ""
@@ -27,19 +25,20 @@ def _render_hypothesis(hypothesis: str) -> str:
         return stripped
     if stripped.startswith("(") and stripped.endswith(")"):
         return stripped
+    if stripped.startswith("{") and stripped.endswith("}"):
+        return stripped
     return f"({stripped})"
 
 
-def render_leantask(task: LeanTaskPackage) -> str:
-    """Render a LeanTask package as a Lean source file.
+def _render_binder_list(hypotheses: list[str]) -> str:
+    rendered = " ".join(
+        item for item in (_render_hypothesis(hypothesis) for hypothesis in hypotheses) if item
+    )
+    return f" {rendered}" if rendered else ""
 
-    L0 tasks are rendered as documentation-only files. L1 and L2 tasks are
-    rendered as executable skeletons when a formal target exists.
-    """
-    imports = task.imports or ["Mathlib"]
+
+def _render_doc_header(task: LeanTaskPackage) -> list[str]:
     lines: list[str] = []
-    lines.extend(f"import {module}" for module in imports)
-    lines.append("")
     lines.append("/-")
     lines.append(f"LeanTask: {task.leantask_id}")
     lines.append(f"Unit: {task.unit_id}")
@@ -58,28 +57,51 @@ def render_leantask(task: LeanTaskPackage) -> str:
         lines.append("")
         lines.append("Fallback path:")
         lines.append(task.fallback_path)
+    if task.level == LeanTaskLevel.L2 and task.alignment_declarations:
+        lines.append("")
+        lines.append("Existing-theorem alignment report:")
+        for declaration in task.alignment_declarations:
+            lines.append(f"- {declaration}")
     lines.append("-/")
     lines.append("")
+    return lines
+
+
+def _render_sub_lemma(sub_lemma: LeanSubLemma) -> list[str]:
+    identifier = _safe_identifier(sub_lemma.lemma_id)
+    binders = _render_binder_list(sub_lemma.hypotheses)
+    lines = [f"lemma {identifier}{binders} :"]
+    lines.append(f"    {sub_lemma.statement} := by")
+    lines.append("  sorry")
+    lines.append("")
+    return lines
+
+
+def render_leantask(task: LeanTaskPackage) -> str:
+    imports = task.imports or ["Mathlib"]
+    lines: list[str] = []
+    lines.extend(f"import {module}" for module in imports)
+    lines.append("")
+    lines.extend(_render_doc_header(task))
 
     if task.level == LeanTaskLevel.L0 or not task.formal_target:
         lines.append("-- L0 planning package. No Lean statement is emitted yet.")
         return "\n".join(lines) + "\n"
 
     identifier = _safe_identifier(task.leantask_id)
-    hypotheses = " ".join(
-        rendered for rendered in (_render_hypothesis(hyp) for hyp in task.hypotheses) if rendered
-    )
-    if hypotheses:
-        lines.append(f"theorem {identifier} {hypotheses} :")
-    else:
-        lines.append(f"theorem {identifier} :")
+
+    if task.level == LeanTaskLevel.L2:
+        for sub_lemma in task.sub_lemmas:
+            lines.extend(_render_sub_lemma(sub_lemma))
+
+    binders = _render_binder_list(task.hypotheses)
+    lines.append(f"theorem {identifier}{binders} :")
     lines.append(f"    {task.formal_target} := by")
     lines.append("  sorry")
     return "\n".join(lines) + "\n"
 
 
 def write_leantask(task: LeanTaskPackage, output_path: Path) -> Path:
-    """Write a LeanTask package to a Lean source file."""
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(render_leantask(task), encoding="utf-8")
     return output_path
