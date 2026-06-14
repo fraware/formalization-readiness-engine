@@ -1,0 +1,15 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "metadata_only_graph_sketch_001_0004_sketch_export_policy",
+  "source_id": "metadata_only_graph_sketch_001",
+  "statement": "This source is metadata-only; public exports must strip statement and proof text.",
+  "proof": null,
+  "local_context": null,
+  "domain": "graph_theory",
+  "statement_span": {
+    "start": 666,
+    "end": 749
+  },
+  "proof_span": null,
+  "review_status": "candidate"
+}

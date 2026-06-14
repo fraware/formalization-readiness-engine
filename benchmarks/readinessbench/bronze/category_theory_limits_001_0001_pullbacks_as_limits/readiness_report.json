@@ -1,0 +1,45 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "category_theory_limits_001_0001_pullbacks_as_limits",
+  "statement_readiness": {
+    "status": "pending",
+    "recovered": [],
+    "unresolved": [
+      "awaiting extraction pass"
+    ],
+    "notes": "Bronze placeholder generated from corpus ingestion."
+  },
+  "context_readiness": {
+    "status": "pending",
+    "recovered": [],
+    "unresolved": [
+      "awaiting extraction pass"
+    ],
+    "notes": "Bronze placeholder generated from corpus ingestion."
+  },
+  "notation_readiness": {
+    "status": "pending",
+    "recovered": [],
+    "unresolved": [
+      "awaiting extraction pass"
+    ],
+    "notes": "Bronze placeholder generated from corpus ingestion."
+  },
+  "dependency_readiness": {
+    "status": "pending",
+    "recovered": [],
+    "unresolved": [
+      "awaiting extraction pass"
+    ],
+    "notes": "Bronze placeholder generated from corpus ingestion."
+  },
+  "existing_theorem_candidates": [],
+  "constructive_path": [
+    "awaiting machine extraction pass"
+  ],
+  "blockers": [
+    "awaiting machine extraction pass"
+  ],
+  "recommended_next_action": "Run extract-report to populate bronze readiness fields.",
+  "review_status": "candidate"
+}

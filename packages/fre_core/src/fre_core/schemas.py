@@ -30,6 +30,19 @@ class SourceDocument(BaseModel):
     release_mode: str
     domain: str
     path: str
+    curator: str | None = None
+    permission_reference: str | None = None
+
+
+class RepairedUnitSpan(BaseModel):
+    statement: str
+    proof: str | None = None
+    statement_span: SourceSpan
+    proof_span: SourceSpan | None = None
+
+
+class SegmentationRepairResult(BaseModel):
+    units: list[RepairedUnitSpan] = Field(default_factory=list)
 
 
 class SourceSpan(BaseModel):
@@ -106,6 +119,14 @@ class AtlasRecord(BaseModel):
     review_status: ReviewStatus = ReviewStatus.CANDIDATE
 
 
+class LeanSubLemma(BaseModel):
+    """One missing-lemma obligation in an L2 LeanTask decomposition."""
+
+    lemma_id: str
+    statement: str
+    hypotheses: list[str] = Field(default_factory=list)
+
+
 class LeanTaskPackage(BaseModel):
     schema_version: Literal["0.1"] = "0.1"
     leantask_id: str
@@ -115,7 +136,287 @@ class LeanTaskPackage(BaseModel):
     imports: list[str] = Field(default_factory=list)
     formal_target: str | None = None
     hypotheses: list[str] = Field(default_factory=list)
+    alignment_declarations: list[str] = Field(default_factory=list)
+    sub_lemmas: list[LeanSubLemma] = Field(default_factory=list)
     proof_path: str | None = None
     fallback_path: str | None = None
     next_action: str
     review_status: ReviewStatus = ReviewStatus.CANDIDATE
+
+
+class MathlibDeclaration(BaseModel):
+    """One Lean/mathlib declaration entry in a reproducible lookup index."""
+
+    declaration_id: str
+    full_name: str
+    namespace: str
+    module: str
+    kind: Literal["theorem", "def", "instance", "abbrev", "structure", "class", "inductive"]
+    type_signature: str | None = None
+    docstring: str | None = None
+
+
+class DeclarationIndex(BaseModel):
+    """Versioned index of mathlib declarations for lexical candidate lookup."""
+
+    schema_version: Literal["0.1"] = "0.1"
+    index_id: str
+    description: str | None = None
+    declarations: list[MathlibDeclaration] = Field(default_factory=list)
+
+
+class BenchmarkTier(str, Enum):
+    """ReadinessBench data tier."""
+
+    BRONZE = "bronze"
+    SILVER = "silver"
+    GOLD = "gold"
+
+
+class BenchmarkItem(BaseModel):
+    """One benchmark item with explicit tier and artifact paths."""
+
+    item_id: str
+    unit_id: str
+    tier: BenchmarkTier
+    unit_path: str
+    readiness_report_path: str
+
+
+class BenchmarkManifest(BaseModel):
+    """Manifest listing ReadinessBench items and their tier placement."""
+
+    schema_version: Literal["0.1"] = "0.1"
+    benchmark_id: str
+    items: list[BenchmarkItem] = Field(default_factory=list)
+
+
+class BenchmarkItemScore(BaseModel):
+    """Deterministic scores for one gold benchmark item."""
+
+    item_id: str
+    unit_id: str
+    macro_f1: float
+    existing_theorem_candidates_f1: float
+    constructive_path_f1: float
+    blockers_f1: float
+    notation_readiness_f1: float | None = None
+    proofgraph_f1: float | None = None
+    atlas_f1: float | None = None
+    leantask_f1: float | None = None
+    full_macro_f1: float | None = None
+
+
+class BenchmarkEvaluationReport(BaseModel):
+    """Aggregate ReadinessBench evaluation output."""
+
+    schema_version: Literal["0.1"] = "0.1"
+    benchmark_id: str
+    gold_item_count: int
+    scored_item_count: int
+    items: list[BenchmarkItemScore] = Field(default_factory=list)
+    macro_f1_mean: float
+    full_macro_f1_mean: float | None = None
+
+
+class ReadinessDimensionReview(BaseModel):
+    """Reviewer assessment of one ReadinessReport dimension field group."""
+
+    status_accurate: bool
+    recovered_accurate: bool
+    unresolved_accurate: bool
+    notes: str | None = None
+
+
+class UsefulnessRubricScores(BaseModel):
+    """External-usefulness rubric scores (1 = poor, 5 = excellent)."""
+
+    source_fidelity: int = Field(ge=1, le=5)
+    actionability: int = Field(ge=1, le=5)
+    library_alignment: int = Field(ge=1, le=5)
+    blocker_specificity: int = Field(ge=1, le=5)
+    path_clarity: int = Field(ge=1, le=5)
+
+
+class ReadinessReportDimensionReviews(BaseModel):
+    """Per-dimension review flags aligned with ReadinessReport schema fields."""
+
+    statement_readiness: ReadinessDimensionReview
+    context_readiness: ReadinessDimensionReview
+    notation_readiness: ReadinessDimensionReview
+    dependency_readiness: ReadinessDimensionReview
+
+
+class ReadinessReportReviewSubmission(BaseModel):
+    """Structured external review output for one theorem/proof unit."""
+
+    schema_version: Literal["0.1"] = "0.1"
+    unit_id: str
+    item_id: str | None = None
+    reviewer_id: str
+    review_date: str
+    tier_promotion: Literal["silver", "gold"] | None = None
+    review_status: ReviewStatus
+    rubric_scores: UsefulnessRubricScores
+    dimension_reviews: ReadinessReportDimensionReviews
+    list_fields_accurate: bool
+    recommended_next_action_accurate: bool
+    corrected_report_path: str | None = None
+    corrected_report: ReadinessReport | None = None
+    confirmed_alignment_full_names: list[str] = Field(default_factory=list)
+    suggested_import_modules: list[str] = Field(default_factory=list)
+    notes: str | None = None
+
+
+class GoldArtifactChangelogEntry(BaseModel):
+    """Auditable record of a change to a ReadinessBench gold artifact."""
+
+    date: str
+    item_id: str
+    reviewer_id: str
+    summary: str
+    fields_changed: list[str] = Field(default_factory=list)
+    review_submission_path: str | None = None
+
+
+class ReviewEditRecord(BaseModel):
+    """Versioned record of one reviewer edit to a readiness report."""
+
+    schema_version: Literal["0.1"] = "0.1"
+    edit_id: str
+    unit_id: str
+    editor: str
+    timestamp: str
+    parent_report_hash: str | None = None
+    corrected_report_hash: str
+    diff_summary: list[str] = Field(default_factory=list)
+    tier_promotion: Literal["silver", "gold"] | None = None
+    review_submission_path: str | None = None
+
+
+class ReviewerAgreementFieldScore(BaseModel):
+    """Agreement on one list-valued readiness-report field."""
+
+    field_name: str
+    jaccard: float
+    exact_match: bool
+    cohens_kappa: float | None = None
+
+
+class ReviewerAgreementReport(BaseModel):
+    """Inter-annotator agreement between two review submissions."""
+
+    schema_version: Literal["0.1"] = "0.1"
+    unit_id: str
+    reviewer_a: str
+    reviewer_b: str
+    list_field_agreement: list[ReviewerAgreementFieldScore] = Field(default_factory=list)
+    rubric_cohens_kappa: float | None = None
+    mean_list_jaccard: float
+    overall_percent_agreement: float
+
+
+class AlignmentCandidate(BaseModel):
+    """One mathlib declaration match proposed or confirmed for a readiness report."""
+
+    declaration_id: str
+    full_name: str
+    namespace: str
+    module: str
+    kind: str
+    score: int
+    match_reasons: list[str] = Field(default_factory=list)
+    query_source: str
+    alignment_status: Literal["candidate", "confirmed"] = "candidate"
+
+
+class AlignmentResult(BaseModel):
+    """Alignment output separating reviewer-confirmed matches from proposed candidates."""
+
+    schema_version: Literal["0.1"] = "0.1"
+    unit_id: str
+    index_id: str
+    candidates: list[AlignmentCandidate] = Field(default_factory=list)
+    confirmed: list[AlignmentCandidate] = Field(default_factory=list)
+
+
+class PublicBenchmarkExportRecord(BaseModel):
+    """One ReadinessBench item in a public JSONL export."""
+
+    schema_version: Literal["0.1"] = "0.1"
+    record_type: Literal["benchmark_item"] = "benchmark_item"
+    item_id: str
+    unit_id: str
+    tier: str
+    unit: TheoremProofUnit
+    readiness_report: ReadinessReport
+
+
+class PublicAtlasExportRecord(BaseModel):
+    """One Atlas record in a public JSONL export."""
+
+    schema_version: Literal["0.1"] = "0.1"
+    record_type: Literal["atlas"] = "atlas"
+    unit_id: str
+    source_id: str | None = None
+    domain: str | None = None
+    atlas_record: AtlasRecord
+    unit: TheoremProofUnit | None = None
+
+
+class PublicExportManifest(BaseModel):
+    """Manifest describing a public JSONL export."""
+
+    schema_version: Literal["0.1"] = "0.1"
+    export_id: str
+    export_type: Literal["readinessbench", "atlas"]
+    record_count: int
+    output_path: str
+    description: str | None = None
+
+
+class AtlasBlockerOccurrence(BaseModel):
+    """One blocker string observed on a gold ReadinessBench item."""
+
+    unit_id: str
+    item_id: str
+    domain: str
+    blocker_text: str
+    normalized_text: str
+
+
+class AtlasCluster(BaseModel):
+    """Deterministic cluster of equivalent blocker occurrences."""
+
+    cluster_id: str
+    representative_text: str
+    normalized_text: str
+    occurrence_count: int
+    occurrences: list[AtlasBlockerOccurrence] = Field(default_factory=list)
+
+
+class AtlasClusterReport(BaseModel):
+    """Cluster report generated from gold benchmark blockers."""
+
+    schema_version: Literal["0.1"] = "0.1"
+    generated_from: str | None = None
+    cluster_count: int
+    clusters: list[AtlasCluster] = Field(default_factory=list)
+
+
+class ReleaseArtifactChecksum(BaseModel):
+    """Checksum metadata for one release artifact file."""
+
+    path: str
+    sha256: str
+    byte_size: int
+
+
+class ReleaseManifest(BaseModel):
+    """Versioned public release manifest with artifact checksums."""
+
+    schema_version: Literal["0.1"] = "0.1"
+    release_version: str
+    git_commit: str | None = None
+    schema_versions: dict[str, str] = Field(default_factory=dict)
+    artifacts: list[ReleaseArtifactChecksum] = Field(default_factory=list)

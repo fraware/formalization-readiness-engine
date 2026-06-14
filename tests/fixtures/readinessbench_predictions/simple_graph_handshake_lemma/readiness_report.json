@@ -1,0 +1,55 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "simple_graph_handshake_lemma",
+  "statement_readiness": {
+    "status": "clear",
+    "recovered": [
+      "statement isolated"
+    ],
+    "unresolved": [],
+    "notes": "Reviewed for Wave 6 gold seed."
+  },
+  "context_readiness": {
+    "status": "partial",
+    "recovered": [
+      "domain context"
+    ],
+    "unresolved": [
+      "library definition alignment"
+    ],
+    "notes": "Context requires mathlib alignment."
+  },
+  "notation_readiness": {
+    "status": "partial",
+    "recovered": [
+      "standard notation"
+    ],
+    "unresolved": [
+      "informal symbols"
+    ],
+    "notes": "Notation must map to mathlib."
+  },
+  "dependency_readiness": {
+    "status": "partial",
+    "recovered": [
+      "proof strategy"
+    ],
+    "unresolved": [
+      "missing lemmas"
+    ],
+    "notes": "Dependencies reviewed for formalization path."
+  },
+  "existing_theorem_candidates": [
+    "SimpleGraph.sum_degrees_eq_twice_card_edges"
+  ],
+  "constructive_path": [
+    "align graph model",
+    "apply degree-sum lemma"
+  ],
+  "blockers": [
+    "definition alignment for finite simple graph",
+    " finset cardinality for edge set"
+  ],
+  "recommended_next_action": "Confirm mathlib degree-sum lemma before decomposition.",
+  "review_status": "expert_reviewed"
+}

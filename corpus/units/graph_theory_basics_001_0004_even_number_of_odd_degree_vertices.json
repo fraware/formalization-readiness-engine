@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "graph_theory_basics_001_0004_even_number_of_odd_degree_vertices",
+  "source_id": "graph_theory_basics_001",
+  "statement": "Every finite graph has an even number of vertices with odd degree.",
+  "proof": "The handshaking lemma shows the sum of odd degrees is even, so an odd number of odd terms cannot occur.",
+  "local_context": null,
+  "domain": "graph_theory",
+  "statement_span": {
+    "start": 1197,
+    "end": 1265
+  },
+  "proof_span": {
+    "start": 1295,
+    "end": 1400
+  },
+  "review_status": "candidate"
+}

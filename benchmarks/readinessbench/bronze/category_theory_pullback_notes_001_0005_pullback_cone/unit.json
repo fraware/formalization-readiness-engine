@@ -1,0 +1,15 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "category_theory_pullback_notes_001_0005_pullback_cone",
+  "source_id": "category_theory_pullback_notes_001",
+  "statement": "A pullback cone over a cospan $(f : X \\to Z, g : Y \\to Z)$ is a triple $(Q, q_1, q_2)$ with $q_1 : Q \\to X$, $q_2 : Q \\to Y$, and $f q_1 = g q_2$.",
+  "proof": null,
+  "local_context": null,
+  "domain": "category_theory",
+  "statement_span": {
+    "start": 2336,
+    "end": 2484
+  },
+  "proof_span": null,
+  "review_status": "candidate"
+}

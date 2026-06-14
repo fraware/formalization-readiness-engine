@@ -1,0 +1,71 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "finite_tree_edge_count",
+  "statement_readiness": {
+    "status": "clear",
+    "recovered": [
+      "finite tree",
+      "edge-count identity"
+    ],
+    "unresolved": [],
+    "notes": "The statement is isolated and mathematically standard."
+  },
+  "context_readiness": {
+    "status": "partial",
+    "recovered": [
+      "graph",
+      "vertex set",
+      "edge set",
+      "finiteness",
+      "tree assumption"
+    ],
+    "unresolved": [
+      "target library definition of leaf",
+      "target representation of graph deletion"
+    ],
+    "notes": "Tree and leaf terminology must be aligned with mathlib definitions."
+  },
+  "notation_readiness": {
+    "status": "partial",
+    "recovered": [
+      "|V|",
+      "|E|"
+    ],
+    "unresolved": [
+      "G-v"
+    ],
+    "notes": "Deletion notation requires a formal graph-deletion representation."
+  },
+  "dependency_readiness": {
+    "status": "partial",
+    "recovered": [
+      "induction on vertex count",
+      "leaf deletion",
+      "cardinality update"
+    ],
+    "unresolved": [
+      "leaf existence",
+      "deletion preserves tree structure",
+      "edge-count update under leaf deletion"
+    ],
+    "notes": "These obligations are required for the constructive proof path only."
+  },
+  "existing_theorem_candidates": [
+    "SimpleGraph.IsTree.card_edgeFinset"
+  ],
+  "constructive_path": [
+    "prove or retrieve leaf existence in finite nontrivial tree",
+    "formalize vertex deletion as an induced subgraph or aligned deletion operation",
+    "prove deletion preserves tree structure",
+    "prove vertex-count update",
+    "prove edge-count update"
+  ],
+  "blockers": [
+    "definition alignment for finite tree",
+    "definition alignment for leaf",
+    "formal representation of G-v",
+    "decision between existing-theorem reuse and constructive decomposition"
+  ],
+  "recommended_next_action": "Confirm existing theorem alignment before generating constructive missing-lemma tasks.",
+  "review_status": "candidate"
+}

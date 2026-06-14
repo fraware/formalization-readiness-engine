@@ -1,0 +1,9 @@
+{
+  "catalog_path": "corpus/catalog.json",
+  "output_dir": "artifacts/generated/baselines",
+  "conditions": [
+    "direct"
+  ],
+  "message": "Baseline harness v0 stub until Wave 3 CLI lands.",
+  "catalog_exists": true
+}

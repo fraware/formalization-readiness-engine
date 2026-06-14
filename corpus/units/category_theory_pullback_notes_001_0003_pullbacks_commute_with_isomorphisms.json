@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "category_theory_pullback_notes_001_0003_pullbacks_commute_with_isomorphisms",
+  "source_id": "category_theory_pullback_notes_001",
+  "statement": "If $(P, \\pi_1, \\pi_2)$ is a pullback of $(f, g)$ and $i : P' \\to P$ is an isomorphism, then $(P', i^{-1}\\pi_1, i^{-1}\\pi_2)$ is also a pullback of $(f, g)$.",
+  "proof": "Transport cones along $i$ and $i^{-1}$; the universal mediating maps compose with $i$ and its inverse.",
+  "local_context": null,
+  "domain": "category_theory",
+  "statement_span": {
+    "start": 1650,
+    "end": 1808
+  },
+  "proof_span": {
+    "start": 1839,
+    "end": 1943
+  },
+  "review_status": "candidate"
+}

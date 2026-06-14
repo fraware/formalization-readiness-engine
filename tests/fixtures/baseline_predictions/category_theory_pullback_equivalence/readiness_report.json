@@ -1,0 +1,75 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "category_theory_pullback_equivalence",
+  "statement_readiness": {
+    "status": "clear",
+    "recovered": [
+      "equivalence of categories",
+      "pullback along a cospan",
+      "cone equivalence"
+    ],
+    "unresolved": [],
+    "notes": "The statement is standard and isolates pullback stability under equivalence."
+  },
+  "context_readiness": {
+    "status": "partial",
+    "recovered": [
+      "categories C and D",
+      "cospan",
+      "pullback cone",
+      "equivalence functor"
+    ],
+    "unresolved": [
+      "strict vs up-to-isomorphism formulation",
+      "size/universe level alignment"
+    ],
+    "notes": "mathlib typically states limit preservation for equivalences rather than reproving the universal property from scratch."
+  },
+  "notation_readiness": {
+    "status": "partial",
+    "recovered": [
+      "F : C \u2243 D",
+      "pullback (P, \u03c0\u2081, \u03c0\u2082)",
+      "cone over a cospan"
+    ],
+    "unresolved": [
+      "equivalence symbol vs mathlib Equivalence",
+      "transport along isomorphism of diagrams"
+    ],
+    "notes": "Informal \u2243 must be aligned with CategoryTheory.Equivalence and diagram transport notation."
+  },
+  "dependency_readiness": {
+    "status": "partial",
+    "recovered": [
+      "fully faithful functor",
+      "quasi-inverse",
+      "universal property of pullback",
+      "essential surjectivity"
+    ],
+    "unresolved": [
+      "functoriality of transport along unit/counit",
+      "reflects vs preserves limit language",
+      "cone-category equivalence lemma"
+    ],
+    "notes": "Constructive path requires several intermediate lemmas unless an existing limit-preservation theorem applies."
+  },
+  "existing_theorem_candidates": [
+    "CategoryTheory.Equivalence.preservesLimitsOfShape",
+    "CategoryTheory.Limits.PreservesPullback"
+  ],
+  "constructive_path": [
+    "align informal equivalence with mathlib Equivalence and its unit/counit",
+    "import or prove that equivalences preserve finite limits of the pullback shape",
+    "specialize to the cospan diagram for pullbacks",
+    "prove cone-category equivalence between C and D",
+    "package as a single theorem statement with correct hypotheses"
+  ],
+  "blockers": [
+    "definition alignment for equivalence vs isomorphism",
+    "functorial transport along unit and counit",
+    "choice between existing-theorem reuse and constructive cone transport",
+    "mathlib module candidates: CategoryTheory.Limits.Shapes.Pullbacks and CategoryTheory.Equivalence"
+  ],
+  "recommended_next_action": "Confirm whether mathlib already provides pullback preservation for equivalences before decomposing the cone-transport proof.",
+  "review_status": "candidate"
+}

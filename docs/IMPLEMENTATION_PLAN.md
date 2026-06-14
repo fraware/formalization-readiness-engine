@@ -132,6 +132,8 @@ The mathlib Alignment Service indexes Lean/mathlib declarations and supports lex
 
 It should distinguish candidate alignment from confirmed alignment. A model or retrieval system can propose candidates; Silver and Gold records require human review.
 
+**Current implementation:** `DeclarationIndex` / `MathlibDeclaration` schemas, committed fixtures under `fixtures/mathlib_declarations/`, lexical lookup in `mathlib_index.py`, and the multi-dimensional Alignment Service in `mathlib_alignment.py` with `AlignmentCandidate` / `AlignmentResult` schemas. Candidate alignment is proposed from readiness-report fields; confirmed alignment requires explicit reviewer flags and is never auto-promoted. CLI: `align-declarations`, `align-readiness-report`. See `docs/ARCHITECTURE.md`.
+
 ### 4.6 LeanTask Generator
 
 LeanTask packages connect readiness reports to formalization action.
@@ -222,7 +224,7 @@ Deliverables:
 - pinned Lean/mathlib environment;
 - schema package;
 - finite-tree example;
-- category-theory example;
+- category-theory example (`examples/category_theory_pullback/`, pullback transport along equivalence);
 - basic CI.
 
 Exit criterion:
@@ -231,7 +233,9 @@ Exit criterion:
 make demo
 ```
 
-produces one theorem/proof unit, one readiness report, one proof graph, one Atlas record, one LeanTask package, and one Lean check attempt.
+produces validated artifact stacks for both reference examples (`finite_tree` and `category_theory_pullback`), L1 Lean skeleton renders, ReadinessBench evaluation on fixture predictions, and a public export dry-run. **Status: satisfied for the offline path** (`make demo` / `python -m fre_core.cli demo --offline`). Live extraction (`make demo-live`) requires `OPENAI_API_KEY` and is documented in `docs/DEMO.md`.
+
+The original Phase 0 target of one theorem/proof unit through Lean check is covered by the `finite_tree` example; category theory extends coverage to a second domain.
 
 ### Phase 1: Artifact schemas and validation
 
@@ -289,6 +293,8 @@ Thirty units produce schema-valid reports and proof graphs, with errors categori
 
 Target duration: 8 to 10 weeks.
 
+**Progress snapshot:** mathlib declaration index v0, lexical lookup, readiness-report candidate enrichment, and LeanTask L0/L1 generation orchestration (`extract_leantask.py`, `generate-leantask` CLI) are implemented. L2 remains for selected Gold examples only.
+
 Deliverables:
 
 - mathlib declaration index;
@@ -306,6 +312,8 @@ The finite-tree example reaches L1 or L2 alignment, and at least ten aligned uni
 
 Target duration: 8 to 10 weeks.
 
+**Progress snapshot:** FastAPI backend (`apps/api/`) with artifact-first validation and alignment endpoints; minimal static review UI (`apps/review-ui/`); structured review submission validation via existing `review_workflow.py`. Full annotation workflow and versioned reviewer edits remain for follow-on work.
+
 Deliverables:
 
 - review UI;
@@ -320,6 +328,8 @@ Reviewers can produce Silver and Gold artifacts through the interface.
 ### Phase 6: Benchmark and Atlas release
 
 Target duration: 6 to 8 weeks.
+
+**Progress snapshot:** ReadinessBench evaluation runner and manifest validation are implemented. Public JSONL export (`public_export.py`), Atlas curation export from examples and gold benchmark items, licensing leak test in CI, and `docs/PUBLIC_RELEASE.md` are implemented. Full technical report generation remains for follow-on work.
 
 Deliverables:
 

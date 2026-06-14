@@ -1,0 +1,12 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "number_theory_gcd_lcm_identity",
+  "source_id": "wave6_seed_number_theory_001",
+  "statement": "For positive integers a and b, gcd(a, b) * lcm(a, b) = a * b.",
+  "proof": "Use prime factorization uniqueness or the gcd-lcm lattice identity on divisors.",
+  "local_context": "Wave 6 seeded number theory gold item.",
+  "domain": "number_theory",
+  "statement_span": null,
+  "proof_span": null,
+  "review_status": "expert_reviewed"
+}

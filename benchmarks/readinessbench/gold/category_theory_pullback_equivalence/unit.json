@@ -1,0 +1,12 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "category_theory_pullback_equivalence",
+  "source_id": "hand_authored_category_theory_pullback_001",
+  "statement": "Let C and D be categories and F : C \u2243 D an equivalence of categories. If a cospan (f : X \u2192 Z, g : Y \u2192 Z) admits a pullback (P, \u03c0\u2081, \u03c0\u2082) in C, then (F f, F g) admits a pullback (F P, F \u03c0\u2081, F \u03c0\u2082) in D, and F induces an equivalence between the categories of pullback cones over (f, g) and over (F f, F g).",
+  "proof": "Because F is an equivalence, it is fully faithful and admits a quasi-inverse G : D \u2192 C. Given a cone (Q, q\u2081, q\u2082) over (F f, F g) in D, apply G to obtain a cone over (f, g) in C. The universal property of the pullback (P, \u03c0\u2081, \u03c0\u2082) yields a unique mediating morphism u : GQ \u2192 P in C; applying F gives a mediating morphism F u : Q \u2192 F P in D. Uniqueness follows from full faithfulness of F. Essential surjectivity ensures that the transported pullback object is correct up to canonical isomorphism.",
+  "local_context": "Standard 1-category theory lemma: pullback limits transport along a categorical equivalence. Second hand-authored reference example for formalization readiness.",
+  "domain": "category_theory",
+  "statement_span": null,
+  "proof_span": null,
+  "review_status": "expert_reviewed"
+}

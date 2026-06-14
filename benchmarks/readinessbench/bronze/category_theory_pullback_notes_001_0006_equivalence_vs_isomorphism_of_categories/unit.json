@@ -1,0 +1,15 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "category_theory_pullback_notes_001_0006_equivalence_vs_isomorphism_of_categories",
+  "source_id": "category_theory_pullback_notes_001",
+  "statement": "The preservation statement uses an equivalence, not merely a functor, so essential surjectivity is available.",
+  "proof": null,
+  "local_context": null,
+  "domain": "category_theory",
+  "statement_span": {
+    "start": 2558,
+    "end": 2669
+  },
+  "proof_span": null,
+  "review_status": "candidate"
+}

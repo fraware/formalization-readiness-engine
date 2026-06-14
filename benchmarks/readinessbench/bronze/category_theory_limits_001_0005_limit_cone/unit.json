@@ -1,0 +1,15 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "category_theory_limits_001_0005_limit_cone",
+  "source_id": "category_theory_limits_001",
+  "statement": "A limit cone over a diagram $D : J \\to C$ is an object $L$ with maps to each object of the diagram, compatible with the diagram arrows, and universal with respect to such cones.",
+  "proof": null,
+  "local_context": null,
+  "domain": "category_theory",
+  "statement_span": {
+    "start": 1701,
+    "end": 1880
+  },
+  "proof_span": null,
+  "review_status": "candidate"
+}

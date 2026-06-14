@@ -1,0 +1,15 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "metadata_only_graph_sketch_001_0002_sketch_leaf_existence",
+  "source_id": "metadata_only_graph_sketch_001",
+  "statement": "Every finite nontrivial tree has a leaf.",
+  "proof": null,
+  "local_context": null,
+  "domain": "graph_theory",
+  "statement_span": {
+    "start": 421,
+    "end": 463
+  },
+  "proof_span": null,
+  "review_status": "candidate"
+}

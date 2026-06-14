@@ -1,0 +1,13 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "commutative_ring_prime_ideal",
+  "blocker_type": "library_alignment",
+  "mathematical_pattern": "commutative_algebra",
+  "evidence": "definition alignment for nilradical",
+  "candidate_formal_object": null,
+  "likely_library_location": null,
+  "severity": "high",
+  "status": "reviewed",
+  "recommended_action": "Search mathlib for nilradical-prime intersection theorem.",
+  "review_status": "expert_reviewed"
+}

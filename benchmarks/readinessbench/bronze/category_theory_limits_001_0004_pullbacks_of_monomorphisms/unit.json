@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "category_theory_limits_001_0004_pullbacks_of_monomorphisms",
+  "source_id": "category_theory_limits_001",
+  "statement": "If $f : X \\to Z$ is a monomorphism, then the first projection $\\pi_1 : P \\to X$ of a pullback over $(f, g)$ is also a monomorphism.",
+  "proof": "Use the universal property: two maps into $P$ that agree after $\\pi_1$ define a cone, so agreement after both projections forces equality.",
+  "local_context": null,
+  "domain": "category_theory",
+  "statement_span": {
+    "start": 1355,
+    "end": 1488
+  },
+  "proof_span": {
+    "start": 1518,
+    "end": 1658
+  },
+  "review_status": "candidate"
+}

@@ -1,0 +1,55 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "number_theory_gcd_lcm_identity",
+  "statement_readiness": {
+    "status": "clear",
+    "recovered": [
+      "statement isolated"
+    ],
+    "unresolved": [],
+    "notes": "Reviewed for Wave 6 gold seed."
+  },
+  "context_readiness": {
+    "status": "partial",
+    "recovered": [
+      "domain context"
+    ],
+    "unresolved": [
+      "library definition alignment"
+    ],
+    "notes": "Context requires mathlib alignment."
+  },
+  "notation_readiness": {
+    "status": "partial",
+    "recovered": [
+      "standard notation"
+    ],
+    "unresolved": [
+      "informal symbols"
+    ],
+    "notes": "Notation must map to mathlib."
+  },
+  "dependency_readiness": {
+    "status": "partial",
+    "recovered": [
+      "proof strategy"
+    ],
+    "unresolved": [
+      "missing lemmas"
+    ],
+    "notes": "Dependencies reviewed for formalization path."
+  },
+  "existing_theorem_candidates": [
+    "Nat.gcd_mul_lcm"
+  ],
+  "constructive_path": [
+    "align gcd/lcm",
+    "apply standard identity"
+  ],
+  "blockers": [
+    "definition alignment for gcd and lcm",
+    "factorization prerequisites"
+  ],
+  "recommended_next_action": "Import gcd-lcm identity from mathlib if present.",
+  "review_status": "expert_reviewed"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "linear_algebra_rank_nullity",
+  "blocker_type": "library_alignment",
+  "mathematical_pattern": "linear_algebra",
+  "evidence": "definition alignment for finite-dimensional vector space",
+  "candidate_formal_object": null,
+  "likely_library_location": null,
+  "severity": "high",
+  "status": "reviewed",
+  "recommended_action": "Confirm mathlib rank-nullity theorem statement.",
+  "review_status": "expert_reviewed"
+}

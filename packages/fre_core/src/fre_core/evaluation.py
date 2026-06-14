@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from fre_core.schemas import ReadinessReport
+from fre_core.schemas import ReadinessDimension, ReadinessReport
 
 
 @dataclass(frozen=True)
@@ -45,18 +45,44 @@ def score_label_set(*, predicted: list[str], gold: list[str]) -> PrecisionRecall
 
 
 @dataclass(frozen=True)
+class ReadinessDimensionScores:
+    """Deterministic scores for one readiness dimension field group."""
+
+    recovered: PrecisionRecallF1
+    unresolved: PrecisionRecallF1
+
+    @property
+    def f1(self) -> float:
+        return (self.recovered.f1 + self.unresolved.f1) / 2
+
+
+def score_readiness_dimension(
+    *, predicted: ReadinessDimension, gold: ReadinessDimension
+) -> ReadinessDimensionScores:
+    """Score one predicted readiness dimension against gold."""
+    return ReadinessDimensionScores(
+        recovered=score_label_set(predicted=predicted.recovered, gold=gold.recovered),
+        unresolved=score_label_set(predicted=predicted.unresolved, gold=gold.unresolved),
+    )
+
+
+@dataclass(frozen=True)
 class ReadinessReportScores:
     """Deterministic scores for major readiness-report fields."""
 
     existing_theorem_candidates: PrecisionRecallF1
     constructive_path: PrecisionRecallF1
     blockers: PrecisionRecallF1
+    notation_readiness: ReadinessDimensionScores
 
     @property
     def macro_f1(self) -> float:
         return (
-            self.existing_theorem_candidates.f1 + self.constructive_path.f1 + self.blockers.f1
-        ) / 3
+            self.existing_theorem_candidates.f1
+            + self.constructive_path.f1
+            + self.blockers.f1
+            + self.notation_readiness.f1
+        ) / 4
 
 
 def score_readiness_report(*, predicted: ReadinessReport, gold: ReadinessReport) -> ReadinessReportScores:
@@ -74,4 +100,8 @@ def score_readiness_report(*, predicted: ReadinessReport, gold: ReadinessReport)
             gold=gold.constructive_path,
         ),
         blockers=score_label_set(predicted=predicted.blockers, gold=gold.blockers),
+        notation_readiness=score_readiness_dimension(
+            predicted=predicted.notation_readiness,
+            gold=gold.notation_readiness,
+        ),
     )

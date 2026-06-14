@@ -1,0 +1,12 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "commutative_ring_prime_ideal",
+  "source_id": "wave6_seed_algebra_001",
+  "statement": "In a commutative ring, the nilradical is the intersection of all prime ideals.",
+  "proof": "Standard commutative algebra proof using Zorn's lemma for prime avoidance and nilpotent elements.",
+  "local_context": "Wave 6 seeded algebra gold item.",
+  "domain": "commutative_algebra",
+  "statement_span": null,
+  "proof_span": null,
+  "review_status": "expert_reviewed"
+}

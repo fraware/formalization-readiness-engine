@@ -1,0 +1,12 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "real_analysis_uniform_limit_continuity",
+  "source_id": "wave6_seed_analysis_001",
+  "statement": "Uniform limits of continuous real-valued functions on a compact set are continuous.",
+  "proof": "Use an epsilon/three-delta argument with uniform convergence on the compact domain.",
+  "local_context": "Wave 6 seeded analysis gold item.",
+  "domain": "analysis",
+  "statement_span": null,
+  "proof_span": null,
+  "review_status": "expert_reviewed"
+}

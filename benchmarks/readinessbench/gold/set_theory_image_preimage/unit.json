@@ -1,0 +1,12 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "set_theory_image_preimage",
+  "source_id": "wave6_seed_set_theory_001",
+  "statement": "For any function f and set S, f(f^{-1}(S)) subseteq S with equality when f is surjective onto S.",
+  "proof": "Unfold preimage and image, then prove both inclusion directions under surjectivity.",
+  "local_context": "Wave 6 seeded set theory gold item.",
+  "domain": "set_theory",
+  "statement_span": null,
+  "proof_span": null,
+  "review_status": "expert_reviewed"
+}

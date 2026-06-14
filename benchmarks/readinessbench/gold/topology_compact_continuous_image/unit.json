@@ -1,0 +1,12 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "topology_compact_continuous_image",
+  "source_id": "wave6_seed_topology_001",
+  "statement": "The continuous image of a compact topological space is compact.",
+  "proof": "Let K be compact and f continuous. Given an open cover of f(K), pull back to K and extract a finite subcover.",
+  "local_context": "Wave 6 seeded topology gold item.",
+  "domain": "topology",
+  "statement_span": null,
+  "proof_span": null,
+  "review_status": "expert_reviewed"
+}

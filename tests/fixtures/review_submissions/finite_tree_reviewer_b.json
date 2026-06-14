@@ -1,0 +1,33 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "finite_tree_edge_count",
+  "item_id": "finite_tree_edge_count_gold",
+  "reviewer_id": "reviewer.beta",
+  "review_date": "2026-06-14",
+  "tier_promotion": "gold",
+  "review_status": "expert_reviewed",
+  "rubric_scores": {"source_fidelity": 4, "actionability": 4, "library_alignment": 5, "blocker_specificity": 3, "path_clarity": 4},
+  "dimension_reviews": {
+    "statement_readiness": {"status_accurate": true, "recovered_accurate": true, "unresolved_accurate": true, "notes": null},
+    "context_readiness": {"status_accurate": true, "recovered_accurate": true, "unresolved_accurate": true, "notes": null},
+    "notation_readiness": {"status_accurate": true, "recovered_accurate": true, "unresolved_accurate": true, "notes": null},
+    "dependency_readiness": {"status_accurate": true, "recovered_accurate": true, "unresolved_accurate": true, "notes": null}
+  },
+  "list_fields_accurate": false,
+  "recommended_next_action_accurate": true,
+  "corrected_report_path": null,
+  "corrected_report": {
+    "schema_version": "0.1",
+    "unit_id": "finite_tree_edge_count",
+    "statement_readiness": {"status": "clear", "recovered": ["finite tree"], "unresolved": [], "notes": null},
+    "context_readiness": {"status": "partial", "recovered": ["graph"], "unresolved": ["leaf"], "notes": null},
+    "notation_readiness": {"status": "partial", "recovered": ["|V|"], "unresolved": ["G-v"], "notes": null},
+    "dependency_readiness": {"status": "partial", "recovered": ["induction"], "unresolved": ["leaf existence"], "notes": null},
+    "existing_theorem_candidates": ["SimpleGraph.IsTree.card_edgeFinset", "SimpleGraph.card_edgeFinset"],
+    "constructive_path": ["prove leaf existence", "formalize deletion"],
+    "blockers": ["definition alignment for finite tree"],
+    "recommended_next_action": "Confirm alignment.",
+    "review_status": "expert_reviewed"
+  },
+  "notes": "Reviewer B fixture."
+}

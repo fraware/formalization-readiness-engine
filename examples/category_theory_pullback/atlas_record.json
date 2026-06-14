@@ -1,0 +1,13 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "category_theory_pullback_equivalence",
+  "blocker_type": "notation_alignment",
+  "mathematical_pattern": "pullback transport along a categorical equivalence",
+  "evidence": "apply G to obtain a cone over (f, g) in C",
+  "candidate_formal_object": "CategoryTheory.Equivalence and pullback cone transport along unit/counit",
+  "likely_library_location": "Mathlib.CategoryTheory.Limits.Shapes.Pullbacks",
+  "severity": "high",
+  "status": "candidate",
+  "recommended_action": "Align informal equivalence and cone-transport steps with mathlib Equivalence and limit-preservation lemmas before L1 statement generation.",
+  "review_status": "candidate"
+}

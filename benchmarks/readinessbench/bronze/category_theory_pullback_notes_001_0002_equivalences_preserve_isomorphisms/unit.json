@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "category_theory_pullback_notes_001_0002_equivalences_preserve_isomorphisms",
+  "source_id": "category_theory_pullback_notes_001",
+  "statement": "If $F : C \\simeq D$ is an equivalence and $f : X \\to Y$ is an isomorphism in $C$, then $F f$ is an isomorphism in $D$.",
+  "proof": "Apply $F$ to an inverse $g$ of $f$. Full faithfulness gives $F g \\circ F f = F(id)$ and $F f \\circ F g = F(id)$, so $F g$ is an inverse of $F f$.",
+  "local_context": null,
+  "domain": "category_theory",
+  "statement_span": {
+    "start": 1289,
+    "end": 1409
+  },
+  "proof_span": {
+    "start": 1434,
+    "end": 1581
+  },
+  "review_status": "candidate"
+}

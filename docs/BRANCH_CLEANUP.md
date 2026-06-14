@@ -2,7 +2,7 @@
 
 The initial engineering sprint used short-lived branches for focused PRs. All accepted work was squash-merged into `main`.
 
-## Branches that can be removed
+## Branches that can be removed (first handoff, merged into original `main`)
 
 After confirming `main` is current, the following branches can be removed from GitHub:
 
@@ -14,7 +14,19 @@ After confirming `main` is current, the following branches can be removed from G
 - `engineering-lean-check-runner`
 - `engineering-readinessbench-metrics`
 
-The connected tool interface used during this handoff pass did not expose branch deletion. Remove these branches through the GitHub UI or with a local Git client.
+## Branches to remove after Wave 0 merges to `main`
+
+Once `engineering/wave0-hygiene` (or equivalent consolidation PR) is merged, delete the stacked sprint and demo branches if they are fully contained in `main`:
+
+- `engineering-sprint1-readiness-harness` through `engineering-sprint7-review-workflow`
+- `engineering-category-theory-example`
+- `engineering-leantask-generation`
+- `engineering-phase5-6-north-star`
+- `engineering-e2e-demo-integration`
+
+See `docs/ENGINEERING_BRANCH_STATUS.md` for the ahead/behind matrix before deletion.
+
+Remove branches through the GitHub UI or with a local Git client.
 
 ## UI cleanup
 

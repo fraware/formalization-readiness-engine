@@ -8,9 +8,22 @@ The system is artifact-first. Every pipeline step should produce, validate, rend
 
 The current implementation should be treated as a foundation for the first working benchmark pipeline. It should not be presented as an end-to-end theorem-proving system.
 
+## Reference examples
+
+Two hand-authored artifact stacks validate under `make validate-examples`:
+
+- `examples/finite_tree/` — finite-tree edge-count theorem (graph theory)
+- `examples/category_theory_pullback/` — pullback transport along a categorical equivalence
+
+The category-theory stack includes L0 and L1 LeanTask packages, a corpus LaTeX source at `corpus/sources/category_theory_pullback.tex`, and a mathlib fixture at `fixtures/mathlib_declarations/category_theory_v0.json`. It is examples-only until promoted through the review workflow and ReadinessBench manifest.
+
 ## Current branch state
 
-`main` contains all accepted work from the initial engineering sprint. The temporary branches below were used for focused PRs and have already been squash-merged into `main`:
+`main` (`a44b4f1`) holds the initial handoff: schemas, finite-tree example, and first engineering docs. Sprints 1–7, category theory, LeanTask generation, Phase 5–6, and E2E demo work live on unmerged `engineering-*` branches; the consolidated tip is `engineering-e2e-demo-integration` (11 commits ahead of `main`).
+
+See `docs/ENGINEERING_BRANCH_STATUS.md` for the full merge matrix. Wave 0 (`engineering/wave0-hygiene`) restores Sprint 2 Lean pins on that tip before merging to `main`.
+
+First-sprint branches already squash-merged into the original handoff `main` (safe to delete when confirmed):
 
 - `engineering-core-validation`
 - `engineering-schema-export`
@@ -20,7 +33,7 @@ The current implementation should be treated as a foundation for the first worki
 - `engineering-lean-check-runner`
 - `engineering-readinessbench-metrics`
 
-If these branches are still visible on GitHub, they can be deleted after confirming `main` is current. See `docs/BRANCH_CLEANUP.md`.
+See `docs/BRANCH_CLEANUP.md` for deletion steps.
 
 ## Implemented modules
 
@@ -34,6 +47,7 @@ Defines the public artifact contracts:
 - `ProofGraph`
 - `AtlasRecord`
 - `LeanTaskPackage`
+- `DeclarationIndex` and `MathlibDeclaration` (mathlib lookup index)
 
 These classes are the center of the repository. Add fields only when the new field is required by the formalization-readiness spec or by a reviewed benchmark need.
 
@@ -61,9 +75,21 @@ Parses theorem-like LaTeX environments into theorem/proof units. It currently su
 
 It also pairs an immediately following proof block and preserves character spans for statement and proof text.
 
-### `model_client.py`, `openai_responses_provider.py`, and `extraction.py`
+### `model_client.py`, `openai_responses_provider.py`, `extraction.py`, `extract_proofgraph.py`, `extract_atlas.py`, `extract_leantask.py`, and `mathlib_index.py`
 
 Keep model calls behind an interface. The current OpenAI provider uses structured output parsing and returns Pydantic objects. Engineers should keep provider-specific code isolated in provider modules.
+
+Extraction orchestration modules build prompts, call the structured model client, align `unit_id` with the source unit, and run semantic validation before returning artifacts.
+
+`extract_leantask.py` generates `LeanTaskPackage` artifacts from a `TheoremProofUnit` and `ReadinessReport`. L0 is the default planning level; L1 requires a `formal_target`. Optional `enrich_imports_from_index` appends mathlib module paths from deterministic index lookup.
+
+`mathlib_index.py` provides deterministic lexical lookup over committed declaration-index fixtures. Index hits are candidate alignments only; Silver and Gold records require human review. Use `--enrich-candidates` on `extract-report` or `enrich-report-candidates` to replace free-text theorem guesses with index-backed names.
+
+`mathlib_alignment.py` extends the index into a proper alignment service with namespace, module-path, and declaration-kind search dimensions. `AlignmentResult` separates `candidates` from `confirmed`; confirmed alignment requires explicit reviewer flags and is never auto-promoted. CLI commands: `align-declarations` and `align-readiness-report`.
+
+`public_export.py` exports ReadinessBench and Atlas records as public JSONL with optional corpus release-mode filtering. CLI commands: `export-public-benchmark`, `export-public-atlas`, and `check-licensing-leak`. See `docs/PUBLIC_RELEASE.md`.
+
+`apps/api/main.py` exposes artifact-first FastAPI endpoints for health checks, example metadata, readiness-report validation, review-submission validation, and alignment. `apps/review-ui/` is a minimal static review surface for Phase 5.
 
 ### `leantask_renderer.py`
 
@@ -77,9 +103,9 @@ Provides a lightweight local runner for checking Lean files through `lake env le
 
 ### `corpus.py`
 
-Provides corpus catalog and release-mode checks. It validates source identifiers and removes theorem/proof text from shareable units when the catalog only allows metadata or derived annotations.
+Provides corpus catalog loading, LaTeX ingestion from catalog sources, source-id validation, and release-mode filtering for shareable exports. CLI commands: `ingest-catalog` and `export-shareable-units`. See `corpus/catalog.json`, `examples/corpus_shareable/`, and `docs/ARCHITECTURE.md`.
 
-### `evaluation.py`
+### `evaluation.py` and `benchmark.py`
 
 Provides deterministic ReadinessBench metrics for comparing predicted readiness reports to reviewed gold reports. The first metric layer scores:
 
@@ -87,14 +113,56 @@ Provides deterministic ReadinessBench metrics for comparing predicted readiness 
 - constructive path items;
 - blockers.
 
+`benchmark.py` loads the ReadinessBench manifest, enforces Bronze/Silver/Gold tier invariants, rejects `artifacts/generated/` paths, and runs predicted-vs-gold evaluation through the CLI commands `validate-readinessbench` and `run-readinessbench`.
+
+### `review_workflow.py`
+
+Validates structured external review submissions and Gold artifact changelog entries. Reviewers produce JSON submissions mapped to `ReadinessReportReviewSubmission`; Gold changes are logged in `benchmarks/readinessbench/gold/changelog.jsonl` and `CHANGELOG.md`. CLI commands: `validate-review-submission` and `validate-gold-changelog`. See `docs/review/`.
+
+## Verification commands
+
+Primary CI-equivalent check (Python tests, example validation, lint):
+
+```bash
+make check
+```
+
+On Windows without GNU Make:
+
+```powershell
+.\scripts\dev.ps1 check
+```
+
+Offline demo (both reference examples; Lean check skipped in CI):
+
+```bash
+make demo
+```
+
+ReadinessBench manifest validation:
+
+```bash
+make validate-readinessbench
+```
+
+Lean pin setup and finite-tree scaffold check (local; requires elan + `lake`):
+
+```bash
+make setup-lean
+make check-lean-finite-tree
+```
+
+Optional Lean workflow: `.github/workflows/lean.yml` (`workflow_dispatch` only).
+
+Live baseline notes template: `artifacts/generated/finite_tree/NOTES.md` (committed template; fill in after live extraction).
+
 ## Current tests
 
 Run:
 
 ```bash
 make setup
-make test
-make validate-examples
+make check
 ```
 
 The test suite covers:
@@ -104,17 +172,25 @@ The test suite covers:
 - broken proof-graph rejection;
 - JSON Schema export;
 - deterministic LaTeX ingestion;
-- structured extraction orchestration with a fake model client;
+- structured extraction orchestration with a fake model client (`tests/test_extraction.py`, `tests/test_extract_proofgraph.py`, `tests/test_extract_atlas.py`, `tests/test_extract_leantask.py`);
 - LeanTask rendering;
 - Lean runner command construction;
 - corpus release-mode checks;
-- ReadinessBench metrics.
+- corpus catalog ingestion, source-id validation, and shareable export (`tests/test_corpus_ingestion.py`);
+- mathlib declaration index load, deterministic search, and candidate enrichment (`tests/test_mathlib_index.py`);
+- ReadinessBench metrics;
+- ReadinessBench manifest validation and deterministic benchmark evaluation (`tests/test_benchmark.py`);
+- external review submission and Gold changelog validation (`tests/test_review_workflow.py`);
+- mathlib alignment service and deterministic ranking (`tests/test_mathlib_alignment.py`);
+- FastAPI review endpoints (`tests/test_api.py`);
+- public export and licensing leak tests (`tests/test_public_export.py`);
+- pinned Lean project smoke tests (`tests/test_lean_pin.py`).
 
 ## First engineer takeover checklist
 
-1. Pull latest `main`.
-2. Delete merged engineering branches or leave them untouched if branch deletion is restricted.
-3. Run `make setup`, `make test`, and `make validate-examples`.
+1. Pull latest `main` (or `engineering/wave0-hygiene` until Wave 0 merges).
+2. Read `docs/ENGINEERING_BRANCH_STATUS.md`; delete merged engineering branches per `docs/BRANCH_CLEANUP.md`.
+3. Run `make setup` and `make check` (or `.\scripts\dev.ps1 check` on Windows).
 4. Run `make export-schemas` and inspect generated schemas.
 5. Run one live model extraction with an API key and save the output under `artifacts/generated/...`.
 6. Review the model output manually before using it as benchmark data.

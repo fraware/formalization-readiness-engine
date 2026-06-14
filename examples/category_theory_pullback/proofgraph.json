@@ -1,0 +1,87 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "category_theory_pullback_equivalence",
+  "nodes": [
+    {
+      "node_id": "N_statement",
+      "node_type": "theorem_statement",
+      "text": "Equivalences of categories preserve pullbacks and induce equivalences of pullback-cone categories.",
+      "source_span": null
+    },
+    {
+      "node_id": "N_equivalence_assumption",
+      "node_type": "assumption",
+      "text": "F : C ≃ D is an equivalence of categories.",
+      "source_span": null
+    },
+    {
+      "node_id": "N_pullback_assumption",
+      "node_type": "assumption",
+      "text": "The cospan (f, g) admits a pullback (P, π₁, π₂) in C.",
+      "source_span": null
+    },
+    {
+      "node_id": "N_existing_alignment",
+      "node_type": "library_candidate",
+      "text": "CategoryTheory.Equivalence.preservesLimitsOfShape",
+      "source_span": null
+    },
+    {
+      "node_id": "N_constructive_path",
+      "node_type": "proof_strategy",
+      "text": "Transport cones along F and G using full faithfulness and the pullback universal property.",
+      "source_span": null
+    },
+    {
+      "node_id": "N_transport_edge",
+      "node_type": "proof_step",
+      "text": "Apply quasi-inverse G to a cone over (F f, F g), then use the universal property in C and push forward along F.",
+      "source_span": null
+    },
+    {
+      "node_id": "N_blocker_equivalence",
+      "node_type": "blocker",
+      "text": "Informal ≃ notation must align with mathlib Equivalence and diagram transport.",
+      "source_span": null
+    },
+    {
+      "node_id": "N_blocker_functoriality",
+      "node_type": "blocker",
+      "text": "Functorial transport along unit and counit must be made explicit for a formal proof.",
+      "source_span": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "N_statement",
+      "target": "N_equivalence_assumption",
+      "edge_type": "uses_assumption"
+    },
+    {
+      "source": "N_statement",
+      "target": "N_pullback_assumption",
+      "edge_type": "uses_assumption"
+    },
+    {
+      "source": "N_statement",
+      "target": "N_existing_alignment",
+      "edge_type": "aligns_with_library_candidate"
+    },
+    {
+      "source": "N_constructive_path",
+      "target": "N_transport_edge",
+      "edge_type": "uses"
+    },
+    {
+      "source": "N_transport_edge",
+      "target": "N_blocker_functoriality",
+      "edge_type": "blocked_by"
+    },
+    {
+      "source": "N_constructive_path",
+      "target": "N_blocker_equivalence",
+      "edge_type": "blocked_by"
+    }
+  ],
+  "review_status": "candidate"
+}

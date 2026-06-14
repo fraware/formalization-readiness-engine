@@ -1,0 +1,13 @@
+﻿site_name: Formalization Readiness Engine
+site_description: Public documentation for the Formalization Readiness Engine benchmark and artifact pipeline.
+repo_url: https://github.com/fraware/formalization-readiness-engine
+docs_dir: ../../docs
+site_dir: ../../site
+theme:
+  name: mkdocs
+nav:
+  - Home: index.md
+  - Architecture: ARCHITECTURE.md
+  - Public release: PUBLIC_RELEASE.md
+  - Technical report: TECHNICAL_REPORT.md
+  - Engineering handoff: ENGINEERING_HANDOFF.md

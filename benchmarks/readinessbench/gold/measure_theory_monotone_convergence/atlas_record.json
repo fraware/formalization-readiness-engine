@@ -1,0 +1,13 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "measure_theory_monotone_convergence",
+  "blocker_type": "library_alignment",
+  "mathematical_pattern": "measure_theory",
+  "evidence": "definition alignment for measurable functions",
+  "candidate_formal_object": null,
+  "likely_library_location": null,
+  "severity": "high",
+  "status": "reviewed",
+  "recommended_action": "Locate mathlib monotone convergence lemma for lintegral.",
+  "review_status": "expert_reviewed"
+}

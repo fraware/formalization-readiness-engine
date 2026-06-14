@@ -1,0 +1,13 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "number_theory_gcd_lcm_identity",
+  "blocker_type": "library_alignment",
+  "mathematical_pattern": "number_theory",
+  "evidence": "definition alignment for gcd and lcm",
+  "candidate_formal_object": null,
+  "likely_library_location": null,
+  "severity": "high",
+  "status": "reviewed",
+  "recommended_action": "Import gcd-lcm identity from mathlib if present.",
+  "review_status": "expert_reviewed"
+}

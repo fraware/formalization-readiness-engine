@@ -6,8 +6,13 @@ an injected structured model client. It does not import provider SDKs directly.
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from fre_core.model_client import StructuredModelClient
 from fre_core.schemas import ReadinessReport, TheoremProofUnit
+
+if TYPE_CHECKING:
+    from fre_core.schemas import DeclarationIndex
 
 
 READINESS_EXTRACTION_INSTRUCTIONS = """
@@ -48,10 +53,28 @@ def extract_readiness_report(
     *,
     unit: TheoremProofUnit,
     model_client: StructuredModelClient,
+    enrich_candidates: bool = False,
+    index: DeclarationIndex | None = None,
+    candidate_top_k: int = 5,
 ) -> ReadinessReport:
-    """Extract a readiness report for one theorem/proof unit."""
+    """Extract a readiness report for one theorem/proof unit.
+
+    When ``enrich_candidates`` is True, ``existing_theorem_candidates`` are replaced
+    with deterministic index lookup results. Requires a loaded ``DeclarationIndex``.
+    """
     prompt = build_readiness_prompt(unit)
     report = model_client.extract_json(prompt=prompt, schema=ReadinessReport)
     if report.unit_id != unit.unit_id:
         report = report.model_copy(update={"unit_id": unit.unit_id})
+    if enrich_candidates:
+        if index is None:
+            raise ValueError("enrich_candidates requires a DeclarationIndex")
+        from fre_core.mathlib_index import enrich_readiness_report_from_unit
+
+        report = enrich_readiness_report_from_unit(
+            report=report,
+            unit=unit,
+            index=index,
+            top_k=candidate_top_k,
+        )
     return report

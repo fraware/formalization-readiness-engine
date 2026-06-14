@@ -1,0 +1,47 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "finite_tree_edge_count",
+  "item_id": "finite_tree_edge_count_gold",
+  "reviewer_id": "reviewer.example",
+  "review_date": "2026-06-11",
+  "tier_promotion": "gold",
+  "review_status": "expert_reviewed",
+  "rubric_scores": {
+    "source_fidelity": 5,
+    "actionability": 4,
+    "library_alignment": 5,
+    "blocker_specificity": 4,
+    "path_clarity": 4
+  },
+  "dimension_reviews": {
+    "statement_readiness": {
+      "status_accurate": true,
+      "recovered_accurate": true,
+      "unresolved_accurate": true,
+      "notes": "Statement classification matches the source unit."
+    },
+    "context_readiness": {
+      "status_accurate": true,
+      "recovered_accurate": true,
+      "unresolved_accurate": true,
+      "notes": "Leaf and deletion gaps correctly identified."
+    },
+    "notation_readiness": {
+      "status_accurate": true,
+      "recovered_accurate": true,
+      "unresolved_accurate": true,
+      "notes": "G-v deletion notation gap is real."
+    },
+    "dependency_readiness": {
+      "status_accurate": true,
+      "recovered_accurate": true,
+      "unresolved_accurate": true,
+      "notes": "Inductive proof dependencies are complete."
+    }
+  },
+  "list_fields_accurate": true,
+  "recommended_next_action_accurate": true,
+  "corrected_report_path": "benchmarks/readinessbench/gold/finite_tree_edge_count/readiness_report.json",
+  "corrected_report": null,
+  "notes": "Gold promotion confirms index-backed theorem candidate and stable blockers for benchmark scoring."
+}

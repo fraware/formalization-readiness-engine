@@ -1,0 +1,14 @@
+{
+  "schema_version": "0.1",
+  "leantask_id": "finite_tree_edge_count_L1",
+  "unit_id": "finite_tree_edge_count",
+  "level": "L1",
+  "informal_statement": "Let G=(V,E) be a finite tree. Then |E| = |V| - 1.",
+  "imports": ["Mathlib.Combinatorics.SimpleGraph.Acyclic"],
+  "formal_target": "G.edgeFinset.card + 1 = Fintype.card V",
+  "hypotheses": ["V : Type*", "[Fintype V]", "G : SimpleGraph V", "hG : G.IsTree"],
+  "proof_path": "existing theorem alignment candidate",
+  "fallback_path": "constructive decomposition into leaf-removal tasks",
+  "next_action": "Typecheck this skeleton against the pinned lean/ Lake project and confirm mathlib alignment.",
+  "review_status": "candidate"
+}

@@ -1,0 +1,21 @@
+{
+  "schema_version": "0.1",
+  "sources": [
+    {
+      "source_id": "full_text_source",
+      "source_type": "author_permitted_notes",
+      "license_status": "tracked",
+      "release_mode": "full_text_allowed",
+      "domain": "graph_theory",
+      "path": "tests/fixtures/corpus/full_text.tex"
+    },
+    {
+      "source_id": "metadata_only_source",
+      "source_type": "author_permitted_notes",
+      "license_status": "tracked",
+      "release_mode": "metadata_only",
+      "domain": "graph_theory",
+      "path": "tests/fixtures/corpus/metadata_only.tex"
+    }
+  ]
+}

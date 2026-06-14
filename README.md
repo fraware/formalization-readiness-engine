@@ -25,9 +25,20 @@ Implemented and merged on `main`:
 - Deterministic LaTeX ingestion for theorem-like environments and immediately following proof blocks, with source-span preservation.
 - OpenAI Responses provider behind the internal structured model-client boundary.
 - Readiness extraction orchestration from `TheoremProofUnit` to `ReadinessReport`.
+- ProofGraph and AtlasRecord extraction orchestration with post-extraction semantic validation (Sprint 4).
+- LeanTask package generation from theorem/proof units and readiness reports (Phase 4).
+- mathlib declaration index v0 with lexical lookup and readiness-report candidate enrichment (Sprint 5).
+- ReadinessBench Bronze/Silver/Gold layout, manifest validation, and evaluation runner (Sprint 6).
+- External review workflow: reviewer docs, structured submission template, usefulness rubric, Gold changelog, and validation CLI (Sprint 7).
+- mathlib Alignment Service with multi-dimensional candidate search and explicit confirmed-alignment separation (Phase 4/5).
+- FastAPI review backend (`apps/api/`) and minimal static review UI (`apps/review-ui/`) (Phase 5 foundation).
+- Public ReadinessBench and Atlas JSONL export with licensing leak tests (Phase 6).
+- End-to-end offline demo (`make demo`) covering both reference examples (validate, align, render L1, ReadinessBench eval, public export dry-run).
+- Second hand-authored reference example: category-theory pullback transport along equivalence under `examples/category_theory_pullback/`.
 - LeanTask renderer that emits L0 planning files and L1/L2 Lean skeletons.
 - Lean check runner that invokes `lake env lean` locally through a configured Lake project.
 - Corpus catalog utilities for source-id validation and release-mode filtering.
+- Corpus catalog file (`corpus/catalog.json`), LaTeX source inputs, and `ingest-catalog` / `export-shareable-units` CLI workflow (Sprint 3).
 - ReadinessBench precision, recall, F1, and macro-F1 utilities for comparing candidate reports against reviewed reports.
 
 ## Setup
@@ -36,7 +47,10 @@ Implemented and merged on `main`:
 make setup
 make test
 make validate-examples
+make demo
 ```
+
+The offline demo runs the full artifact pipeline on both reference examples without OpenAI or network access. See `docs/DEMO.md` for details.
 
 Optional model dependencies:
 
@@ -44,12 +58,44 @@ Optional model dependencies:
 make setup-models
 ```
 
+## End-to-end demo
+
+Run the full pipeline on both reference examples (offline, CI-safe):
+
+```bash
+make demo
+make demo-finite-tree
+make demo-category-theory
+```
+
+Live extraction with OpenAI (requires `OPENAI_API_KEY`):
+
+```bash
+make demo-live
+```
+
+On Windows:
+
+```powershell
+.\scripts\dev.ps1 demo
+.\scripts\dev.ps1 demo-live
+```
+
+See `docs/DEMO.md` for stage-by-stage walkthrough, expected outputs, and environment variables.
+
 ## Core commands
 
-Validate the finite-tree example artifact stack:
+Validate the hand-authored reference example stacks:
+
+```bash
+make validate-examples
+```
+
+Or validate one directory:
 
 ```bash
 PYTHONPATH=packages/fre_core/src python -m fre_core.cli validate-example-dir examples/finite_tree
+PYTHONPATH=packages/fre_core/src python -m fre_core.cli validate-example-dir examples/category_theory_pullback
 ```
 
 Export public JSON Schemas:
@@ -64,6 +110,20 @@ Parse a LaTeX file into theorem/proof units:
 PYTHONPATH=packages/fre_core/src python -m fre_core.cli ingest-latex source.tex artifacts/units source_001 graph_theory
 ```
 
+Ingest catalog sources and export shareable units:
+
+```bash
+make ingest-corpus
+make export-corpus-shareable
+```
+
+On Windows:
+
+```powershell
+.\scripts\dev.ps1 ingest-corpus
+.\scripts\dev.ps1 export-corpus-shareable
+```
+
 Run model-based readiness extraction:
 
 ```bash
@@ -71,6 +131,141 @@ OPENAI_API_KEY=... PYTHONPATH=packages/fre_core/src python -m fre_core.cli extra
   examples/finite_tree/unit.json \
   artifacts/generated/finite_tree/readiness_report.model.json
 ```
+
+Extract candidate proof-graph and Atlas artifacts:
+
+```bash
+make extract-finite-tree-proofgraph
+make extract-finite-tree-atlas
+```
+
+Generate candidate LeanTask packages from reviewed readiness reports:
+
+```bash
+make generate-finite-tree-leantask
+make generate-category-theory-leantask
+```
+
+On Windows:
+
+```powershell
+.\scripts\dev.ps1 extract-finite-tree-proofgraph
+.\scripts\dev.ps1 extract-finite-tree-atlas
+.\scripts\dev.ps1 generate-finite-tree-leantask
+.\scripts\dev.ps1 generate-category-theory-leantask
+```
+
+Or run generation directly:
+
+```bash
+OPENAI_API_KEY=... PYTHONPATH=packages/fre_core/src python -m fre_core.cli generate-leantask \
+  examples/finite_tree/unit.json \
+  examples/finite_tree/readiness_report.json \
+  artifacts/generated/finite_tree/leantask.model.json \
+  --level L0
+```
+
+Look up mathlib declaration candidates for the finite-tree example:
+
+```bash
+make lookup-finite-tree-declarations
+```
+
+On Windows:
+
+```powershell
+.\scripts\dev.ps1 lookup-finite-tree-declarations
+```
+
+Validate and run ReadinessBench against gold fixtures:
+
+```bash
+make validate-readinessbench
+make run-readinessbench PREDICTIONS_DIR=tests/fixtures/readinessbench_predictions
+```
+
+On Windows:
+
+```powershell
+.\scripts\dev.ps1 validate-readinessbench
+.\scripts\dev.ps1 run-readinessbench -PredictionsDir tests/fixtures/readinessbench_predictions
+```
+
+## Review API and UI
+
+Install API dependencies and start the backend:
+
+```bash
+make setup-api
+make run-api
+```
+
+Serve the minimal review UI:
+
+```bash
+make run-review-ui
+```
+
+Open `http://127.0.0.1:8080`. See `apps/review-ui/README.md` and `docs/PUBLIC_RELEASE.md`.
+
+On Windows:
+
+```powershell
+.\scripts\dev.ps1 setup-api
+.\scripts\dev.ps1 run-api
+.\scripts\dev.ps1 run-review-ui
+```
+
+## Public exports
+
+```bash
+make export-public-benchmark
+make export-public-atlas
+```
+
+Align a readiness report against the mathlib index:
+
+```bash
+PYTHONPATH=packages/fre_core/src:. python -m fre_core.cli align-readiness-report \
+  examples/finite_tree/readiness_report.json \
+  artifacts/generated/finite_tree/alignment.json \
+  --unit-path examples/finite_tree/unit.json
+```
+
+## External review workflow
+
+Mathematicians and formalizers can review units without reading Python code. Start with `docs/review/REVIEWER_GUIDE.md`.
+
+Validate a structured review submission:
+
+```bash
+PYTHONPATH=packages/fre_core/src python -m fre_core.cli validate-review-submission \
+  docs/review/templates/readiness_report_review.json
+```
+
+Validate the Gold artifact changelog:
+
+```bash
+PYTHONPATH=packages/fre_core/src python -m fre_core.cli validate-gold-changelog
+```
+
+On Windows:
+
+```powershell
+$env:PYTHONPATH = "packages/fre_core/src"
+python -m fre_core.cli validate-review-submission docs/review/templates/readiness_report_review.json
+python -m fre_core.cli validate-gold-changelog
+```
+
+Enrich a readiness report with index-backed theorem candidates:
+
+```bash
+PYTHONPATH=packages/fre_core/src python -m fre_core.cli enrich-report-candidates \
+  examples/finite_tree/readiness_report.json \
+  artifacts/generated/finite_tree/readiness_report.enriched.json
+```
+
+See `docs/OPENAI_USAGE.md` for model-call conventions and environment variables.
 
 Render a LeanTask into a Lean skeleton:
 
@@ -91,7 +286,11 @@ PYTHONPATH=packages/fre_core/src python -m fre_core.cli check-lean \
 ## Handoff documents
 
 - `docs/ENGINEERING_HANDOFF.md` gives the current architecture, branch status, and takeover checklist.
+- `docs/ARCHITECTURE.md` describes the pipeline and corpus ingestion workflow.
 - `docs/NEXT_SPRINTS.md` gives the next PR sequence for engineers.
+- `docs/review/REVIEWER_GUIDE.md` gives the standalone external review workflow (Sprint 7).
+- `docs/DEMO.md` explains the end-to-end demo (`make demo`) for both reference examples.
+- `docs/PUBLIC_RELEASE.md` explains public benchmark and Atlas exports for external users.
 - `docs/BRANCH_CLEANUP.md` lists the temporary engineering branches that were merged and can be deleted from GitHub if the UI or Git CLI is available.
 
 ## Development rule

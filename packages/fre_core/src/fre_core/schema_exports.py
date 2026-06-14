@@ -8,7 +8,24 @@ from typing import TypeAlias
 
 from pydantic import BaseModel
 
-from fre_core.schemas import AtlasRecord, LeanTaskPackage, ProofGraph, ReadinessReport, SourceDocument, TheoremProofUnit
+from fre_core.schemas import (
+    AlignmentCandidate,
+    AlignmentResult,
+    AtlasRecord,
+    BenchmarkEvaluationReport,
+    BenchmarkManifest,
+    DeclarationIndex,
+    GoldArtifactChangelogEntry,
+    LeanTaskPackage,
+    ProofGraph,
+    PublicAtlasExportRecord,
+    PublicBenchmarkExportRecord,
+    PublicExportManifest,
+    ReadinessReport,
+    ReadinessReportReviewSubmission,
+    SourceDocument,
+    TheoremProofUnit,
+)
 
 SchemaModel: TypeAlias = type[BaseModel]
 
@@ -19,6 +36,16 @@ SCHEMA_MODELS: dict[str, SchemaModel] = {
     "proofgraph": ProofGraph,
     "atlas_record": AtlasRecord,
     "leantask_package": LeanTaskPackage,
+    "declaration_index": DeclarationIndex,
+    "benchmark_manifest": BenchmarkManifest,
+    "benchmark_evaluation_report": BenchmarkEvaluationReport,
+    "readiness_report_review_submission": ReadinessReportReviewSubmission,
+    "gold_artifact_changelog_entry": GoldArtifactChangelogEntry,
+    "alignment_candidate": AlignmentCandidate,
+    "alignment_result": AlignmentResult,
+    "public_benchmark_export_record": PublicBenchmarkExportRecord,
+    "public_atlas_export_record": PublicAtlasExportRecord,
+    "public_export_manifest": PublicExportManifest,
 }
 
 
