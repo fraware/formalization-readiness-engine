@@ -20,10 +20,11 @@ build/
 # Data and generated artifacts
 data/raw_sources/
 data/eval_runs/
-artifacts/generated/
+artifacts/generated/*
+!artifacts/generated/**/
+!artifacts/generated/**/NOTES.md
 public_exports/
 
 # Lean
 lean/.lake/
 lean/lake-packages/
-lean/lake-manifest.json

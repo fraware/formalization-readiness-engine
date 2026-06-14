@@ -2,7 +2,8 @@ PYTHON ?= python
 PYTHONPATH_VALUE := packages/fre_core/src:.
 
 .PHONY: setup setup-models setup-api test demo demo-live demo-finite-tree demo-category-theory \
-	validate-examples export-schemas lint check \
+	validate-examples export-schemas lint check setup-lean build-lean \
+	render-finite-tree-leantask check-lean-finite-tree \
 	extract-finite-tree-proofgraph extract-finite-tree-atlas lookup-finite-tree-declarations \
 	generate-finite-tree-leantask generate-category-theory-leantask \
 	validate-readinessbench run-readinessbench validate-review-submission validate-gold-changelog \
@@ -58,6 +59,23 @@ export-corpus-shareable: ingest-corpus
 
 lint:
 	ruff check packages tests apps
+
+setup-lean:
+	cd lean && lake update && lake exe cache get
+
+build-lean:
+	cd lean && lake build
+
+render-finite-tree-leantask:
+	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli render-leantask \
+		examples/finite_tree/leantask_L1.json \
+		lean/FRETasks/Generated/FiniteTree.lean
+
+check-lean-finite-tree:
+	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli check-lean \
+		lean/FRETasks/Generated/FiniteTree.lean \
+		--project-dir lean \
+		--timeout-seconds 300
 
 check: test validate-examples lint
 

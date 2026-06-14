@@ -3,7 +3,7 @@
 
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("setup", "setup-models", "setup-api", "test", "demo", "demo-live", "demo-finite-tree", "demo-category-theory", "validate-examples", "export-schemas", "lint", "check", "ingest-corpus", "export-corpus-shareable", "extract-finite-tree-proofgraph", "extract-finite-tree-atlas", "lookup-finite-tree-declarations", "generate-finite-tree-leantask", "generate-category-theory-leantask", "validate-readinessbench", "run-readinessbench", "validate-review-submission", "validate-gold-changelog", "run-api", "run-review-ui", "export-public-benchmark", "export-public-atlas")]
+    [ValidateSet("setup", "setup-models", "setup-api", "test", "demo", "demo-live", "demo-finite-tree", "demo-category-theory", "validate-examples", "export-schemas", "lint", "check", "setup-lean", "build-lean", "render-finite-tree-leantask", "check-lean-finite-tree", "ingest-corpus", "export-corpus-shareable", "extract-finite-tree-proofgraph", "extract-finite-tree-atlas", "lookup-finite-tree-declarations", "generate-finite-tree-leantask", "generate-category-theory-leantask", "validate-readinessbench", "run-readinessbench", "validate-review-submission", "validate-gold-changelog", "run-api", "run-review-ui", "export-public-benchmark", "export-public-atlas")]
     [string]$Command = "test",
     [string]$PredictionsDir = "tests/fixtures/readinessbench_predictions"
 )
@@ -55,6 +55,34 @@ switch ($Command) {
     }
     "lint" {
         ruff check packages tests apps
+    }
+    "setup-lean" {
+        Push-Location lean
+        try {
+            lake update
+            lake exe cache get
+        } finally {
+            Pop-Location
+        }
+    }
+    "build-lean" {
+        Push-Location lean
+        try {
+            lake build
+        } finally {
+            Pop-Location
+        }
+    }
+    "render-finite-tree-leantask" {
+        python -m fre_core.cli render-leantask `
+            examples/finite_tree/leantask_L1.json `
+            lean/FRETasks/Generated/FiniteTree.lean
+    }
+    "check-lean-finite-tree" {
+        python -m fre_core.cli check-lean `
+            lean/FRETasks/Generated/FiniteTree.lean `
+            --project-dir lean `
+            --timeout-seconds 300
     }
     "check" {
         python -m pytest -q

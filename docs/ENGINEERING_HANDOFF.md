@@ -19,7 +19,11 @@ The category-theory stack includes L0 and L1 LeanTask packages, a corpus LaTeX s
 
 ## Current branch state
 
-`main` contains all accepted work from the initial engineering sprint. The temporary branches below were used for focused PRs and have already been squash-merged into `main`:
+`main` (`a44b4f1`) holds the initial handoff: schemas, finite-tree example, and first engineering docs. Sprints 1–7, category theory, LeanTask generation, Phase 5–6, and E2E demo work live on unmerged `engineering-*` branches; the consolidated tip is `engineering-e2e-demo-integration` (11 commits ahead of `main`).
+
+See `docs/ENGINEERING_BRANCH_STATUS.md` for the full merge matrix. Wave 0 (`engineering/wave0-hygiene`) restores Sprint 2 Lean pins on that tip before merging to `main`.
+
+First-sprint branches already squash-merged into the original handoff `main` (safe to delete when confirmed):
 
 - `engineering-core-validation`
 - `engineering-schema-export`
@@ -29,7 +33,7 @@ The category-theory stack includes L0 and L1 LeanTask packages, a corpus LaTeX s
 - `engineering-lean-check-runner`
 - `engineering-readinessbench-metrics`
 
-If these branches are still visible on GitHub, they can be deleted after confirming `main` is current. See `docs/BRANCH_CLEANUP.md`.
+See `docs/BRANCH_CLEANUP.md` for deletion steps.
 
 ## Implemented modules
 
@@ -115,14 +119,50 @@ Provides deterministic ReadinessBench metrics for comparing predicted readiness 
 
 Validates structured external review submissions and Gold artifact changelog entries. Reviewers produce JSON submissions mapped to `ReadinessReportReviewSubmission`; Gold changes are logged in `benchmarks/readinessbench/gold/changelog.jsonl` and `CHANGELOG.md`. CLI commands: `validate-review-submission` and `validate-gold-changelog`. See `docs/review/`.
 
+## Verification commands
+
+Primary CI-equivalent check (Python tests, example validation, lint):
+
+```bash
+make check
+```
+
+On Windows without GNU Make:
+
+```powershell
+.\scripts\dev.ps1 check
+```
+
+Offline demo (both reference examples; Lean check skipped in CI):
+
+```bash
+make demo
+```
+
+ReadinessBench manifest validation:
+
+```bash
+make validate-readinessbench
+```
+
+Lean pin setup and finite-tree scaffold check (local; requires elan + `lake`):
+
+```bash
+make setup-lean
+make check-lean-finite-tree
+```
+
+Optional Lean workflow: `.github/workflows/lean.yml` (`workflow_dispatch` only).
+
+Live baseline notes template: `artifacts/generated/finite_tree/NOTES.md` (committed template; fill in after live extraction).
+
 ## Current tests
 
 Run:
 
 ```bash
 make setup
-make test
-make validate-examples
+make check
 ```
 
 The test suite covers:
@@ -143,13 +183,14 @@ The test suite covers:
 - external review submission and Gold changelog validation (`tests/test_review_workflow.py`);
 - mathlib alignment service and deterministic ranking (`tests/test_mathlib_alignment.py`);
 - FastAPI review endpoints (`tests/test_api.py`);
-- public export and licensing leak tests (`tests/test_public_export.py`).
+- public export and licensing leak tests (`tests/test_public_export.py`);
+- pinned Lean project smoke tests (`tests/test_lean_pin.py`).
 
 ## First engineer takeover checklist
 
-1. Pull latest `main`.
-2. Delete merged engineering branches or leave them untouched if branch deletion is restricted.
-3. Run `make setup`, `make test`, and `make validate-examples`.
+1. Pull latest `main` (or `engineering/wave0-hygiene` until Wave 0 merges).
+2. Read `docs/ENGINEERING_BRANCH_STATUS.md`; delete merged engineering branches per `docs/BRANCH_CLEANUP.md`.
+3. Run `make setup` and `make check` (or `.\scripts\dev.ps1 check` on Windows).
 4. Run `make export-schemas` and inspect generated schemas.
 5. Run one live model extraction with an API key and save the output under `artifacts/generated/...`.
 6. Review the model output manually before using it as benchmark data.
