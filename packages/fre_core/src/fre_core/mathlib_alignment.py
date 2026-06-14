@@ -10,6 +10,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
+from fre_core.embedding_index import EmbeddingIndex, StubEmbeddingIndex
 from fre_core.mathlib_index import (
     DeclarationSearchResult,
     build_search_query_from_report,
@@ -37,6 +38,8 @@ _SCORE_NAMESPACE_TOKEN = 80
 _SCORE_MODULE_EXACT = 250
 _SCORE_MODULE_TOKEN = 60
 _SCORE_KIND_MATCH = 40
+_SCORE_TYPE_TOKEN = 45
+_SCORE_IMPORT_CLOSURE = 70
 
 
 @dataclass(frozen=True)
@@ -192,6 +195,49 @@ def _search_by_kind(
     return hits
 
 
+def _import_terms(report: ReadinessReport, unit: TheoremProofUnit | None) -> tuple[str, ...]:
+    parts = [*report.constructive_path, *report.dependency_readiness.recovered]
+    if unit:
+        parts.append(unit.domain.replace("_", " "))
+    return _tokenize(" ".join(parts))
+
+
+def _search_import_closure(index: DeclarationIndex, report: ReadinessReport, unit: TheoremProofUnit | None, top_k: int) -> list[DeclarationSearchResult]:
+    terms = _import_terms(report, unit)
+    hits = []
+    for decl in index.declarations:
+        score = sum(_SCORE_IMPORT_CLOSURE for t in terms if t in _normalize(decl.module))
+        if score:
+            hits.append(DeclarationSearchResult(decl, score, tuple(f"import_closure:{t}" for t in terms if t in _normalize(decl.module))))
+    hits.sort(key=lambda h: (-h.score, h.declaration.full_name, h.declaration.declaration_id))
+    return hits[:top_k]
+
+
+def _search_type_overlap(index: DeclarationIndex, query: str, top_k: int) -> list[DeclarationSearchResult]:
+    q = set(_tokenize(query))
+    hits = []
+    for decl in index.declarations:
+        if not decl.type_signature:
+            continue
+        overlap = q & set(_tokenize(decl.type_signature))
+        if overlap:
+            hits.append(DeclarationSearchResult(decl, len(overlap) * _SCORE_TYPE_TOKEN, tuple(f"type_token:{t}" for t in sorted(overlap))))
+    hits.sort(key=lambda h: (-h.score, h.declaration.full_name, h.declaration.declaration_id))
+    return hits[:top_k]
+
+
+def suggest_import_modules_from_alignment(alignment: AlignmentResult, *, confirmed_only: bool = True) -> list[str]:
+    sources = alignment.confirmed if confirmed_only else [*alignment.confirmed, *alignment.candidates]
+    modules, seen = [], set()
+    for c in sources:
+        if c.module not in seen:
+            seen.add(c.module)
+            modules.append(c.module)
+    return sorted(modules)
+
+
+
+
 def collect_alignment_queries(
     *,
     report: ReadinessReport,
@@ -274,15 +320,21 @@ def align_readiness_report(
     confirmed_full_names: frozenset[str] | None = None,
     top_k_per_query: int = 5,
     top_k_total: int = 15,
+    embedding_index: EmbeddingIndex | None = None,
 ) -> AlignmentResult:
     """Propose alignment candidates from report fields; confirmed alignments need explicit flags."""
     query_specs = collect_alignment_queries(report=report, unit=unit)
     combined_hits: list[tuple[DeclarationSearchResult, str]] = []
-
+    emb = embedding_index or StubEmbeddingIndex(index=index)
+    for hit in _search_import_closure(index, report, unit, top_k_per_query):
+        combined_hits.append((hit, 'import_closure'))
     for spec in query_specs:
         for hit in search(index=index, query=spec.text, top_k=top_k_per_query):
             combined_hits.append((hit, f"lexical:{spec.source}"))
-
+        for hit in _search_type_overlap(index, spec.text, top_k_per_query):
+            combined_hits.append((hit, f"type_overlap:{spec.source}"))
+        for hit in emb.search(query=spec.text, top_k=top_k_per_query):
+            pass
         if "." in spec.text or spec.text[:1].isupper():
             for hit in _search_namespace(index=index, query=spec.text)[:top_k_per_query]:
                 combined_hits.append((hit, f"namespace:{spec.source}"))

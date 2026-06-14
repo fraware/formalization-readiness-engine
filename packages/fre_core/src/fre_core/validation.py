@@ -7,6 +7,12 @@ from pathlib import Path
 
 from fre_core.schemas import AtlasRecord, LeanTaskPackage, ProofGraph, ReadinessReport, TheoremProofUnit
 
+PROOFGRAPH_EDGE_TYPES: frozenset[str] = frozenset({
+    "uses", "uses_assumption", "uses_definition", "depends_on", "blocked_by",
+    "aligns_with_library_candidate", "aligns_with_library_theorem", "requires_lemma",
+    "proof_strategy_step", "invokes_universal_property", "transports", "specializes",
+})
+
 
 @dataclass(frozen=True)
 class ValidationIssue:
@@ -35,6 +41,8 @@ def validate_proofgraph(graph: ProofGraph) -> None:
         issues.append(ValidationIssue("duplicate_node_id", "ProofGraph node identifiers must be unique."))
 
     for edge in graph.edges:
+        if edge.edge_type not in PROOFGRAPH_EDGE_TYPES:
+            issues.append(ValidationIssue("invalid_edge_type", f"Edge type {edge.edge_type!r} is not allowed."))
         if edge.source not in node_id_set:
             issues.append(
                 ValidationIssue(

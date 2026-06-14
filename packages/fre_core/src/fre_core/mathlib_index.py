@@ -60,6 +60,11 @@ def default_index_path(*, repo_root: Path | None = None) -> Path:
     return root / "fixtures" / "mathlib_declarations" / "finite_tree_v0.json"
 
 
+def trimmed_index_path(*, repo_root: Path | None = None) -> Path:
+    root = repo_root or _repo_root_from_module()
+    return root / "fixtures" / "mathlib_declarations" / "mathlib_v4.8.0.json"
+
+
 def _repo_root_from_module() -> Path:
     return Path(__file__).resolve().parents[4]
 

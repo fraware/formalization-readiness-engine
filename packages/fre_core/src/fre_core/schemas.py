@@ -240,6 +240,8 @@ class ReadinessReportReviewSubmission(BaseModel):
     recommended_next_action_accurate: bool
     corrected_report_path: str | None = None
     corrected_report: ReadinessReport | None = None
+    confirmed_alignment_full_names: list[str] = Field(default_factory=list)
+    suggested_import_modules: list[str] = Field(default_factory=list)
     notes: str | None = None
 
 
