@@ -1,0 +1,19 @@
+{
+  "schema_version": "0.1",
+  "unit_count": 2,
+  "total_errors": 0,
+  "categories": {
+    "notation": {"count": 0, "rate": 0.0},
+    "blockers": {"count": 0, "rate": 0.0},
+    "wrong_candidates": {"count": 0, "rate": 0.0},
+    "constructive_path": {"count": 0, "rate": 0.0},
+    "proofgraph_nodes": {"count": 0, "rate": 0.0},
+    "proofgraph_edges": {"count": 0, "rate": 0.0},
+    "atlas_evidence": {"count": 0, "rate": 0.0},
+    "atlas_blocker_type": {"count": 0, "rate": 0.0},
+    "atlas_recommended_action": {"count": 0, "rate": 0.0},
+    "leantask_imports": {"count": 0, "rate": 0.0},
+    "leantask_hypotheses": {"count": 0, "rate": 0.0},
+    "leantask_formal_target": {"count": 0, "rate": 0.0}
+  }
+}

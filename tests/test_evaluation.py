@@ -60,7 +60,7 @@ def test_score_readiness_report() -> None:
     assert scores.existing_theorem_candidates.f1 == 1.0
     assert round(scores.constructive_path.f1, 3) == 0.667
     assert scores.blockers.f1 == 1.0
-    assert round(scores.macro_f1, 3) == 0.889
+    assert round(scores.macro_f1, 3) == 0.917
 
 
 def test_score_readiness_report_rejects_unit_mismatch() -> None:

@@ -1,0 +1,13 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "finite_tree_edge_count",
+  "blocker_type": "notation_alignment",
+  "mathematical_pattern": "finite-tree induction over a removed vertex",
+  "evidence": "let G prime be G with v removed",
+  "candidate_formal_object": "induced subgraph on the remaining vertices",
+  "likely_library_location": "Mathlib.Combinatorics.SimpleGraph",
+  "severity": "high",
+  "status": "candidate",
+  "recommended_action": "Align the informal vertex-removal step before constructive proof decomposition.",
+  "review_status": "candidate"
+}

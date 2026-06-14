@@ -132,6 +132,7 @@ def test_run_readinessbench_is_repeatable() -> None:
     assert first.model_dump() == second.model_dump()
 
 
+
 def test_create_bronze_readiness_placeholder_is_candidate() -> None:
     unit = TheoremProofUnit.model_validate_json(
         (ROOT / "corpus" / "units" / "finite_tree_notes_001_0001_edge_count_in_a_finite_tree.json").read_text(
@@ -180,3 +181,22 @@ def test_promote_benchmark_item_writes_bronze_artifacts(tmp_path: Path) -> None:
     assert (benchmark_root / item.readiness_report_path).is_file()
     promoted_unit = load_unit(benchmark_root / item.unit_path)
     assert promoted_unit.review_status == ReviewStatus.CANDIDATE
+
+
+BASELINE_PREDICTIONS_DIR = ROOT / "tests" / "fixtures" / "baseline_predictions"
+
+
+def test_run_benchmark_evaluation_scores_full_macro_f1() -> None:
+    from fre_core.benchmark import run_benchmark_evaluation
+
+    report = run_benchmark_evaluation(
+        manifest_path=MANIFEST_PATH,
+        predictions_dir=BASELINE_PREDICTIONS_DIR,
+        benchmark_root=BENCHMARK_ROOT,
+        repo_root=ROOT,
+    )
+
+    assert report.scored_item_count == 1
+    assert report.full_macro_f1_mean is not None
+    assert report.items[0].full_macro_f1 is not None
+

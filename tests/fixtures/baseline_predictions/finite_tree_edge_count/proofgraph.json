@@ -1,0 +1,54 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "finite_tree_edge_count",
+  "nodes": [
+    {
+      "node_id": "N_statement",
+      "node_type": "theorem_statement",
+      "text": "Let G=(V,E) be a finite tree. Then |E| = |V| - 1.",
+      "source_span": null
+    },
+    {
+      "node_id": "N_tree_assumption",
+      "node_type": "assumption",
+      "text": "G is a finite tree.",
+      "source_span": null
+    },
+    {
+      "node_id": "N_existing_alignment",
+      "node_type": "library_candidate",
+      "text": "SimpleGraph.IsTree.card_edgeFinset",
+      "source_span": null
+    },
+    {
+      "node_id": "N_constructive_path",
+      "node_type": "proof_strategy",
+      "text": "Induction on |V| using leaf deletion.",
+      "source_span": null
+    },
+    {
+      "node_id": "N_blocker_deletion",
+      "node_type": "blocker",
+      "text": "The notation G-v requires alignment with a formal graph-deletion representation.",
+      "source_span": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "N_statement",
+      "target": "N_tree_assumption",
+      "edge_type": "uses_assumption"
+    },
+    {
+      "source": "N_statement",
+      "target": "N_existing_alignment",
+      "edge_type": "aligns_with_library_candidate"
+    },
+    {
+      "source": "N_constructive_path",
+      "target": "N_blocker_deletion",
+      "edge_type": "blocked_by"
+    }
+  ],
+  "review_status": "candidate"
+}

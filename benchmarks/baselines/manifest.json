@@ -1,0 +1,14 @@
+{
+  "schema_version": "0.1",
+  "baseline_id": "reference_examples",
+  "units": [
+    {
+      "unit_id": "finite_tree_edge_count",
+      "example_dir": "examples/finite_tree"
+    },
+    {
+      "unit_id": "category_theory_pullback_equivalence",
+      "example_dir": "examples/category_theory_pullback"
+    }
+  ]
+}
