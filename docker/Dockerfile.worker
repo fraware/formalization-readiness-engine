@@ -1,0 +1,10 @@
+FROM python:3.11-slim
+WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential && rm -rf /var/lib/apt/lists/*
+COPY requirements.txt requirements-api.txt requirements-worker.txt ./
+COPY packages/fre_core/setup.py packages/fre_core/setup.py
+COPY packages/fre_core/src packages/fre_core/src
+RUN pip install --no-cache-dir -r requirements-worker.txt && pip install --no-cache-dir -e packages/fre_core
+COPY apps apps examples fixtures corpus benchmarks lean ./
+ENV PYTHONPATH=/app/packages/fre_core/src:/app FRE_JOBS_DB=/data/jobs.db FRE_ARTIFACT_DIR=/data/artifacts
+CMD ["python","-m","apps.worker.main"]

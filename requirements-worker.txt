@@ -1,0 +1,4 @@
+-r requirements-api.txt
+-r packages/fre_core/requirements-models.txt
+redis>=5.0
+rq>=1.16
