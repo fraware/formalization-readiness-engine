@@ -40,7 +40,7 @@ Each manifest item declares:
 - `tier`: `bronze`, `silver`, or `gold`
 - `unit_path` and `readiness_report_path`: paths relative to this directory
 
-Tier paths must live under the matching tier prefix (`gold/`, `silver/`, or `bronze/`). Paths under `artifacts/generated/` are rejected.
+Tier paths must live under the matching tier prefix (`gold/`, `silver/`, or `bronze/`). Manifest and gold truth paths under `artifacts/generated/` are rejected. Prediction inputs may live under `artifacts/generated/` (for example after `make demo-live`).
 
 ## Gold is evaluated truth
 
@@ -53,6 +53,26 @@ The category-theory example is **examples-only** until it passes external review
 ## Running evaluation
 
 Provide predicted readiness reports in a directory keyed by `unit_id`:
+
+```text
+predictions/
+  finite_tree_edge_count/
+    readiness_report.json
+```
+
+Live extraction output under `artifacts/generated/` is valid for scoring. Demo live runs write example-key folders with model artifacts:
+
+```text
+artifacts/generated/demo_run/live/
+  finite_tree/
+    readiness_report.model.json
+  category_theory_pullback/
+    readiness_report.model.json
+```
+
+Point `PREDICTIONS_DIR` at the parent directory (for example `artifacts/generated/demo_run/live`). The scorer resolves predictions by `unit_id` inside each JSON file, so example-key folder names do not need to match gold `unit_id` values.
+
+Standard benchmark layout (also supported):
 
 ```text
 predictions/
@@ -74,7 +94,7 @@ On Windows:
 .\scripts\dev.ps1 run-readinessbench -PredictionsDir tests/fixtures/readinessbench_predictions
 ```
 
-The runner writes a deterministic JSON report with per-item and mean macro-F1 scores.
+The runner writes a deterministic JSON report with per-item and mean macro-F1 scores. Gold items without a matching prediction are skipped; at least one scored item is required.
 
 ## Promoting artifacts
 

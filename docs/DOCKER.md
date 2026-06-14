@@ -26,7 +26,7 @@ Job metadata uses SQLite at `FRE_JOBS_DB` (default `/data/jobs.db` in Compose). 
 |----------|----------|-------|
 | `extract_report` | `POST /jobs/extract` | Live readiness extraction |
 | `check_lean` | `POST /jobs/check-lean` | Lean typecheck through pinned project |
-| `run_baselines` | `POST /jobs/run-baselines` | Wave 3 baseline stub |
+| `run_baselines` | `POST /jobs/run-baselines` | Multi-condition baseline run (`fre run-baselines`) |
 
 Poll job status with `GET /jobs/{id}`.
 

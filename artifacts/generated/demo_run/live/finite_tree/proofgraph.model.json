@@ -1,0 +1,104 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "finite_tree_edge_count",
+  "nodes": [
+    {
+      "node_id": "N1",
+      "node_type": "theorem",
+      "text": "Let G=(V,E) be a finite tree. Then |E| = |V| - 1.",
+      "source_span": {
+        "start": 0,
+        "end": 60
+      }
+    },
+    {
+      "node_id": "N2",
+      "node_type": "proof_strategy",
+      "text": "We argue by induction on |V|.",
+      "source_span": {
+        "start": 68,
+        "end": 99
+      }
+    },
+    {
+      "node_id": "N3",
+      "node_type": "base_case",
+      "text": "If |V|=1, then G has no edges.",
+      "source_span": {
+        "start": 101,
+        "end": 129
+      }
+    },
+    {
+      "node_id": "N4",
+      "node_type": "inductive_step",
+      "text": "Otherwise, choose a leaf v, let G' = G - v, and apply the induction hypothesis to G'.",
+      "source_span": {
+        "start": 131,
+        "end": 197
+      }
+    },
+    {
+      "node_id": "N5",
+      "node_type": "lemma",
+      "text": "A finite tree with at least 2 vertices has a leaf.",
+      "source_span": null
+    },
+    {
+      "node_id": "N6",
+      "node_type": "analysis",
+      "text": "Since v is a leaf, deleting v removes one vertex and one edge.",
+      "source_span": {
+        "start": 199,
+        "end": 251
+      }
+    },
+    {
+      "node_id": "N7",
+      "node_type": "calculation",
+      "text": "|E|-1 = (|V|-1)-1, so |E| = |V|-1.",
+      "source_span": {
+        "start": 258,
+        "end": 296
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "N1",
+      "target": "N2",
+      "edge_type": "proof_strategy_step"
+    },
+    {
+      "source": "N2",
+      "target": "N3",
+      "edge_type": "proof_strategy_step"
+    },
+    {
+      "source": "N2",
+      "target": "N4",
+      "edge_type": "proof_strategy_step"
+    },
+    {
+      "source": "N4",
+      "target": "N5",
+      "edge_type": "uses"
+    },
+    {
+      "source": "N4",
+      "target": "N6",
+      "edge_type": "proof_strategy_step"
+    },
+    {
+      "source": "N6",
+      "target": "N7",
+      "edge_type": "proof_strategy_step"
+    },
+    {
+      "source": "N4",
+      "target": "N1",
+      "edge_type": "uses_definition"
+    }
+  ],
+  "review_status": "candidate"
+}

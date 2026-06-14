@@ -29,6 +29,7 @@ from fre_core.mathlib_alignment import (
     align_readiness_report,
     enrich_readiness_candidates_from_alignment,
 )
+from fre_core.embedding_index import load_embedding_index
 from fre_core.mathlib_index import load_index
 from fre_core.openai_responses_provider import OpenAIResponsesProvider
 from fre_core.public_export import export_public_atlas, export_public_benchmark
@@ -230,10 +231,16 @@ def _align_and_enrich(
     report = load_readiness_report(example_dir / "readiness_report.json")
     unit = load_unit(example_dir / "unit.json")
     index = load_index(index_path)
+    embedding_index = load_embedding_index(index=index, index_path=index_path)
 
     alignment_path = output_dir / "alignment.json"
     _log_stage(console, "align-readiness-report", alignment_path.as_posix())
-    alignment = align_readiness_report(report=report, index=index, unit=unit)
+    alignment = align_readiness_report(
+        report=report,
+        index=index,
+        unit=unit,
+        embedding_index=embedding_index,
+    )
     alignment_path.parent.mkdir(parents=True, exist_ok=True)
     alignment_path.write_text(alignment.model_dump_json(indent=2), encoding="utf-8")
     top = alignment.candidates[0].full_name if alignment.candidates else None
@@ -432,8 +439,13 @@ def run_demo(
     root = repo_root_path or repo_root()
     console = console or Console()
     example_keys = resolve_example_keys(example)
-    predictions = predictions_dir or default_predictions_dir(root=root)
     output_root = default_demo_output_root(root=root, offline=offline)
+    if predictions_dir is not None:
+        predictions = predictions_dir
+    elif offline:
+        predictions = default_predictions_dir(root=root)
+    else:
+        predictions = output_root
 
     mode_label = "offline" if offline else "live"
     console.print(f"[bold]Formalization Readiness Engine demo[/bold] ({mode_label})")

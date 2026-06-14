@@ -7,7 +7,7 @@
 [![CI](https://github.com/fraware/formalization-readiness-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/fraware/formalization-readiness-engine/actions/workflows/ci.yml)
 [![Lean](https://img.shields.io/badge/Lean-4.8.0-2a5db0)](lean/README.md)
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)](requirements.txt)
-[![Tests](https://img.shields.io/badge/tests-165-brightgreen)](tests/)
+[![Tests](https://img.shields.io/badge/tests-334-brightgreen)](tests/)
 [![Release](https://img.shields.io/badge/release-v0.2.0-informational)](releases/v0.2.0/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
@@ -28,7 +28,7 @@ FRE is a research and engineering foundation for measuring formalization readine
 <table>
 <tr>
 <td align="center" width="25%">
-<strong>165</strong><br>unit tests<br><sub>CI on every push</sub>
+<strong>334</strong><br>unit tests<br><sub>CI on every push</sub>
 </td>
 <td align="center" width="25%">
 <strong>43</strong><br>benchmark items<br><sub>11 gold · 1 silver · 31 bronze</sub>
@@ -44,8 +44,8 @@ FRE is a research and engineering foundation for measuring formalization readine
 
 | | |
 |:--|:--|
-| **Lean toolchain** | Lean 4.8.0 + mathlib v4.8.0 ([`lean/`](lean/README.md)) |
-| **Public release** | [`releases/v0.2.0/`](releases/v0.2.0/) manifest and checksums |
+| **Lean toolchain** | Lean 4.8.0 + mathlib v4.8.0; both reference LeanTasks verified 2026-06-14 ([status](lean/README.md#verification-status)) — L1 scaffolds use `sorry`, not completed proofs |
+| **Public release** | [`releases/v0.2.0/`](releases/v0.2.0/) manifest, checksums, and committed exports |
 | **Repository** | [github.com/fraware/formalization-readiness-engine](https://github.com/fraware/formalization-readiness-engine) |
 
 ---
@@ -74,7 +74,7 @@ FRE is a research and engineering foundation for measuring formalization readine
 </tr>
 <tr>
 <td><strong>LeanTask packages</strong></td>
-<td>Planning artifacts and Lean skeletons (L0–L2) checkable locally with <code>lake env lean</code>.</td>
+<td>Planning artifacts and Lean skeletons (L0–L2) checkable locally with <code>lake env lean</code>. Generated L1 output uses <code>sorry</code>; checks verify imports and statement shape, not proof completion.</td>
 </tr>
 <tr>
 <td><strong>mathlib alignment</strong></td>
@@ -105,7 +105,7 @@ Every stage produces a versioned, typed artifact (Pydantic + JSON Schema). Nothi
 
 ## Quick start
 
-**Prerequisites:** Python 3.11+, Git. Optional: Lean 4.8.0 for full Lean checking (offline demo skips Lean by default).
+**Prerequisites:** Python 3.11+, Git. Optional: [elan](https://github.com/leanprover/elan) + Lean 4.8.0 for local Lean checking (offline demo skips Lean by default). See [lean/README.md](lean/README.md#verification-status) for last verified build and the `sorry` scaffold policy.
 
 ### Linux / macOS
 
@@ -140,6 +140,8 @@ The offline demo runs the full pipeline on both reference examples without OpenA
 make setup-models
 make demo-live
 ```
+
+Committed reference scores and error analysis for the two live examples: [`docs/evidence/live_extraction_v0.2/`](docs/evidence/live_extraction_v0.2/). Score live outputs with `make run-readinessbench PREDICTIONS_DIR=artifacts/generated/demo_run/live` or `make record-live-extraction` after a fresh run.
 
 Windows:
 
@@ -209,9 +211,9 @@ formalization-readiness-engine/
 │   ├── review-ui/              # Static review interface
 │   └── docs-site/              # MkDocs config (sources in docs/)
 ├── docs/                       # Architecture, demo, release, review guides
-├── tests/                      # 165 unit and integration tests
-├── public_exports/             # Public ReadinessBench and Atlas JSONL
-├── releases/v0.2.0/            # Release manifest and checksums
+├── tests/                      # Unit and integration tests (333+)
+├── releases/v0.2.0/            # Release manifest, checksums, and committed exports
+│   └── exports/                # ReadinessBench and Atlas JSONL (v0.2.0 bundle)
 └── scripts/dev.ps1             # Windows equivalent of Makefile targets
 ```
 

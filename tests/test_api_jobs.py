@@ -63,14 +63,50 @@ def test_get_job_status(client: TestClient) -> None:
 
 
 def test_run_baselines_inline(tmp_path: Path) -> None:
+    from unittest.mock import patch
+
+    from test_baseline_runner import FakeModelClient
+
     reset_job_store(JobStore(db_path=tmp_path / "jobs.db"))
     from fre_core.jobs import get_job_store, run_baselines_job
 
+    repo_root = Path(__file__).resolve().parents[1]
+    output_rel = "artifacts/generated/test_api_baselines_inline"
+    output_dir = repo_root / output_rel
+    if output_dir.exists():
+        import shutil
+
+        shutil.rmtree(output_dir)
+
     rec = get_job_store().create_job(
         job_type=JobType.RUN_BASELINES,
-        request={"catalog_path": "corpus/catalog.json", "output_dir": "artifacts/generated/baselines"},
+        request={
+            "catalog_path": "benchmarks/baselines/manifest.json",
+            "output_dir": output_rel,
+            "conditions": ["direct"],
+        },
         job_id="b1",
     )
-    run_baselines_job(rec.id, rec.request)
-    assert get_job_store().get_job("b1").status == JobStatus.COMPLETED
+    with patch(
+        "fre_core.openai_responses_provider.OpenAIResponsesProvider",
+        return_value=FakeModelClient(),
+    ):
+        result = run_baselines_job(rec.id, rec.request)
+
+    job = get_job_store().get_job("b1")
+    assert job.status == JobStatus.COMPLETED
+    assert result["unit_count"] == 2
+    assert result["condition_count"] == 1
+    assert "message" not in result
+    assert result["run_manifest_path"] == f"{output_rel}/b1/run_manifest.json"
+
+    unit_output = output_dir / "b1" / "direct" / "finite_tree_edge_count"
+    assert (unit_output / "readiness_report.json").is_file()
+    assert (unit_output / "proofgraph.json").is_file()
+    assert (unit_output / "atlas_record.json").is_file()
+    assert (unit_output / "leantask.json").is_file()
+
+    import shutil
+
+    shutil.rmtree(output_dir)
     reset_job_store(None)

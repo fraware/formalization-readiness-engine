@@ -4,14 +4,60 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Literal
 
-from fre_core.schemas import AtlasRecord, LeanTaskPackage, ProofGraph, ReadinessReport, TheoremProofUnit
+from fre_core.schemas import (
+    AtlasBlockerType,
+    AtlasRecord,
+    LeanTaskPackage,
+    ProofGraph,
+    ProofGraphNodeType,
+    ReadinessDimensionStatus,
+    ReadinessReport,
+    ReviewStatus,
+    TheoremProofUnit,
+)
+
+ValidationMode = Literal["strict", "permissive"]
 
 PROOFGRAPH_EDGE_TYPES: frozenset[str] = frozenset({
     "uses", "uses_assumption", "uses_definition", "depends_on", "blocked_by",
     "aligns_with_library_candidate", "aligns_with_library_theorem", "requires_lemma",
     "proof_strategy_step", "invokes_universal_property", "transports", "specializes",
 })
+
+STRICT_REVIEW_STATUSES: frozenset[ReviewStatus] = frozenset({
+    ReviewStatus.EXPERT_REVIEWED,
+    ReviewStatus.HUMAN_REVIEWED,
+    ReviewStatus.MACHINE_VALIDATED,
+})
+
+KNOWN_PROOFGRAPH_NODE_TYPES_STRICT: frozenset[str] = frozenset(
+    member.value for member in ProofGraphNodeType
+    if member
+    in {
+        ProofGraphNodeType.THEOREM_STATEMENT,
+        ProofGraphNodeType.ASSUMPTION,
+        ProofGraphNodeType.LIBRARY_CANDIDATE,
+        ProofGraphNodeType.PROOF_STRATEGY,
+        ProofGraphNodeType.PROOF_STEP,
+        ProofGraphNodeType.BLOCKER,
+    }
+)
+
+KNOWN_PROOFGRAPH_NODE_TYPES_PERMISSIVE: frozenset[str] = frozenset(
+    member.value for member in ProofGraphNodeType
+)
+
+KNOWN_ATLAS_BLOCKER_TYPES_STRICT: frozenset[str] = frozenset(
+    member.value
+    for member in AtlasBlockerType
+    if member != AtlasBlockerType.OTHER
+)
+
+KNOWN_READINESS_DIMENSION_STATUSES: frozenset[str] = frozenset(
+    member.value for member in ReadinessDimensionStatus
+)
 
 
 @dataclass(frozen=True)
@@ -31,14 +77,65 @@ class ArtifactValidationError(ValueError):
         super().__init__(details)
 
 
-def validate_proofgraph(graph: ProofGraph) -> None:
+def validation_mode_for_review_status(review_status: ReviewStatus) -> ValidationMode:
+    """Return strict validation for reviewed artifacts and permissive for candidates."""
+    if review_status in STRICT_REVIEW_STATUSES:
+        return "strict"
+    return "permissive"
+
+
+def _validate_readiness_dimension_statuses(
+    report: ReadinessReport,
+    *,
+    mode: ValidationMode,
+    issues: list[ValidationIssue],
+) -> None:
+    for field_name in (
+        "statement_readiness",
+        "context_readiness",
+        "notation_readiness",
+        "dependency_readiness",
+    ):
+        dimension = getattr(report, field_name)
+        if dimension.status not in KNOWN_READINESS_DIMENSION_STATUSES:
+            issues.append(
+                ValidationIssue(
+                    "invalid_dimension_status",
+                    f"{field_name}.status {dimension.status!r} is not a known readiness status.",
+                )
+            )
+        elif mode == "strict" and dimension.status == ReadinessDimensionStatus.PENDING.value:
+            issues.append(
+                ValidationIssue(
+                    "pending_dimension_status",
+                    f"{field_name}.status must not be pending for reviewed artifacts.",
+                )
+            )
+
+
+def validate_proofgraph(graph: ProofGraph, *, mode: ValidationMode | None = None) -> None:
     """Validate graph-level invariants that Pydantic alone cannot check."""
     issues: list[ValidationIssue] = []
+    resolved_mode = mode or validation_mode_for_review_status(graph.review_status)
     node_ids = [node.node_id for node in graph.nodes]
     node_id_set = set(node_ids)
+    allowed_node_types = (
+        KNOWN_PROOFGRAPH_NODE_TYPES_STRICT
+        if resolved_mode == "strict"
+        else KNOWN_PROOFGRAPH_NODE_TYPES_PERMISSIVE
+    )
 
     if len(node_ids) != len(node_id_set):
         issues.append(ValidationIssue("duplicate_node_id", "ProofGraph node identifiers must be unique."))
+
+    for node in graph.nodes:
+        if resolved_mode == "strict" and node.node_type not in allowed_node_types:
+            issues.append(
+                ValidationIssue(
+                    "invalid_node_type",
+                    f"Node {node.node_id!r} has unsupported node_type {node.node_type!r}.",
+                )
+            )
 
     for edge in graph.edges:
         if edge.edge_type not in PROOFGRAPH_EDGE_TYPES:
@@ -57,21 +154,15 @@ def validate_proofgraph(graph: ProofGraph) -> None:
                     f"Edge target {edge.target!r} does not match any node identifier.",
                 )
             )
-        if edge.edge_type not in PROOFGRAPH_EDGE_TYPES:
-            issues.append(
-                ValidationIssue(
-                    "invalid_edge_type",
-                    f"Edge type {edge.edge_type!r} is not in the ProofGraph allowlist.",
-                )
-            )
 
     if issues:
         raise ArtifactValidationError(issues)
 
 
-def validate_readiness_report(report: ReadinessReport) -> None:
+def validate_readiness_report(report: ReadinessReport, *, mode: ValidationMode | None = None) -> None:
     """Validate readiness-report semantic invariants."""
     issues: list[ValidationIssue] = []
+    resolved_mode = mode or validation_mode_for_review_status(report.review_status)
 
     if not report.recommended_next_action.strip():
         issues.append(ValidationIssue("missing_next_action", "ReadinessReport needs a next action."))
@@ -84,18 +175,37 @@ def validate_readiness_report(report: ReadinessReport) -> None:
             )
         )
 
+    _validate_readiness_dimension_statuses(report, mode=resolved_mode, issues=issues)
+
     if issues:
         raise ArtifactValidationError(issues)
 
 
-def validate_atlas_record(record: AtlasRecord) -> None:
+def validate_atlas_record(record: AtlasRecord, *, mode: ValidationMode | None = None) -> None:
     """Validate Atlas-record semantic invariants."""
     issues: list[ValidationIssue] = []
+    resolved_mode = mode or validation_mode_for_review_status(record.review_status)
 
     if not record.evidence.strip():
         issues.append(ValidationIssue("missing_evidence", "AtlasRecord needs source-grounded evidence."))
     if not record.recommended_action.strip():
         issues.append(ValidationIssue("missing_recommended_action", "AtlasRecord needs an action."))
+
+    if resolved_mode == "strict":
+        if record.blocker_type not in KNOWN_ATLAS_BLOCKER_TYPES_STRICT:
+            issues.append(
+                ValidationIssue(
+                    "invalid_blocker_type",
+                    f"Atlas blocker_type {record.blocker_type!r} is not in the controlled vocabulary.",
+                )
+            )
+    elif record.blocker_type == AtlasBlockerType.OTHER.value and not (record.evidence or "").strip():
+        issues.append(
+            ValidationIssue(
+                "missing_other_blocker_evidence",
+                "Atlas blocker_type 'other' requires source-grounded evidence.",
+            )
+        )
 
     if issues:
         raise ArtifactValidationError(issues)
@@ -144,25 +254,48 @@ def validate_leantask_package(task: LeanTaskPackage) -> None:
         raise ArtifactValidationError(issues)
 
 
-def load_unit(path: Path) -> TheoremProofUnit:
-    return TheoremProofUnit.model_validate_json(path.read_text(encoding="utf-8"))
+def _validate_unit_spans(unit: TheoremProofUnit, *, source_text: str | None = None) -> None:
+    issues: list[ValidationIssue] = []
+    if source_text is None:
+        return
+    for field_name, span in (
+        ("statement_span", unit.statement_span),
+        ("proof_span", unit.proof_span),
+    ):
+        if span is None:
+            continue
+        if span.end > len(source_text):
+            issues.append(
+                ValidationIssue(
+                    "span_out_of_range",
+                    f"{field_name} end {span.end} exceeds source text length {len(source_text)}.",
+                )
+            )
+    if issues:
+        raise ArtifactValidationError(issues)
 
 
-def load_readiness_report(path: Path) -> ReadinessReport:
+def load_unit(path: Path, *, source_text: str | None = None) -> TheoremProofUnit:
+    unit = TheoremProofUnit.model_validate_json(path.read_text(encoding="utf-8"))
+    _validate_unit_spans(unit, source_text=source_text)
+    return unit
+
+
+def load_readiness_report(path: Path, *, mode: ValidationMode | None = None) -> ReadinessReport:
     report = ReadinessReport.model_validate_json(path.read_text(encoding="utf-8"))
-    validate_readiness_report(report)
+    validate_readiness_report(report, mode=mode)
     return report
 
 
-def load_proofgraph(path: Path) -> ProofGraph:
+def load_proofgraph(path: Path, *, mode: ValidationMode | None = None) -> ProofGraph:
     graph = ProofGraph.model_validate_json(path.read_text(encoding="utf-8"))
-    validate_proofgraph(graph)
+    validate_proofgraph(graph, mode=mode)
     return graph
 
 
-def load_atlas_record(path: Path) -> AtlasRecord:
+def load_atlas_record(path: Path, *, mode: ValidationMode | None = None) -> AtlasRecord:
     record = AtlasRecord.model_validate_json(path.read_text(encoding="utf-8"))
-    validate_atlas_record(record)
+    validate_atlas_record(record, mode=mode)
     return record
 
 

@@ -1,0 +1,26 @@
+{
+  "schema_version": "0.1",
+  "leantask_id": "finite_tree_edge_count_L0",
+  "unit_id": "finite_tree_edge_count",
+  "level": "L0",
+  "informal_statement": "Let G=(V,E) be a finite tree. Then |E| = |V| - 1.",
+  "imports": [
+    "Mathlib.Combinatorics.SimpleGraph.Basic",
+    "Mathlib.Combinatorics.SimpleGraph.Tree"
+  ],
+  "opens": [],
+  "formal_target": null,
+  "hypotheses": [
+    "G is a finite simple undirected tree, i.e., a finite simple graph, connected and acyclic",
+    "V is the vertex set of G",
+    "E is the edge set of G"
+  ],
+  "alignment_declarations": [
+    "Candidate: SimpleGraph.IsTree.card_edgeFinset"
+  ],
+  "sub_lemmas": [],
+  "proof_path": "Formalize induction on |V| using finiteness; Define or use removal of a leaf vertex and the corresponding edge; Invoke or prove existence of a leaf in any finite tree; Apply induction hypothesis to G' = G - v; Do arithmetic manipulation to yield |E| = |V| - 1",
+  "fallback_path": "Search for alignment with SimpleGraph.IsTree.card_edgeFinset or similar mathlib theorem",
+  "next_action": "Audit mathlib for (1) the precise definition of SimpleGraph.IsTree, (2) its edge/vertex removal functions, and (3) a lemma ensuring the existence of a leaf in any finite tree.",
+  "review_status": "candidate"
+}

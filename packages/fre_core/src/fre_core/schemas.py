@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Literal
+from typing import Literal, Self
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class ReviewStatus(str, Enum):
@@ -21,6 +21,39 @@ class LeanTaskLevel(str, Enum):
     L0 = "L0"
     L1 = "L1"
     L2 = "L2"
+
+
+class ReadinessDimensionStatus(str, Enum):
+    CLEAR = "clear"
+    PARTIAL = "partial"
+    BLOCKED = "blocked"
+    PENDING = "pending"
+
+
+class ProofGraphNodeType(str, Enum):
+    THEOREM_STATEMENT = "theorem_statement"
+    ASSUMPTION = "assumption"
+    LIBRARY_CANDIDATE = "library_candidate"
+    PROOF_STRATEGY = "proof_strategy"
+    PROOF_STEP = "proof_step"
+    BLOCKER = "blocker"
+    THEOREM = "theorem"
+    BASE_CASE = "base_case"
+    INDUCTIVE_STEP = "inductive_step"
+    LEMMA = "lemma"
+    ANALYSIS = "analysis"
+    CALCULATION = "calculation"
+    DERIVED_FACT = "derived_fact"
+    CONSTRUCTION_STEP = "construction_step"
+    APPLICATION_STEP = "application_step"
+    JUSTIFICATION = "justification"
+    DEFINITION = "definition"
+
+
+class AtlasBlockerType(str, Enum):
+    NOTATION_ALIGNMENT = "notation_alignment"
+    LIBRARY_ALIGNMENT = "library_alignment"
+    OTHER = "other"
 
 
 class SourceDocument(BaseModel):
@@ -48,6 +81,12 @@ class SegmentationRepairResult(BaseModel):
 class SourceSpan(BaseModel):
     start: int = Field(ge=0)
     end: int = Field(ge=0)
+
+    @model_validator(mode="after")
+    def end_not_before_start(self) -> Self:
+        if self.end < self.start:
+            raise ValueError("SourceSpan end must be >= start.")
+        return self
 
 
 class TheoremProofUnit(BaseModel):
@@ -197,6 +236,7 @@ class BenchmarkItemScore(BaseModel):
 
     item_id: str
     unit_id: str
+    prediction_report_path: str | None = None
     macro_f1: float
     existing_theorem_candidates_f1: float
     constructive_path_f1: float

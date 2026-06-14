@@ -117,6 +117,79 @@ def test_run_readinessbench_produces_deterministic_macro_f1() -> None:
     assert finite_tree_score.macro_f1 == expected_macro_f1
 
 
+def test_run_readinessbench_accepts_generated_prediction_paths(tmp_path: Path) -> None:
+    unit_id = "finite_tree_edge_count"
+    benchmark_root = tmp_path / "readinessbench"
+    gold_dir = benchmark_root / "gold" / unit_id
+    gold_dir.mkdir(parents=True)
+    (gold_dir / "unit.json").write_text(
+        (BENCHMARK_ROOT / "gold" / unit_id / "unit.json").read_text(encoding="utf-8"),
+        encoding="utf-8",
+    )
+    (gold_dir / "readiness_report.json").write_text(
+        (BENCHMARK_ROOT / "gold" / unit_id / "readiness_report.json").read_text(encoding="utf-8"),
+        encoding="utf-8",
+    )
+    manifest_path = benchmark_root / "manifest.json"
+    manifest_path.write_text(
+        (
+            '{"schema_version":"0.1","benchmark_id":"readinessbench","items":[{'
+            f'"item_id":"{unit_id}_gold","unit_id":"{unit_id}","tier":"gold",'
+            f'"unit_path":"gold/{unit_id}/unit.json",'
+            f'"readiness_report_path":"gold/{unit_id}/readiness_report.json"'
+            "}]}"
+        ),
+        encoding="utf-8",
+    )
+    predictions_dir = tmp_path / "artifacts" / "generated"
+    prediction_dir = predictions_dir / unit_id
+    prediction_dir.mkdir(parents=True)
+    (prediction_dir / "readiness_report.json").write_text(
+        (PREDICTIONS_DIR / unit_id / "readiness_report.json").read_text(encoding="utf-8"),
+        encoding="utf-8",
+    )
+
+    report = run_readinessbench(
+        manifest_path=manifest_path,
+        predictions_dir=predictions_dir,
+        benchmark_root=benchmark_root,
+        repo_root=tmp_path,
+    )
+
+    assert report.scored_item_count == 1
+    assert report.items[0].macro_f1 is not None
+    assert report.items[0].prediction_report_path == f"artifacts/generated/{unit_id}/readiness_report.json"
+
+
+def test_run_readinessbench_accepts_demo_live_prediction_layout() -> None:
+    live_root = ROOT / "artifacts" / "generated" / "demo_run" / "live"
+    if not live_root.is_dir():
+        pytest.skip("Live demo artifacts are not present in this checkout.")
+
+    report = run_readinessbench(
+        manifest_path=MANIFEST_PATH,
+        predictions_dir=live_root,
+        benchmark_root=BENCHMARK_ROOT,
+        repo_root=ROOT,
+    )
+
+    finite_tree_score = next(
+        item for item in report.items if item.unit_id == "finite_tree_edge_count"
+    )
+    category_score = next(
+        item for item in report.items if item.unit_id == "category_theory_pullback_equivalence"
+    )
+    assert finite_tree_score.macro_f1 is not None
+    assert category_score.macro_f1 is not None
+    assert report.scored_item_count == 2
+    assert finite_tree_score.prediction_report_path.endswith(
+        "finite_tree/readiness_report.model.json"
+    )
+    assert category_score.prediction_report_path.endswith(
+        "category_theory_pullback/readiness_report.model.json"
+    )
+
+
 def test_run_readinessbench_is_repeatable() -> None:
     first = run_readinessbench(
         manifest_path=MANIFEST_PATH,

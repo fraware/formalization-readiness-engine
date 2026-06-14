@@ -1,0 +1,397 @@
+{
+  "schema_version": "0.1",
+  "generated_from": "C:/Users/mateo/formalization-readiness-engine/benchmarks/readinessbench/manifest.json",
+  "cluster_count": 26,
+  "clusters": [
+    {
+      "cluster_id": "118cf7c89a7f9c71",
+      "representative_text": "choice between existing-theorem reuse and constructive cone transport",
+      "normalized_text": "choice between existing-theorem reuse and constructive cone transport",
+      "occurrence_count": 1,
+      "occurrences": [
+        {
+          "unit_id": "category_theory_pullback_equivalence",
+          "item_id": "category_theory_pullback_equivalence_gold",
+          "domain": "category_theory",
+          "blocker_text": "choice between existing-theorem reuse and constructive cone transport",
+          "normalized_text": "choice between existing-theorem reuse and constructive cone transport"
+        }
+      ]
+    },
+    {
+      "cluster_id": "6260fbfc59ed60d2",
+      "representative_text": "choice between Iff.trans and propositional tautology",
+      "normalized_text": "choice between iff.trans and propositional tautology",
+      "occurrence_count": 1,
+      "occurrences": [
+        {
+          "unit_id": "propositional_logic_iff_chain",
+          "item_id": "propositional_logic_iff_chain_gold",
+          "domain": "logic",
+          "blocker_text": "choice between Iff.trans and propositional tautology",
+          "normalized_text": "choice between iff.trans and propositional tautology"
+        }
+      ]
+    },
+    {
+      "cluster_id": "b81b363fac60fedd",
+      "representative_text": "continuity epsilon-delta packaging",
+      "normalized_text": "continuity epsilon-delta packaging",
+      "occurrence_count": 1,
+      "occurrences": [
+        {
+          "unit_id": "real_analysis_uniform_limit_continuity",
+          "item_id": "real_analysis_uniform_limit_continuity_gold",
+          "domain": "analysis",
+          "blocker_text": "continuity epsilon-delta packaging",
+          "normalized_text": "continuity epsilon-delta packaging"
+        }
+      ]
+    },
+    {
+      "cluster_id": "9561aa8255bda1f4",
+      "representative_text": "decision between existing-theorem reuse and constructive decomposition",
+      "normalized_text": "decision between existing-theorem reuse and constructive decomposition",
+      "occurrence_count": 1,
+      "occurrences": [
+        {
+          "unit_id": "finite_tree_edge_count",
+          "item_id": "finite_tree_edge_count_gold",
+          "domain": "graph_theory",
+          "blocker_text": "decision between existing-theorem reuse and constructive decomposition",
+          "normalized_text": "decision between existing-theorem reuse and constructive decomposition"
+        }
+      ]
+    },
+    {
+      "cluster_id": "30d50931e7bc35ec",
+      "representative_text": "definition alignment for compactness",
+      "normalized_text": "definition alignment for compactness",
+      "occurrence_count": 1,
+      "occurrences": [
+        {
+          "unit_id": "topology_compact_continuous_image",
+          "item_id": "topology_compact_continuous_image_gold",
+          "domain": "topology",
+          "blocker_text": "definition alignment for compactness",
+          "normalized_text": "definition alignment for compactness"
+        }
+      ]
+    },
+    {
+      "cluster_id": "0685ad2077452843",
+      "representative_text": "definition alignment for equivalence vs isomorphism",
+      "normalized_text": "definition alignment for equivalence vs isomorphism",
+      "occurrence_count": 1,
+      "occurrences": [
+        {
+          "unit_id": "category_theory_pullback_equivalence",
+          "item_id": "category_theory_pullback_equivalence_gold",
+          "domain": "category_theory",
+          "blocker_text": "definition alignment for equivalence vs isomorphism",
+          "normalized_text": "definition alignment for equivalence vs isomorphism"
+        }
+      ]
+    },
+    {
+      "cluster_id": "2099094bd089bbdf",
+      "representative_text": "definition alignment for finite simple graph",
+      "normalized_text": "definition alignment for finite simple graph",
+      "occurrence_count": 1,
+      "occurrences": [
+        {
+          "unit_id": "simple_graph_handshake_lemma",
+          "item_id": "simple_graph_handshake_lemma_gold",
+          "domain": "graph_theory",
+          "blocker_text": "definition alignment for finite simple graph",
+          "normalized_text": "definition alignment for finite simple graph"
+        }
+      ]
+    },
+    {
+      "cluster_id": "f257363a954fb6b6",
+      "representative_text": "definition alignment for finite tree",
+      "normalized_text": "definition alignment for finite tree",
+      "occurrence_count": 1,
+      "occurrences": [
+        {
+          "unit_id": "finite_tree_edge_count",
+          "item_id": "finite_tree_edge_count_gold",
+          "domain": "graph_theory",
+          "blocker_text": "definition alignment for finite tree",
+          "normalized_text": "definition alignment for finite tree"
+        }
+      ]
+    },
+    {
+      "cluster_id": "aa95152106f6fc19",
+      "representative_text": "definition alignment for finite-dimensional vector space",
+      "normalized_text": "definition alignment for finite-dimensional vector space",
+      "occurrence_count": 1,
+      "occurrences": [
+        {
+          "unit_id": "linear_algebra_rank_nullity",
+          "item_id": "linear_algebra_rank_nullity_gold",
+          "domain": "linear_algebra",
+          "blocker_text": "definition alignment for finite-dimensional vector space",
+          "normalized_text": "definition alignment for finite-dimensional vector space"
+        }
+      ]
+    },
+    {
+      "cluster_id": "c49544d0551644dd",
+      "representative_text": "definition alignment for gcd and lcm",
+      "normalized_text": "definition alignment for gcd and lcm",
+      "occurrence_count": 1,
+      "occurrences": [
+        {
+          "unit_id": "number_theory_gcd_lcm_identity",
+          "item_id": "number_theory_gcd_lcm_identity_gold",
+          "domain": "number_theory",
+          "blocker_text": "definition alignment for gcd and lcm",
+          "normalized_text": "definition alignment for gcd and lcm"
+        }
+      ]
+    },
+    {
+      "cluster_id": "100e3fe86dde2629",
+      "representative_text": "definition alignment for image and preimage",
+      "normalized_text": "definition alignment for image and preimage",
+      "occurrence_count": 1,
+      "occurrences": [
+        {
+          "unit_id": "set_theory_image_preimage",
+          "item_id": "set_theory_image_preimage_gold",
+          "domain": "set_theory",
+          "blocker_text": "definition alignment for image and preimage",
+          "normalized_text": "definition alignment for image and preimage"
+        }
+      ]
+    },
+    {
+      "cluster_id": "3de438d51fe519cb",
+      "representative_text": "definition alignment for leaf",
+      "normalized_text": "definition alignment for leaf",
+      "occurrence_count": 1,
+      "occurrences": [
+        {
+          "unit_id": "finite_tree_edge_count",
+          "item_id": "finite_tree_edge_count_gold",
+          "domain": "graph_theory",
+          "blocker_text": "definition alignment for leaf",
+          "normalized_text": "definition alignment for leaf"
+        }
+      ]
+    },
+    {
+      "cluster_id": "665662b032c438c7",
+      "representative_text": "definition alignment for measurable functions",
+      "normalized_text": "definition alignment for measurable functions",
+      "occurrence_count": 1,
+      "occurrences": [
+        {
+          "unit_id": "measure_theory_monotone_convergence",
+          "item_id": "measure_theory_monotone_convergence_gold",
+          "domain": "measure_theory",
+          "blocker_text": "definition alignment for measurable functions",
+          "normalized_text": "definition alignment for measurable functions"
+        }
+      ]
+    },
+    {
+      "cluster_id": "fa280666df346ee3",
+      "representative_text": "definition alignment for nilradical",
+      "normalized_text": "definition alignment for nilradical",
+      "occurrence_count": 1,
+      "occurrences": [
+        {
+          "unit_id": "commutative_ring_prime_ideal",
+          "item_id": "commutative_ring_prime_ideal_gold",
+          "domain": "commutative_algebra",
+          "blocker_text": "definition alignment for nilradical",
+          "normalized_text": "definition alignment for nilradical"
+        }
+      ]
+    },
+    {
+      "cluster_id": "8c853523a9ff963b",
+      "representative_text": "definition alignment for propositional equivalence",
+      "normalized_text": "definition alignment for propositional equivalence",
+      "occurrence_count": 1,
+      "occurrences": [
+        {
+          "unit_id": "propositional_logic_iff_chain",
+          "item_id": "propositional_logic_iff_chain_gold",
+          "domain": "logic",
+          "blocker_text": "definition alignment for propositional equivalence",
+          "normalized_text": "definition alignment for propositional equivalence"
+        }
+      ]
+    },
+    {
+      "cluster_id": "bb56bde8e62b6307",
+      "representative_text": "definition alignment for uniform convergence",
+      "normalized_text": "definition alignment for uniform convergence",
+      "occurrence_count": 1,
+      "occurrences": [
+        {
+          "unit_id": "real_analysis_uniform_limit_continuity",
+          "item_id": "real_analysis_uniform_limit_continuity_gold",
+          "domain": "analysis",
+          "blocker_text": "definition alignment for uniform convergence",
+          "normalized_text": "definition alignment for uniform convergence"
+        }
+      ]
+    },
+    {
+      "cluster_id": "3258d3ba455c5661",
+      "representative_text": "dimension theorem prerequisites",
+      "normalized_text": "dimension theorem prerequisites",
+      "occurrence_count": 1,
+      "occurrences": [
+        {
+          "unit_id": "linear_algebra_rank_nullity",
+          "item_id": "linear_algebra_rank_nullity_gold",
+          "domain": "linear_algebra",
+          "blocker_text": "dimension theorem prerequisites",
+          "normalized_text": "dimension theorem prerequisites"
+        }
+      ]
+    },
+    {
+      "cluster_id": "70bdfdc20a3d7954",
+      "representative_text": "factorization prerequisites",
+      "normalized_text": "factorization prerequisites",
+      "occurrence_count": 1,
+      "occurrences": [
+        {
+          "unit_id": "number_theory_gcd_lcm_identity",
+          "item_id": "number_theory_gcd_lcm_identity_gold",
+          "domain": "number_theory",
+          "blocker_text": "factorization prerequisites",
+          "normalized_text": "factorization prerequisites"
+        }
+      ]
+    },
+    {
+      "cluster_id": "054d958ef9309072",
+      "representative_text": " finset cardinality for edge set",
+      "normalized_text": "finset cardinality for edge set",
+      "occurrence_count": 1,
+      "occurrences": [
+        {
+          "unit_id": "simple_graph_handshake_lemma",
+          "item_id": "simple_graph_handshake_lemma_gold",
+          "domain": "graph_theory",
+          "blocker_text": " finset cardinality for edge set",
+          "normalized_text": "finset cardinality for edge set"
+        }
+      ]
+    },
+    {
+      "cluster_id": "16587c7d04c7a539",
+      "representative_text": "formal representation of G-v",
+      "normalized_text": "formal representation of g-v",
+      "occurrence_count": 1,
+      "occurrences": [
+        {
+          "unit_id": "finite_tree_edge_count",
+          "item_id": "finite_tree_edge_count_gold",
+          "domain": "graph_theory",
+          "blocker_text": "formal representation of G-v",
+          "normalized_text": "formal representation of g-v"
+        }
+      ]
+    },
+    {
+      "cluster_id": "deb8a85e613cdff6",
+      "representative_text": "functorial transport along unit and counit",
+      "normalized_text": "functorial transport along unit and counit",
+      "occurrence_count": 1,
+      "occurrences": [
+        {
+          "unit_id": "category_theory_pullback_equivalence",
+          "item_id": "category_theory_pullback_equivalence_gold",
+          "domain": "category_theory",
+          "blocker_text": "functorial transport along unit and counit",
+          "normalized_text": "functorial transport along unit and counit"
+        }
+      ]
+    },
+    {
+      "cluster_id": "388532ac26eafb68",
+      "representative_text": "library route for prime ideal intersection",
+      "normalized_text": "library route for prime ideal intersection",
+      "occurrence_count": 1,
+      "occurrences": [
+        {
+          "unit_id": "commutative_ring_prime_ideal",
+          "item_id": "commutative_ring_prime_ideal_gold",
+          "domain": "commutative_algebra",
+          "blocker_text": "library route for prime ideal intersection",
+          "normalized_text": "library route for prime ideal intersection"
+        }
+      ]
+    },
+    {
+      "cluster_id": "637b69d6a6abb6b9",
+      "representative_text": "mathlib module candidates: CategoryTheory.Limits.Shapes.Pullbacks and CategoryTheory.Equivalence",
+      "normalized_text": "mathlib module candidates: categorytheory.limits.shapes.pullbacks and categorytheory.equivalence",
+      "occurrence_count": 1,
+      "occurrences": [
+        {
+          "unit_id": "category_theory_pullback_equivalence",
+          "item_id": "category_theory_pullback_equivalence_gold",
+          "domain": "category_theory",
+          "blocker_text": "mathlib module candidates: CategoryTheory.Limits.Shapes.Pullbacks and CategoryTheory.Equivalence",
+          "normalized_text": "mathlib module candidates: categorytheory.limits.shapes.pullbacks and categorytheory.equivalence"
+        }
+      ]
+    },
+    {
+      "cluster_id": "023be085c1c66982",
+      "representative_text": "monotone convergence theorem packaging",
+      "normalized_text": "monotone convergence theorem packaging",
+      "occurrence_count": 1,
+      "occurrences": [
+        {
+          "unit_id": "measure_theory_monotone_convergence",
+          "item_id": "measure_theory_monotone_convergence_gold",
+          "domain": "measure_theory",
+          "blocker_text": "monotone convergence theorem packaging",
+          "normalized_text": "monotone convergence theorem packaging"
+        }
+      ]
+    },
+    {
+      "cluster_id": "b853a4c6c125b8b8",
+      "representative_text": "open cover transport under continuous maps",
+      "normalized_text": "open cover transport under continuous maps",
+      "occurrence_count": 1,
+      "occurrences": [
+        {
+          "unit_id": "topology_compact_continuous_image",
+          "item_id": "topology_compact_continuous_image_gold",
+          "domain": "topology",
+          "blocker_text": "open cover transport under continuous maps",
+          "normalized_text": "open cover transport under continuous maps"
+        }
+      ]
+    },
+    {
+      "cluster_id": "607cce1d488e6671",
+      "representative_text": "surjectivity hypothesis packaging",
+      "normalized_text": "surjectivity hypothesis packaging",
+      "occurrence_count": 1,
+      "occurrences": [
+        {
+          "unit_id": "set_theory_image_preimage",
+          "item_id": "set_theory_image_preimage_gold",
+          "domain": "set_theory",
+          "blocker_text": "surjectivity hypothesis packaging",
+          "normalized_text": "surjectivity hypothesis packaging"
+        }
+      ]
+    }
+  ]
+}

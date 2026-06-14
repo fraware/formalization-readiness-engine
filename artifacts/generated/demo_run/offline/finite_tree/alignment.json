@@ -154,6 +154,20 @@
       "alignment_status": "candidate"
     },
     {
+      "declaration_id": "mathlib:Finset.card",
+      "full_name": "Finset.card",
+      "namespace": "Finset",
+      "module": "Mathlib.Data.Finset.Card",
+      "kind": "def",
+      "score": 182,
+      "match_reasons": [
+        "embedding:hashed_char_ngram_v0",
+        "embedding_similarity:0.5196"
+      ],
+      "query_source": "embedding:unit_statement_token",
+      "alignment_status": "candidate"
+    },
+    {
       "declaration_id": "mathlib:SimpleGraph.Connected",
       "full_name": "SimpleGraph.Connected",
       "namespace": "SimpleGraph",
@@ -182,29 +196,59 @@
       "alignment_status": "candidate"
     },
     {
-      "declaration_id": "mathlib:Finset.card",
-      "full_name": "Finset.card",
-      "namespace": "Finset",
-      "module": "Mathlib.Data.Finset.Card",
-      "kind": "def",
-      "score": 60,
-      "match_reasons": [
-        "module_term:card"
-      ],
-      "query_source": "module:existing_theorem_candidate",
-      "alignment_status": "candidate"
-    },
-    {
       "declaration_id": "mathlib:Fintype.card",
       "full_name": "Fintype.card",
       "namespace": "Fintype",
       "module": "Mathlib.Data.Fintype.Card",
       "kind": "def",
-      "score": 60,
+      "score": 97,
       "match_reasons": [
-        "module_term:card"
+        "embedding:hashed_char_ngram_v0",
+        "embedding_similarity:0.2767"
       ],
-      "query_source": "module:existing_theorem_candidate",
+      "query_source": "embedding:unit_statement_token",
+      "alignment_status": "candidate"
+    },
+    {
+      "declaration_id": "mathlib:SimpleGraph.minDegree",
+      "full_name": "SimpleGraph.minDegree",
+      "namespace": "SimpleGraph",
+      "module": "Mathlib.Combinatorics.SimpleGraph.DegreeSum",
+      "kind": "def",
+      "score": 80,
+      "match_reasons": [
+        "embedding:hashed_char_ngram_v0",
+        "embedding_similarity:0.2282"
+      ],
+      "query_source": "embedding:unit_statement_token",
+      "alignment_status": "candidate"
+    },
+    {
+      "declaration_id": "mathlib:SimpleGraph.degree",
+      "full_name": "SimpleGraph.degree",
+      "namespace": "SimpleGraph",
+      "module": "Mathlib.Combinatorics.SimpleGraph.DegreeSum",
+      "kind": "def",
+      "score": 40,
+      "match_reasons": [
+        "embedding:hashed_char_ngram_v0",
+        "embedding_similarity:0.1154"
+      ],
+      "query_source": "embedding:unit_statement_token",
+      "alignment_status": "candidate"
+    },
+    {
+      "declaration_id": "mathlib:SimpleGraph.leaf",
+      "full_name": "SimpleGraph.leaf",
+      "namespace": "SimpleGraph",
+      "module": "Mathlib.Combinatorics.SimpleGraph.Acyclic",
+      "kind": "def",
+      "score": 27,
+      "match_reasons": [
+        "embedding:hashed_char_ngram_v0",
+        "embedding_similarity:0.0778"
+      ],
+      "query_source": "embedding:unit_statement_token",
       "alignment_status": "candidate"
     }
   ],

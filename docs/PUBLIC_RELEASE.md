@@ -7,11 +7,11 @@ This document explains how external users inspect examples, run ReadinessBench, 
 The committed public release is version v0.2.0:
 
 - Release manifest: `releases/v0.2.0/manifest.json`
+- Committed release exports: `releases/v0.2.0/exports/readinessbench.jsonl`, `releases/v0.2.0/exports/atlas.jsonl`, `releases/v0.2.0/exports/atlas_clusters.json`
 - ReadinessBench: 43 manifest items (11 gold, 1 silver, 31 bronze)
-- Public exports: `public_exports/readinessbench.jsonl`, `public_exports/atlas.jsonl`, `public_exports/atlas_clusters.json`
 - JSON Schemas: `schemas/`
 
-Regenerate exports locally with `make export-public-benchmark` and `make export-public-atlas`, then rebuild the release manifest with `build-release-manifest` if publishing a new version.
+Regenerate exports locally with `make export-public-benchmark` and `make export-public-atlas` (written to gitignored `public_exports/`). Copy byte-identical outputs into `releases/<version>/exports/` and rebuild the release manifest with `make build-release-manifest`.
 
 ## What is published
 
@@ -19,9 +19,9 @@ The repository publishes structured artifacts, not chat transcripts.
 
 | Export | Path | Contents |
 |--------|------|----------|
-| ReadinessBench | `public_exports/readinessbench.jsonl` | Bronze, Silver, and Gold benchmark items with shareable units and readiness reports |
-| Formalization Gap Atlas | `public_exports/atlas.jsonl` | Curated Atlas records from reference examples and reviewed benchmark items |
-| Atlas clusters | `public_exports/atlas_clusters.json` | Deterministic blocker clusters from gold readiness reports |
+| ReadinessBench | `releases/v0.2.0/exports/readinessbench.jsonl` | Bronze, Silver, and Gold benchmark items with shareable units and readiness reports |
+| Formalization Gap Atlas | `releases/v0.2.0/exports/atlas.jsonl` | Curated Atlas records from reference examples and reviewed benchmark items |
+| Atlas clusters | `releases/v0.2.0/exports/atlas_clusters.json` | Deterministic blocker clusters from gold readiness reports |
 | JSON Schemas | `schemas/` | Public artifact contracts exported from Pydantic models |
 
 Each JSONL export has a companion manifest (`*.manifest.json`) documenting `export_id`, `export_type`, `record_count`, and `output_path`.
@@ -34,6 +34,8 @@ From the repository root:
 make export-public-benchmark
 make export-public-atlas
 ```
+
+These commands write to gitignored `public_exports/` for local regeneration. To refresh a versioned release bundle, copy the outputs into `releases/<version>/exports/` and run `make build-release-manifest`.
 
 On Windows:
 
@@ -64,9 +66,9 @@ make validate-readinessbench
 make run-readinessbench PREDICTIONS_DIR=path/to/predictions
 ```
 
-Predictions may be nested as `predictions/<unit_id>/readiness_report.json` or flat as `predictions/<unit_id>.json`.
+Predictions may be nested as `predictions/<unit_id>/readiness_report.json`, flat as `predictions/<unit_id>.json`, or in demo-live layout as `predictions/<example_key>/readiness_report.model.json` (matched by `unit_id` in the JSON).
 
-Only gold items participate in scoring. See `benchmarks/readinessbench/README.md` for tier definitions.
+Only gold items participate in scoring. Items without a matching prediction are skipped; at least one scored gold item is required. See `benchmarks/readinessbench/README.md` for tier definitions.
 
 ## Inspect reference examples
 
@@ -176,7 +178,8 @@ Release manifest: releases/v0.2.0/manifest.json
 Before tagging a new public release:
 
 1. Run `make check` and `make demo`.
-2. Regenerate `public_exports/` and verify licensing leak tests pass.
-3. Run `build-release-manifest` and commit `releases/<version>/manifest.json`.
-4. Update `docs/TECHNICAL_REPORT.md` and ReadinessBench counts in `README.md`.
-5. Run `make docs` and confirm the site builds.
+2. Regenerate `public_exports/`, copy into `releases/<version>/exports/`, and verify licensing leak tests pass.
+3. Run `make build-release-manifest` and commit `releases/<version>/manifest.json` plus `releases/<version>/exports/`.
+4. Run `make verify-release-manifest` to confirm checksums match.
+5. Update `docs/TECHNICAL_REPORT.md` and ReadinessBench counts in `README.md`.
+6. Run `make docs` and confirm the site builds.

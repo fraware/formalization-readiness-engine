@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 from fre_core.baseline_runner import default_baseline_manifest_path, load_baseline_manifest
@@ -36,9 +37,14 @@ TIER_ALLOWED_REVIEW_STATUSES: dict[BenchmarkTier, frozenset[ReviewStatus]] = {
 
 GENERATED_ARTIFACT_SEGMENT = "artifacts/generated"
 PREDICTION_REPORT_FILENAME = "readiness_report.json"
+PREDICTION_REPORT_MODEL_FILENAME = "readiness_report.model.json"
 PREDICTION_PROOFGRAPH_FILENAME = "proofgraph.json"
+PREDICTION_PROOFGRAPH_MODEL_FILENAME = "proofgraph.model.json"
 PREDICTION_ATLAS_FILENAME = "atlas_record.json"
+PREDICTION_ATLAS_MODEL_FILENAME = "atlas_record.model.json"
 PREDICTION_LEANTASK_FILENAME = "leantask.json"
+PREDICTION_LEANTASK_MODEL_FILENAME = "leantask.model.json"
+PREDICTION_SUBDIR_SKIP = frozenset({".predictions", "public_exports"})
 
 
 class BenchmarkValidationError(ValueError):
@@ -239,28 +245,115 @@ def promote_units_to_bronze(
     return promoted
 
 
-def resolve_prediction_report_path(*, predictions_dir: Path, unit_id: str) -> Path:
-    nested = predictions_dir / unit_id / PREDICTION_REPORT_FILENAME
-    if nested.exists():
-        return nested
-    flat = predictions_dir / f"{unit_id}.json"
-    if flat.exists():
-        return flat
-    raise BenchmarkValidationError(
-        f"Missing prediction for unit_id={unit_id!r}. Expected {nested.as_posix()} or {flat.as_posix()}."
+def _read_json_unit_id(path: Path) -> str | None:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    unit_id = payload.get("unit_id")
+    return unit_id if isinstance(unit_id, str) and unit_id else None
+
+
+def _prediction_subdirs(predictions_dir: Path) -> list[Path]:
+    if not predictions_dir.is_dir():
+        return []
+    return sorted(
+        subdir
+        for subdir in predictions_dir.iterdir()
+        if subdir.is_dir() and subdir.name not in PREDICTION_SUBDIR_SKIP and not subdir.name.startswith(".")
     )
+
+
+def _iter_prediction_report_candidates(*, predictions_dir: Path, unit_id: str) -> list[Path]:
+    candidates: list[Path] = []
+    seen: set[Path] = set()
+
+    def add(path: Path) -> None:
+        resolved = path.resolve()
+        if resolved not in seen:
+            seen.add(resolved)
+            candidates.append(path)
+
+    add(predictions_dir / unit_id / PREDICTION_REPORT_FILENAME)
+    add(predictions_dir / f"{unit_id}.json")
+    for subdir in _prediction_subdirs(predictions_dir):
+        add(subdir / PREDICTION_REPORT_FILENAME)
+        add(subdir / PREDICTION_REPORT_MODEL_FILENAME)
+    return candidates
+
+
+def _artifact_filename_variants(filename: str) -> tuple[str, ...]:
+    stem = Path(filename).stem
+    if filename.endswith(".model.json"):
+        return (filename,)
+    return (filename, f"{stem}.model.json")
+
+
+def _iter_prediction_artifact_candidates(
+    *, predictions_dir: Path, unit_id: str, filename: str
+) -> list[Path]:
+    candidates: list[Path] = []
+    seen: set[Path] = set()
+
+    def add(path: Path) -> None:
+        resolved = path.resolve()
+        if resolved not in seen:
+            seen.add(resolved)
+            candidates.append(path)
+
+    for variant in _artifact_filename_variants(filename):
+        add(predictions_dir / unit_id / variant)
+    flat_stem = Path(filename).stem.replace(".model", "")
+    add(predictions_dir / f"{unit_id}_{flat_stem}.json")
+    for subdir in _prediction_subdirs(predictions_dir):
+        for variant in _artifact_filename_variants(filename):
+            add(subdir / variant)
+    return candidates
+
+
+def resolve_prediction_report_path(*, predictions_dir: Path, unit_id: str) -> Path:
+    path = find_prediction_report_path(predictions_dir=predictions_dir, unit_id=unit_id)
+    if path is not None:
+        return path
+    searched = [
+        candidate.as_posix()
+        for candidate in _iter_prediction_report_candidates(predictions_dir=predictions_dir, unit_id=unit_id)
+    ]
+    raise BenchmarkValidationError(
+        f"Missing prediction for unit_id={unit_id!r}. Searched: {', '.join(searched)}."
+    )
+
+
+def find_prediction_report_path(*, predictions_dir: Path, unit_id: str) -> Path | None:
+    for path in _iter_prediction_report_candidates(predictions_dir=predictions_dir, unit_id=unit_id):
+        if not path.is_file():
+            continue
+        if path.parent.name == unit_id and path.name == PREDICTION_REPORT_FILENAME:
+            return path
+        if path.name == f"{unit_id}.json":
+            return path
+        if _read_json_unit_id(path) == unit_id:
+            return path
+    return None
 
 
 def resolve_prediction_artifact_path(
     *, predictions_dir: Path, unit_id: str, filename: str
 ) -> Path | None:
     """Resolve an optional predicted artifact path for one unit."""
-    nested = predictions_dir / unit_id / filename
-    if nested.exists():
-        return nested
-    flat = predictions_dir / f"{unit_id}_{Path(filename).stem}.json"
-    if flat.exists():
-        return flat
+    for path in _iter_prediction_artifact_candidates(
+        predictions_dir=predictions_dir,
+        unit_id=unit_id,
+        filename=filename,
+    ):
+        if not path.is_file():
+            continue
+        if path.parent.name == unit_id and path.name == filename:
+            return path
+        if path.name == f"{unit_id}_{Path(filename).stem}.json":
+            return path
+        if _read_json_unit_id(path) == unit_id:
+            return path
     return None
 
 
@@ -377,8 +470,9 @@ def run_readinessbench(
             raise BenchmarkValidationError(
                 f"Refusing to treat non-reviewed report as gold for item {item.item_id!r}."
             )
-        prediction_path = resolve_prediction_report_path(predictions_dir=predictions_dir, unit_id=item.unit_id)
-        _reject_generated_artifact_path(path=prediction_path.resolve(), context="Prediction report")
+        prediction_path = find_prediction_report_path(predictions_dir=predictions_dir, unit_id=item.unit_id)
+        if prediction_path is None:
+            continue
         predicted = load_readiness_report(prediction_path)
         scores = score_readiness_report(predicted=predicted, gold=gold)
         optional_scores = _score_optional_artifacts(
@@ -393,10 +487,15 @@ def run_readinessbench(
             atlas_f1=optional_scores["atlas_f1"],
             leantask_f1=optional_scores["leantask_f1"],
         )
+        try:
+            prediction_report_path = prediction_path.resolve().relative_to(resolved_repo_root.resolve()).as_posix()
+        except ValueError:
+            prediction_report_path = prediction_path.resolve().as_posix()
         item_scores.append(
             BenchmarkItemScore(
                 item_id=item.item_id,
                 unit_id=item.unit_id,
+                prediction_report_path=prediction_report_path,
                 macro_f1=readiness_macro_f1,
                 existing_theorem_candidates_f1=_round_metric(scores.existing_theorem_candidates.f1),
                 constructive_path_f1=_round_metric(scores.constructive_path.f1),
@@ -409,6 +508,11 @@ def run_readinessbench(
             )
         )
     gold_item_count = sum(1 for item in manifest.items if item.tier == BenchmarkTier.GOLD)
+    if not item_scores:
+        raise BenchmarkValidationError(
+            f"No predictions found under {predictions_dir.as_posix()} for any of "
+            f"{gold_item_count} gold ReadinessBench items."
+        )
     macro_f1_mean = _round_metric(sum(score.macro_f1 for score in item_scores) / len(item_scores))
     full_values = [score.full_macro_f1 for score in item_scores if score.full_macro_f1 is not None]
     full_macro_f1_mean = (

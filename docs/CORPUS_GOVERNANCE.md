@@ -74,7 +74,7 @@ fre_core.cli promote-benchmark-units corpus/units --overwrite
 fre_core.cli promote-benchmark-item corpus/units/<unit_id>.json
 ```
 
-Promotion writes `benchmarks/readinessbench/bronze/<unit_id>/unit.json` and `readiness_report.json`, then appends manifest entries. Bronze paths must not reference `artifacts/generated/`; validation rejects generated-artifact escapes.
+Promotion writes `benchmarks/readinessbench/bronze/<unit_id>/unit.json` and `readiness_report.json`, then appends manifest entries. Manifest and gold truth paths must not reference `artifacts/generated/`; validation rejects generated-artifact escapes. ReadinessBench prediction inputs may use `artifacts/generated/` (for example live demo output) without entering the benchmark tree.
 
 Gold and silver tiers remain expert-reviewed subsets; bronze holds corpus-scale candidate units awaiting extraction passes in later waves.
 

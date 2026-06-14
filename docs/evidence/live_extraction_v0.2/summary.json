@@ -1,0 +1,97 @@
+{
+  "schema_version": "0.1",
+  "recorded_at": "2026-06-14T20:19:40.184914+00:00",
+  "live_root": "artifacts/generated/demo_run/live",
+  "examples": [
+    {
+      "example_key": "finite_tree",
+      "unit_id": "finite_tree_edge_count",
+      "prompt_version": "6456c56e54c7",
+      "model_name": "gpt-4.1",
+      "prediction_path": "artifacts/generated/demo_run/live/finite_tree/readiness_report.model.json",
+      "gold_path": "benchmarks/readinessbench/gold/finite_tree_edge_count/readiness_report.json",
+      "validation": {
+        "readiness_report.model.json": {
+          "strict": true,
+          "permissive": true
+        },
+        "proofgraph.model.json": {
+          "strict": false,
+          "permissive": true
+        },
+        "atlas_record.model.json": {
+          "strict": false,
+          "permissive": true
+        }
+      },
+      "scores": {
+        "macro_f1": 0.25,
+        "existing_theorem_candidates_f1": 1.0,
+        "constructive_path_f1": 0.0,
+        "blockers_f1": 0.0,
+        "notation_readiness_f1": 0.0,
+        "full_macro_f1": null
+      },
+      "candidate_theorems": [
+        "SimpleGraph.IsTree.card_edgeFinset"
+      ],
+      "gold_theorems": [
+        "SimpleGraph.IsTree.card_edgeFinset"
+      ],
+      "artifact_checksums": {
+        "readiness_report.model.json": "b428e3bdf893d3f39bd0be9f9c68ca775e22d39d9641c5b693020dfd4661c92b",
+        "readiness_report.enriched.json": "501da5bff39c2be852549a2dae8fdbc39caef86e8653b764566387e4d9584876",
+        "alignment.json": "aa7f8c4649b8bc750a01b57c720949b210076ab391b16e16841bcce71c56674d",
+        "proofgraph.model.json": "b61316b63bf812c6261dc1e904b840e63c550e32255e445c219fec1534363d0e",
+        "atlas_record.model.json": "0de34b4f1f6a66a1868317aa17e9a0c3446d163341fa60062b879f0726104a03",
+        "leantask.model.json": "ac30e91c6f71763a526229c7343ee1e83bce861306d97eaa0ed3ffc0804daf26"
+      }
+    },
+    {
+      "example_key": "category_theory_pullback",
+      "unit_id": "category_theory_pullback_equivalence",
+      "prompt_version": "6456c56e54c7",
+      "model_name": "gpt-4.1",
+      "prediction_path": "artifacts/generated/demo_run/live/category_theory_pullback/readiness_report.model.json",
+      "gold_path": "benchmarks/readinessbench/gold/category_theory_pullback_equivalence/readiness_report.json",
+      "validation": {
+        "readiness_report.model.json": {
+          "strict": true,
+          "permissive": true
+        },
+        "proofgraph.model.json": {
+          "strict": false,
+          "permissive": true
+        },
+        "atlas_record.model.json": {
+          "strict": false,
+          "permissive": true
+        }
+      },
+      "scores": {
+        "macro_f1": 0.0,
+        "existing_theorem_candidates_f1": 0.0,
+        "constructive_path_f1": 0.0,
+        "blockers_f1": 0.0,
+        "notation_readiness_f1": 0.0,
+        "full_macro_f1": null
+      },
+      "candidate_theorems": [
+        "CategoryTheory.Limits.hasPullback_of_equivalence",
+        "CategoryTheory.Limits.isLimit.mapConeEquivalence"
+      ],
+      "gold_theorems": [
+        "CategoryTheory.Equivalence.preservesLimitsOfShape",
+        "CategoryTheory.Limits.PreservesPullback"
+      ],
+      "artifact_checksums": {
+        "readiness_report.model.json": "7dc4f91edc86d33ce3696cfdb865c72039e27a4a092f055e99eaeab92c4e017d",
+        "readiness_report.enriched.json": "49435a3a488fcea9bd8d1ee880e4c559d4e410ae02c7fb0e4aedb173710fdc68",
+        "alignment.json": "33c73d31fd01f4196326ffe6ae4cc71cbc1ac5b06644fd0f6c8409b501ec94a3",
+        "proofgraph.model.json": "387283a6fa07a28130a5cbd7569f3092a618654228d2abae9a4e89fa2d3b9736",
+        "atlas_record.model.json": "e9608414dddd673a50754b1932deba265a2f7f38ce8899d58c671b869c8c4ec9",
+        "leantask.model.json": "f44645a7f278c0873a73c7d05c8935ca24f3e475ef95103a17bf8b1ec5306b69"
+      }
+    }
+  ]
+}

@@ -15,6 +15,7 @@ from fre_core.extract_leantask import extract_leantask_package
 from fre_core.extract_proofgraph import extract_proofgraph
 from fre_core.extraction import extract_readiness_report
 from fre_core.mathlib_alignment import align_readiness_report, enrich_readiness_candidates_from_alignment
+from fre_core.embedding_index import load_embedding_index
 from fre_core.mathlib_index import default_index_path, load_index
 from fre_core.model_client import StructuredModelClient
 from fre_core.validation import load_unit
@@ -104,7 +105,9 @@ def run_baselines(
     model_name: str,
 ) -> BaselineRunResult:
     units = load_baseline_units(repo_root=repo_root, manifest_path=manifest_path)
-    index = load_index(default_index_path(repo_root=repo_root))
+    index_path = default_index_path(repo_root=repo_root)
+    index = load_index(index_path)
+    embedding_index = load_embedding_index(index=index, index_path=index_path)
     output_dir.mkdir(parents=True, exist_ok=True)
 
     for condition in conditions:
@@ -126,7 +129,12 @@ def run_baselines(
                     enrich_candidates=True,
                     index=index,
                 )
-                alignment = align_readiness_report(report=report, index=index, unit=unit)
+                alignment = align_readiness_report(
+                    report=report,
+                    index=index,
+                    unit=unit,
+                    embedding_index=embedding_index,
+                )
                 _write_json(unit_output / "alignment.json", alignment)
                 report = enrich_readiness_candidates_from_alignment(
                     report=report,

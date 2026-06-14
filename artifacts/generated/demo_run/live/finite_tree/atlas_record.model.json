@@ -1,0 +1,13 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "finite_tree_edge_count",
+  "blocker_type": "definition-gap",
+  "mathematical_pattern": "Graph reduction by leaf deletion and induction on vertices",
+  "evidence": "Otherwise, choose a leaf v, let G' = G - v, and apply the induction hypothesis to G'. Since v is a leaf, deleting v removes one vertex and one edge.",
+  "candidate_formal_object": "Operation for removing a leaf from a finite tree graph, preserving the 'tree' property after deletion.",
+  "likely_library_location": "graph_theory/tree/inductive_properties.lean",
+  "severity": "medium",
+  "status": "open",
+  "recommended_action": "Formally define the operation of removing a leaf vertex from a finite tree and prove that the resulting graph is still a tree with one fewer vertex and one fewer edge.",
+  "review_status": "candidate"
+}

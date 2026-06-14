@@ -85,22 +85,53 @@ def run_check_lean_job(job_id: str, payload: dict[str, Any]) -> dict[str, Any]:
         raise
 
 
+def _baseline_conditions_from_payload(payload: dict[str, Any]) -> tuple[Any, ...]:
+    from fre_core.baseline_runner import resolve_baseline_conditions
+
+    raw = payload.get("conditions", ["direct"])
+    if isinstance(raw, str):
+        conditions_str = raw
+    else:
+        conditions_str = ",".join(str(token) for token in raw)
+    return resolve_baseline_conditions(conditions=conditions_str)
+
+
 def run_baselines_job(job_id: str, payload: dict[str, Any]) -> dict[str, Any]:
     get_job_store().update_status(job_id, status=JobStatus.RUNNING)
     try:
-        catalog_path = resolve_repo_path(payload.get("catalog_path", "corpus/catalog.json"))
-        output_dir = resolve_repo_path(payload.get("output_dir", "artifacts/generated/baselines"))
-        output_dir.mkdir(parents=True, exist_ok=True)
+        from fre_core.baseline_runner import run_baselines
+        from fre_core.openai_responses_provider import OpenAIResponsesProvider
+
+        repo_root = _repo_root()
+        catalog_rel = payload.get("catalog_path", "benchmarks/baselines/manifest.json")
+        output_rel = payload.get("output_dir", "artifacts/generated/baselines")
+        catalog_path = resolve_repo_path(catalog_rel)
+        output_base = resolve_repo_path(output_rel)
+        selected = _baseline_conditions_from_payload(payload)
+        run_id = str(payload.get("run_id") or job_id)
+        output_dir = output_base / run_id
+
+        provider = OpenAIResponsesProvider(model=payload.get("model"))
+        run_result = run_baselines(
+            output_dir=output_dir,
+            model_client=provider,
+            repo_root=repo_root,
+            manifest_path=catalog_path,
+            run_id=run_id,
+            conditions=selected,
+            model_name=provider.model,
+        )
+
+        output_dir_rel = f"{output_rel.rstrip('/')}/{run_id}".replace("\\", "/")
         result = {
-            "catalog_path": payload.get("catalog_path", "corpus/catalog.json"),
-            "output_dir": payload.get("output_dir", "artifacts/generated/baselines"),
-            "conditions": payload.get("conditions", ["direct"]),
-            "message": "Baseline harness v0 stub until Wave 3 CLI lands.",
-            "catalog_exists": catalog_path.exists(),
+            "catalog_path": catalog_rel,
+            "output_dir": output_dir_rel,
+            "conditions": [condition.value for condition in selected],
+            "run_id": run_id,
+            "unit_count": run_result.unit_count,
+            "condition_count": run_result.condition_count,
+            "run_manifest_path": (output_dir / "run_manifest.json").relative_to(repo_root).as_posix(),
         }
-        manifest = output_dir / f"{job_id}_run_manifest.json"
-        manifest.write_text(json.dumps(result, indent=2), encoding="utf-8")
-        result["run_manifest_path"] = manifest.relative_to(_repo_root()).as_posix()
         get_job_store().update_status(job_id, status=JobStatus.COMPLETED, result=result)
         return result
     except Exception as exc:  # noqa: BLE001

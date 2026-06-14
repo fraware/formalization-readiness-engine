@@ -1,0 +1,62 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "finite_tree_edge_count",
+  "statement_readiness": {
+    "status": "clear",
+    "recovered": [
+      "For a finite tree G = (V, E), |E| = |V| - 1."
+    ],
+    "unresolved": [],
+    "notes": "Statement is standard and unambiguous for finite trees."
+  },
+  "context_readiness": {
+    "status": "clear",
+    "recovered": [
+      "G is a finite simple undirected tree (finite simple graph, connected, acyclic)."
+    ],
+    "unresolved": [],
+    "notes": "Context is typical for graph theory literature."
+  },
+  "notation_readiness": {
+    "status": "partial",
+    "recovered": [
+      "Tree as connected acyclic finite simple graph",
+      "|V| is cardinality of vertex set",
+      "|E| is cardinality of edge set"
+    ],
+    "unresolved": [
+      "Precise Lean/mathlib name for the graph/tree structure",
+      "Notational conventions for vertex and edge removal"
+    ],
+    "notes": "Standard notations, but alignment to mathlib structures needed."
+  },
+  "dependency_readiness": {
+    "status": "partial",
+    "recovered": [
+      "Induction on the cardinality of vertex set (finite, well-founded)",
+      "Existence of a leaf in any finite tree"
+    ],
+    "unresolved": [
+      "Lean/mathlib lemma for existence of leaf in finite tree",
+      "Edge/vertex deletion operations for trees/graphs in mathlib",
+      "Formulation of induction on finite graphs"
+    ],
+    "notes": "Standard facts in graph theory; need to map to mathlib versions."
+  },
+  "existing_theorem_candidates": [
+    "SimpleGraph.IsTree.card_edgeFinset"
+  ],
+  "constructive_path": [
+    "Formalize induction on |V| using finiteness",
+    "Define or use removal of a leaf vertex and corresponding edge",
+    "Invoke or prove existence of a leaf in any finite tree",
+    "Apply induction hypothesis to G' = G - v",
+    "Perform arithmetic manipulation to yield |E| = |V| - 1"
+  ],
+  "blockers": [
+    "Identification of mathlib's standard theorem for existence of leaves in trees",
+    "Library interface for graph and tree vertex/edge removal"
+  ],
+  "recommended_next_action": "Audit mathlib for (1) the precise definition of `SimpleGraph.IsTree`, (2) its edge/vertex removal functions, and (3) a lemma ensuring the existence of a leaf in any finite tree.",
+  "review_status": "candidate"
+}

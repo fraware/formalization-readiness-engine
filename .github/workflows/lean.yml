@@ -2,6 +2,20 @@ name: lean
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - "lean/FRETasks/Generated/**"
+      - "lean/lean-toolchain"
+      - "lean/lakefile.lean"
+      - "lean/lake-manifest.json"
+      - "packages/fre_core/src/fre_core/leantask*.py"
+  pull_request:
+    paths:
+      - "lean/FRETasks/Generated/**"
+      - "lean/lean-toolchain"
+      - "lean/lakefile.lean"
+      - "lean/lake-manifest.json"
+      - "packages/fre_core/src/fre_core/leantask*.py"
 
 jobs:
   lean:

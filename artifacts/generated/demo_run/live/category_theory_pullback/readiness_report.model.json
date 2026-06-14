@@ -1,0 +1,57 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "category_theory_pullback_equivalence",
+  "statement_readiness": {
+    "status": "clear",
+    "recovered": [
+      "Let C and D be categories and F : C ≃ D an equivalence of categories. If (f : X → Z, g : Y → Z) has a pullback (P, π₁, π₂) in C, then (F f, F g) has a pullback (F P, F π₁, F π₂) in D; moreover, F induces an equivalence of categories between pullback cones over (f, g) and (F f, F g)."
+    ],
+    "unresolved": [],
+    "notes": null
+  },
+  "context_readiness": {
+    "status": "clear",
+    "recovered": [
+      "Standard 1-category context; assumes C, D categories, F : C ≃ D equivalence, f, g morphisms with pullback in C."
+    ],
+    "unresolved": [],
+    "notes": null
+  },
+  "notation_readiness": {
+    "status": "partial",
+    "recovered": [
+      "F : C ≃ D denotes a categorical equivalence; 'pullback cone' as in Cone (diagram (X → Z ← Y)); F f = F.map f."
+    ],
+    "unresolved": [
+      "Precise Lean definition references for 'pullback cone', morphism image under equivalence, and categorical equivalence functor image on limits."
+    ],
+    "notes": "Potential naming/data structure mismatches between existing mathlib pullback and cone definitions and those needed for equivalence transport."
+  },
+  "dependency_readiness": {
+    "status": "partial",
+    "recovered": [
+      "CategoryTheory.Equivalence, CategoryTheory.Pullback, CategoryTheory.Cones, universal property of pullbacks, fully faithfulness, essential surjectivity, quasi-inverse."
+    ],
+    "unresolved": [
+      "Library-level theorem aligning equivalence transport and universal property of limits.",
+      "Explicit construction of equivalence of categories between cone categories under F."
+    ],
+    "notes": "May need to construct missing equivalence unless it already exists in CategoryTheory.Limits."
+  },
+  "existing_theorem_candidates": [
+    "CategoryTheory.Limits.hasPullback_of_equivalence",
+    "CategoryTheory.Limits.isLimit.mapConeEquivalence"
+  ],
+  "constructive_path": [
+    "Define F-induced functor between cone categories using the equivalence structure.",
+    "Map a cone in D back to C with the quasi-inverse, use universal property in C, then map result forward.",
+    "Show functor is an equivalence via full faithfulness and essential surjectivity.",
+    "Verify universal property and uniqueness in D using properties of F."
+  ],
+  "blockers": [
+    "Uncertain if equivalence of cone categories is an existing reusable theorem in mathlib.",
+    "Notation for induced equivalence between pullback cones may not be standardized."
+  ],
+  "recommended_next_action": "Check for and, if needed, define equivalence between categories of pullback cones (Cone category) under functorial image of an equivalence (CategoryTheory.Equivalence). Align notation for morphisms and cones as needed and formalize the equivalence construction explicitly.",
+  "review_status": "candidate"
+}

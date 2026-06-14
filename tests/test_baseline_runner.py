@@ -15,6 +15,8 @@ from fre_core.schemas import (
 class FakeModelClient:
     """Deterministic model client for baseline harness tests."""
 
+    model = "fake-model"
+
     def extract_json(self, *, prompt: str, schema: type[object]) -> object:
         unit_id = "finite_tree_edge_count"
         if "category_theory_pullback_equivalence" in prompt:

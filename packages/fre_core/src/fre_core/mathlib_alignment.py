@@ -10,7 +10,13 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-from fre_core.embedding_index import EmbeddingIndex, StubEmbeddingIndex
+from fre_core.embedding_index import (
+    EMBEDDING_MODEL_ID,
+    EmbeddingIndex,
+    EmbeddingSearchHit,
+    StubEmbeddingIndex,
+    _SCORE_EMBEDDING_MAX,
+)
 from fre_core.mathlib_index import (
     DeclarationSearchResult,
     build_search_query_from_report,
@@ -54,6 +60,16 @@ def _normalize(text: str) -> str:
 
 def _tokenize(text: str) -> tuple[str, ...]:
     return tuple(token for token in _TOKEN_PATTERN.findall(_normalize(text)) if len(token) >= _MIN_TERM_LENGTH)
+
+
+def _embedding_hit_to_search_result(hit: EmbeddingSearchHit) -> DeclarationSearchResult:
+    """Map cosine similarity to the lexical score band (max ~350, below exact-name hits)."""
+    score = max(1, int(round(hit.score * _SCORE_EMBEDDING_MAX)))
+    return DeclarationSearchResult(
+        declaration=hit.declaration,
+        score=score,
+        matched_fields=(f"embedding:{EMBEDDING_MODEL_ID}", f"embedding_similarity:{hit.score:.4f}"),
+    )
 
 
 def _candidate_from_hit(*, hit: DeclarationSearchResult, query_source: str) -> AlignmentCandidate:
@@ -333,8 +349,8 @@ def align_readiness_report(
             combined_hits.append((hit, f"lexical:{spec.source}"))
         for hit in _search_type_overlap(index, spec.text, top_k_per_query):
             combined_hits.append((hit, f"type_overlap:{spec.source}"))
-        for hit in emb.search(query=spec.text, top_k=top_k_per_query):
-            pass
+        for emb_hit in emb.search(query=spec.text, top_k=top_k_per_query):
+            combined_hits.append((_embedding_hit_to_search_result(emb_hit), f"embedding:{spec.source}"))
         if "." in spec.text or spec.text[:1].isupper():
             for hit in _search_namespace(index=index, query=spec.text)[:top_k_per_query]:
                 combined_hits.append((hit, f"namespace:{spec.source}"))

@@ -25,11 +25,21 @@ jobs:
           PYTHONPATH=packages/fre_core/src:. python -m fre_core.cli export-public-benchmark
           PYTHONPATH=packages/fre_core/src:. python -m fre_core.cli export-public-atlas
           PYTHONPATH=packages/fre_core/src:. python -m fre_core.cli generate-atlas-clusters
+      - name: Copy exports into release bundle
+        run: |
+          mkdir -p "releases/${GITHUB_REF_NAME}/exports"
+          cp public_exports/readinessbench.jsonl "releases/${GITHUB_REF_NAME}/exports/"
+          cp public_exports/atlas.jsonl "releases/${GITHUB_REF_NAME}/exports/"
+          cp public_exports/atlas_clusters.json "releases/${GITHUB_REF_NAME}/exports/"
       - name: Build release manifest
         run: |
           PYTHONPATH=packages/fre_core/src:. python -m fre_core.cli build-release-manifest \
             --release-version "${GITHUB_REF_NAME}" \
-            --output-path "releases/${GITHUB_REF_NAME}/manifest.json"
+            --output-path "releases/${GITHUB_REF_NAME}/manifest.json" \
+            --artifact-path "releases/${GITHUB_REF_NAME}/exports/readinessbench.jsonl" \
+            --artifact-path "releases/${GITHUB_REF_NAME}/exports/atlas.jsonl" \
+            --artifact-path "releases/${GITHUB_REF_NAME}/exports/atlas_clusters.json" \
+            --repo-root .
       - name: Run release tests
         run: |
           PYTHONPATH=packages/fre_core/src:. pytest tests/test_release_manifest.py tests/test_atlas_generator.py -q
@@ -37,7 +47,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            public_exports/readinessbench.jsonl
-            public_exports/atlas.jsonl
-            public_exports/atlas_clusters.json
+            releases/${{ github.ref_name }}/exports/readinessbench.jsonl
+            releases/${{ github.ref_name }}/exports/atlas.jsonl
+            releases/${{ github.ref_name }}/exports/atlas_clusters.json
             releases/${{ github.ref_name }}/manifest.json

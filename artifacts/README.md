@@ -15,7 +15,8 @@ This tree holds generated and scratch artifacts. It is separate from reviewed ex
 | `examples/corpus_shareable/` | Corpus shareable export demo | Yes (reviewed examples) |
 | `corpus/units/` | Ingested theorem/proof units from catalog sources (30 units) | Yes |
 | `corpus/` | Source catalog and permitted LaTeX inputs | Yes |
-| `public_exports/` | Committed public JSONL exports for v0.2.0 | Yes |
+| `public_exports/` | Ephemeral local export output (gitignored; regenerate with Makefile targets) | No |
+| `releases/v0.2.0/exports/` | Committed public JSONL exports for v0.2.0 | Yes |
 
 ## Rules
 

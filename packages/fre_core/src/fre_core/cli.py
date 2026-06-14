@@ -38,7 +38,11 @@ from fre_core.mathlib_index import (
     search,
 )
 from fre_core.atlas_generator import generate_atlas_cluster_report, write_atlas_cluster_report
-from fre_core.release_manifest import build_release_manifest, write_release_manifest
+from fre_core.release_manifest import (
+    build_release_manifest,
+    verify_release_manifest,
+    write_release_manifest,
+)
 from fre_core.public_export import (
     assert_no_licensing_leak,
     default_public_exports_dir,
@@ -817,11 +821,16 @@ def build_release_manifest_cmd(
         help="Artifact file paths to checksum (repeatable). Defaults to public exports.",
     ),
     git_commit: str | None = typer.Option(None, help="Optional git commit override."),
+    repo_root: Path = typer.Option(
+        Path("."),
+        help="Repository root for repo-relative artifact paths in the manifest.",
+    ),
 ) -> None:
     """Build a versioned release manifest with artifact checksums."""
+    root = repo_root.resolve()
     artifacts = artifact_path
     if not artifacts:
-        exports_dir = default_public_exports_dir()
+        exports_dir = default_public_exports_dir(repo_root=root)
         artifacts = [
             exports_dir / "readinessbench.jsonl",
             exports_dir / "atlas.jsonl",
@@ -831,9 +840,26 @@ def build_release_manifest_cmd(
         release_version=release_version,
         artifact_paths=artifacts,
         git_commit=git_commit,
+        repo_root=root,
     )
     write_release_manifest(manifest=manifest, output_path=output_path)
     print(f"[green]wrote release manifest[/green] {output_path} ({len(manifest.artifacts)} artifacts)")
+
+
+@app.command("verify-release-manifest")
+def verify_release_manifest_cmd(
+    manifest_path: Path = typer.Option(
+        Path("releases/v0.2.0/manifest.json"),
+        help="Path to the release manifest JSON.",
+    ),
+    repo_root: Path = typer.Option(
+        Path("."),
+        help="Repository root used to resolve artifact paths.",
+    ),
+) -> None:
+    """Verify committed release artifacts match the release manifest checksums."""
+    verify_release_manifest(manifest_path=manifest_path, repo_root=repo_root.resolve())
+    print(f"[green]release manifest verified[/green] {manifest_path}")
 
 @app.command()
 def demo(

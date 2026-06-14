@@ -4,10 +4,11 @@ PYTHONPATH_VALUE := packages/fre_core/src:.
 .PHONY: setup setup-models docs setup-api test demo demo-live demo-finite-tree demo-category-theory \
 	validate-examples export-schemas lint check setup-lean build-lean \
 	render-finite-tree-leantask check-lean-finite-tree render-category-theory-leantask check-lean-category-theory \
-	validate-corpus-catalog ingest-catalog \
+	validate-corpus-catalog ingest-catalog build-declaration-embeddings \
 	extract-finite-tree-proofgraph extract-finite-tree-atlas lookup-finite-tree-declarations \
 	generate-finite-tree-leantask generate-category-theory-leantask \
 	validate-readinessbench run-readinessbench validate-review-submission validate-gold-changelog \
+	build-release-manifest verify-release-manifest record-live-extraction \
 	run-api run-review-ui export-public-benchmark export-public-atlas
 
 PREDICTIONS_DIR ?= tests/fixtures/readinessbench_predictions
@@ -54,6 +55,9 @@ validate-corpus-catalog:
 
 ingest-catalog:
 	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli ingest-catalog corpus/catalog.json corpus/units --repo-root . --repair
+
+build-declaration-embeddings:
+	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) scripts/build_declaration_embeddings.py
 
 render-category-theory-leantask:
 	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli render-leantask \
@@ -153,3 +157,20 @@ export-public-benchmark:
 
 export-public-atlas:
 	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli export-public-atlas
+
+build-release-manifest:
+	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli build-release-manifest \
+		--release-version v0.2.0 \
+		--output-path releases/v0.2.0/manifest.json \
+		--artifact-path releases/v0.2.0/exports/readinessbench.jsonl \
+		--artifact-path releases/v0.2.0/exports/atlas.jsonl \
+		--artifact-path releases/v0.2.0/exports/atlas_clusters.json \
+		--repo-root .
+
+verify-release-manifest:
+	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli verify-release-manifest \
+		--manifest-path releases/v0.2.0/manifest.json \
+		--repo-root .
+
+record-live-extraction:
+	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) scripts/record_live_extraction.py

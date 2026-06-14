@@ -1,0 +1,212 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "finite_tree_edge_count",
+  "index_id": "mathlib_finite_tree_v0",
+  "candidates": [
+    {
+      "declaration_id": "mathlib:SimpleGraph.IsTree.card_edgeFinset",
+      "full_name": "SimpleGraph.IsTree.card_edgeFinset",
+      "namespace": "SimpleGraph.IsTree",
+      "module": "Mathlib.Combinatorics.SimpleGraph.Acyclic",
+      "kind": "theorem",
+      "score": 1315,
+      "match_reasons": [
+        "full_name_exact",
+        "term:simplegraph:full_name",
+        "term:simplegraph:namespace",
+        "term:simplegraph:module",
+        "term:istree:full_name",
+        "term:istree:namespace",
+        "term:card:full_name",
+        "term:edgefinset:full_name",
+        "kind:theorem",
+        "kind:theorem"
+      ],
+      "query_source": "kind_theorem:existing_theorem_candidate",
+      "alignment_status": "candidate"
+    },
+    {
+      "declaration_id": "mathlib:SimpleGraph.IsTree.card_edgeFinset'",
+      "full_name": "SimpleGraph.IsTree.card_edgeFinset'",
+      "namespace": "SimpleGraph.IsTree",
+      "module": "Mathlib.Combinatorics.SimpleGraph.Acyclic",
+      "kind": "theorem",
+      "score": 815,
+      "match_reasons": [
+        "full_name_substring",
+        "term:simplegraph:full_name",
+        "term:simplegraph:namespace",
+        "term:simplegraph:module",
+        "term:istree:full_name",
+        "term:istree:namespace",
+        "term:card:full_name",
+        "term:edgefinset:full_name",
+        "kind:theorem",
+        "kind:theorem"
+      ],
+      "query_source": "kind_theorem:existing_theorem_candidate",
+      "alignment_status": "candidate"
+    },
+    {
+      "declaration_id": "mathlib:SimpleGraph.deleteVert",
+      "full_name": "SimpleGraph.deleteVert",
+      "namespace": "SimpleGraph",
+      "module": "Mathlib.Combinatorics.SimpleGraph.DeleteEdges",
+      "kind": "def",
+      "score": 660,
+      "match_reasons": [
+        "full_name_substring",
+        "module_substring",
+        "term:let:full_name",
+        "term:let:module"
+      ],
+      "query_source": "lexical:unit_statement_token",
+      "alignment_status": "candidate"
+    },
+    {
+      "declaration_id": "mathlib:SimpleGraph.deleteVerts",
+      "full_name": "SimpleGraph.deleteVerts",
+      "namespace": "SimpleGraph",
+      "module": "Mathlib.Combinatorics.SimpleGraph.DeleteEdges",
+      "kind": "def",
+      "score": 660,
+      "match_reasons": [
+        "full_name_substring",
+        "module_substring",
+        "term:let:full_name",
+        "term:let:module"
+      ],
+      "query_source": "lexical:unit_statement_token",
+      "alignment_status": "candidate"
+    },
+    {
+      "declaration_id": "mathlib:SimpleGraph.exists_leaf_of_isTree",
+      "full_name": "SimpleGraph.exists_leaf_of_isTree",
+      "namespace": "SimpleGraph",
+      "module": "Mathlib.Combinatorics.SimpleGraph.Acyclic",
+      "kind": "theorem",
+      "score": 615,
+      "match_reasons": [
+        "full_name_substring",
+        "term:tree:full_name",
+        "kind:theorem",
+        "kind:theorem"
+      ],
+      "query_source": "kind_theorem:unit_statement_token",
+      "alignment_status": "candidate"
+    },
+    {
+      "declaration_id": "mathlib:SimpleGraph.IsTree",
+      "full_name": "SimpleGraph.IsTree",
+      "namespace": "SimpleGraph",
+      "module": "Mathlib.Combinatorics.SimpleGraph.Acyclic",
+      "kind": "def",
+      "score": 550,
+      "match_reasons": [
+        "full_name_substring",
+        "term:tree:full_name"
+      ],
+      "query_source": "lexical:unit_statement_token",
+      "alignment_status": "candidate"
+    },
+    {
+      "declaration_id": "mathlib:SimpleGraph.card_edgeFinset",
+      "full_name": "SimpleGraph.card_edgeFinset",
+      "namespace": "SimpleGraph",
+      "module": "Mathlib.Combinatorics.SimpleGraph.Finite",
+      "kind": "theorem",
+      "score": 365,
+      "match_reasons": [
+        "term:finite:module",
+        "term:edge:full_name",
+        "term:graph:full_name",
+        "term:graph:namespace",
+        "term:graph:module",
+        "term:set:full_name",
+        "term:edge:full_name",
+        "term:set:full_name",
+        "term:finite:module",
+        "kind:theorem",
+        "kind:theorem"
+      ],
+      "query_source": "kind_theorem:report_aggregate",
+      "alignment_status": "candidate"
+    },
+    {
+      "declaration_id": "mathlib:SimpleGraph.edgeFinset",
+      "full_name": "SimpleGraph.edgeFinset",
+      "namespace": "SimpleGraph",
+      "module": "Mathlib.Combinatorics.SimpleGraph.Finite",
+      "kind": "def",
+      "score": 300,
+      "match_reasons": [
+        "term:finite:module",
+        "term:edge:full_name",
+        "term:graph:full_name",
+        "term:graph:namespace",
+        "term:graph:module",
+        "term:set:full_name",
+        "term:edge:full_name",
+        "term:set:full_name",
+        "term:finite:module"
+      ],
+      "query_source": "lexical:report_aggregate",
+      "alignment_status": "candidate"
+    },
+    {
+      "declaration_id": "mathlib:SimpleGraph.Connected",
+      "full_name": "SimpleGraph.Connected",
+      "namespace": "SimpleGraph",
+      "module": "Mathlib.Combinatorics.SimpleGraph.Connectivity",
+      "kind": "def",
+      "score": 160,
+      "match_reasons": [
+        "namespace_term:graph",
+        "namespace_term:graph"
+      ],
+      "query_source": "namespace:unit_aggregate",
+      "alignment_status": "candidate"
+    },
+    {
+      "declaration_id": "mathlib:SimpleGraph.IsAcyclic",
+      "full_name": "SimpleGraph.IsAcyclic",
+      "namespace": "SimpleGraph",
+      "module": "Mathlib.Combinatorics.SimpleGraph.Acyclic",
+      "kind": "def",
+      "score": 160,
+      "match_reasons": [
+        "namespace_term:graph",
+        "namespace_term:graph"
+      ],
+      "query_source": "namespace:unit_aggregate",
+      "alignment_status": "candidate"
+    },
+    {
+      "declaration_id": "mathlib:Finset.card",
+      "full_name": "Finset.card",
+      "namespace": "Finset",
+      "module": "Mathlib.Data.Finset.Card",
+      "kind": "def",
+      "score": 60,
+      "match_reasons": [
+        "module_term:card"
+      ],
+      "query_source": "module:existing_theorem_candidate",
+      "alignment_status": "candidate"
+    },
+    {
+      "declaration_id": "mathlib:Fintype.card",
+      "full_name": "Fintype.card",
+      "namespace": "Fintype",
+      "module": "Mathlib.Data.Fintype.Card",
+      "kind": "def",
+      "score": 60,
+      "match_reasons": [
+        "module_term:card"
+      ],
+      "query_source": "module:existing_theorem_candidate",
+      "alignment_status": "candidate"
+    }
+  ],
+  "confirmed": []
+}

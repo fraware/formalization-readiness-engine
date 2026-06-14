@@ -1,0 +1,32 @@
+{
+  "schema_version": "0.1",
+  "leantask_id": "category_theory_pullback_equivalence_L0",
+  "unit_id": "category_theory_pullback_equivalence",
+  "level": "L0",
+  "informal_statement": "Let C and D be categories and F : C ≃ D an equivalence of categories. If a cospan (f : X → Z, g : Y → Z) admits a pullback (P, π₁, π₂) in C, then (F f, F g) admits a pullback (F P, F π₁, F π₂) in D, and F induces an equivalence between the categories of pullback cones over (f, g) and over (F f, F g).",
+  "imports": [
+    "Mathlib.CategoryTheory.Equivalence",
+    "Mathlib.CategoryTheory.Limits.Pullbacks",
+    "Mathlib.CategoryTheory.Limits.Cones"
+  ],
+  "opens": [
+    "CategoryTheory",
+    "CategoryTheory.Limits"
+  ],
+  "formal_target": null,
+  "hypotheses": [
+    "C and D are categories",
+    "F : C ≃ D is an equivalence of categories",
+    "f : X ⟶ Z, g : Y ⟶ Z in C",
+    "The cospan (f, g) admits a pullback (P, π₁, π₂) in C"
+  ],
+  "alignment_declarations": [
+    "CategoryTheory.Limits.hasPullback_of_equivalence",
+    "CategoryTheory.Limits.isLimit.mapConeEquivalence"
+  ],
+  "sub_lemmas": [],
+  "proof_path": "Possible alignment with CategoryTheory.Limits.hasPullback_of_equivalence and CategoryTheory.Limits.isLimit.mapConeEquivalence for statement transfer and cone equivalence, but explicit construction of equivalence of cone categories likely needed.",
+  "fallback_path": "Construct the functor from the cone category over (F f, F g) in D back to C using the quasi-inverse of F, use the universal property of the known pullback in C, and then transport results forward with F. Prove the functor is an equivalence using full faithfulness and essential surjectivity of F, and explicitly check the universal property in D.",
+  "next_action": "Check whether an explicit equivalence of categories between pullback cone categories under equivalence-of-categories is present in mathlib (esp. in CategoryTheory.Limits.isLimit.mapConeEquivalence). If not, define this equivalence for the specific pullback case, possibly referencing or generalizing existing limits transport machinery. Align notation for cones and morphisms under equivalence. Then formalize equivalence of cone categories and use this to show the transfer of pullbacks.",
+  "review_status": "candidate"
+}

@@ -1,0 +1,13 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "category_theory_pullback_equivalence",
+  "blocker_type": "handling_of_essentially_unique_and_up_to_isomorphism_constructions_via_equivalences",
+  "mathematical_pattern": "Transfers of limit objects and universal properties along equivalences of categories, requiring precise handling of uniqueness up to isomorphism and transport of universal properties between categories",
+  "evidence": "Essential surjectivity ensures that the transported pullback object is correct up to canonical isomorphism. ... The universal property of the pullback (P, π₁, π₂) yields a unique mediating morphism u : GQ → P in C; applying F gives a mediating morphism F u : Q → F P in D. Uniqueness follows from full faithfulness of F.",
+  "candidate_formal_object": "An explicit equivalence between the category of pullback cones over (f, g) and that over (F f, F g), with isomorphism-lifting arguments ensuring the universal property is preserved and transported under quasi-inverses",
+  "likely_library_location": "category_theory.limits.pullbacks categorical_equivalence",
+  "severity": "high",
+  "status": "candidate",
+  "recommended_action": "Explicitly formalize the equivalence between categories of cones over (f, g) in C and (F f, F g) in D, including constructing the necessary isomorphisms to show the image of a limiting cone is a limiting cone up to unique isomorphism. Formalize and deploy the criterion that limits are preserved and reflected by equivalences up to specified isomorphism, requiring careful treatment of 'unique up to isomorphism' properties in your library's objects and morphisms.",
+  "review_status": "candidate"
+}

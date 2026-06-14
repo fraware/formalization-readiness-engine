@@ -1,0 +1,156 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "category_theory_pullback_equivalence",
+  "nodes": [
+    {
+      "node_id": "n1",
+      "node_type": "theorem_statement",
+      "text": "Let C and D be categories and F : C ≃ D an equivalence of categories. If a cospan (f : X → Z, g : Y → Z) admits a pullback (P, π₁, π₂) in C, then (F f, F g) admits a pullback (F P, F π₁, F π₂) in D, and F induces an equivalence between the categories of pullback cones over (f, g) and over (F f, F g).",
+      "source_span": {
+        "start": 0,
+        "end": 393
+      }
+    },
+    {
+      "node_id": "n2",
+      "node_type": "assumption",
+      "text": "F : C ≃ D is an equivalence of categories.",
+      "source_span": {
+        "start": 31,
+        "end": 70
+      }
+    },
+    {
+      "node_id": "n3",
+      "node_type": "assumption",
+      "text": "The cospan (f : X → Z, g : Y → Z) admits a pullback (P, π₁, π₂) in C.",
+      "source_span": {
+        "start": 72,
+        "end": 148
+      }
+    },
+    {
+      "node_id": "n4",
+      "node_type": "derived_fact",
+      "text": "F is fully faithful and admits a quasi-inverse G : D → C.",
+      "source_span": {
+        "start": 399,
+        "end": 458
+      }
+    },
+    {
+      "node_id": "n5",
+      "node_type": "construction_step",
+      "text": "Given a cone (Q, q₁, q₂) over (F f, F g) in D, apply G to obtain a cone over (f, g) in C.",
+      "source_span": {
+        "start": 460,
+        "end": 533
+      }
+    },
+    {
+      "node_id": "n6",
+      "node_type": "application_step",
+      "text": "The universal property of the pullback (P, π₁, π₂) in C yields a unique mediating morphism u : G Q → P.",
+      "source_span": {
+        "start": 535,
+        "end": 608
+      }
+    },
+    {
+      "node_id": "n7",
+      "node_type": "application_step",
+      "text": "Applying F gives a mediating morphism F u : Q → F P in D.",
+      "source_span": {
+        "start": 610,
+        "end": 658
+      }
+    },
+    {
+      "node_id": "n8",
+      "node_type": "justification",
+      "text": "Uniqueness follows from full faithfulness of F.",
+      "source_span": {
+        "start": 660,
+        "end": 698
+      }
+    },
+    {
+      "node_id": "n9",
+      "node_type": "justification",
+      "text": "Essential surjectivity of F ensures that the transported pullback object is correct up to canonical isomorphism.",
+      "source_span": {
+        "start": 700,
+        "end": 792
+      }
+    },
+    {
+      "node_id": "n10",
+      "node_type": "definition",
+      "text": "Equivalence of categories: a functor is fully faithful and essentially surjective, and there exists a quasi-inverse functor.",
+      "source_span": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "n1",
+      "target": "n2",
+      "edge_type": "uses_assumption"
+    },
+    {
+      "source": "n1",
+      "target": "n3",
+      "edge_type": "uses_assumption"
+    },
+    {
+      "source": "n4",
+      "target": "n2",
+      "edge_type": "uses_definition"
+    },
+    {
+      "source": "n5",
+      "target": "n4",
+      "edge_type": "depends_on"
+    },
+    {
+      "source": "n6",
+      "target": "n3",
+      "edge_type": "uses"
+    },
+    {
+      "source": "n6",
+      "target": "n5",
+      "edge_type": "depends_on"
+    },
+    {
+      "source": "n7",
+      "target": "n6",
+      "edge_type": "depends_on"
+    },
+    {
+      "source": "n8",
+      "target": "n4",
+      "edge_type": "depends_on"
+    },
+    {
+      "source": "n8",
+      "target": "n7",
+      "edge_type": "depends_on"
+    },
+    {
+      "source": "n9",
+      "target": "n4",
+      "edge_type": "depends_on"
+    },
+    {
+      "source": "n9",
+      "target": "n7",
+      "edge_type": "depends_on"
+    },
+    {
+      "source": "n4",
+      "target": "n10",
+      "edge_type": "uses_definition"
+    }
+  ],
+  "review_status": "candidate"
+}

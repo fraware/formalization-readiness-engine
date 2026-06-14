@@ -28,6 +28,33 @@ On Windows without GNU Make:
 
 `lean/lake-manifest.json` is committed so `lake update` resolves the same dependency graph on every machine.
 
+## Verification status
+
+**Last verified:** 2026-06-14 at commit [`56e48e83`](https://github.com/fraware/formalization-readiness-engine/commit/56e48e83e760df24d35359ed230d934debadd094) (Windows, Lean 4.8.0, mathlib v4.8.0).
+
+| Check | Result |
+|-------|--------|
+| `lake build` | Pass |
+| `FRETasks/Generated/FiniteTree.lean` | Pass (`sorry` warning) |
+| `FRETasks/Generated/CategoryTheoryPullback.lean` | Pass (`sorry` warning) |
+
+**What passes:** imports against pinned mathlib, statement signatures, and elaboration shape for both reference LeanTasks.
+
+**What does not pass (by design):** proof completion. Generated L1 tasks use `sorry`; local `check-lean` and [`.github/workflows/lean.yml`](../.github/workflows/lean.yml) verify **syntax, imports, and typechecking scaffolding only** — not that informal statements are fully formalized or proof-checked.
+
+Re-verify after changing generated tasks, renderer output, or Lean pins:
+
+```bash
+cd lean
+lake update
+lake exe cache get
+lake build
+lake env lean FRETasks/Generated/FiniteTree.lean
+lake env lean FRETasks/Generated/CategoryTheoryPullback.lean
+```
+
+From the repository root, `python -m fre_core.cli check-lean … --project-dir lean` runs the same single-file checks used in CI.
+
 ## Setup
 
 ```bash
@@ -83,6 +110,11 @@ lean/
 
 ## CI
 
-Normal Python CI does not build mathlib. An optional workflow `.github/workflows/lean.yml` runs Lean checks on `workflow_dispatch` only.
+Normal Python CI does not build mathlib. [`.github/workflows/lean.yml`](../.github/workflows/lean.yml) builds the pinned project and runs `check-lean` on both generated reference tasks.
 
-The offline demo (`make demo`) renders and optionally typechecks L1 scaffolds for both reference examples. CI sets `DEMO_SKIP_LEAN=1` to skip Lean during automated runs.
+- **Manual:** `workflow_dispatch` on GitHub Actions (always available).
+- **Automatic:** push or pull request that touches `lean/FRETasks/Generated/*.lean`, Lean project pins, or `packages/fre_core/src/fre_core/leantask*.py`.
+
+The workflow checks the same `sorry`-based L1 scaffolds documented above; it does not gate proof completion.
+
+The offline demo (`make demo`) renders and optionally typechecks L1 scaffolds for both reference examples. Python CI sets `DEMO_SKIP_LEAN=1` to skip Lean during automated runs.

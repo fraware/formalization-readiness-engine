@@ -32,10 +32,11 @@ class ExtractReportJobRequest(BaseModel):
 
 
 class RunBaselinesJobRequest(BaseModel):
-    catalog_path: str = "corpus/catalog.json"
+    catalog_path: str = "benchmarks/baselines/manifest.json"
     output_dir: str = "artifacts/generated/baselines"
     conditions: list[str] = Field(default_factory=lambda: ["direct"])
     unit_ids: list[str] | None = None
+    model: str | None = None
 
 
 class CheckLeanJobRequest(BaseModel):

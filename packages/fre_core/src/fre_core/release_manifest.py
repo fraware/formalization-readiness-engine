@@ -26,16 +26,27 @@ def _sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def collect_artifact_checksums(artifact_paths: list[Path]) -> list[ReleaseArtifactChecksum]:
+def collect_artifact_checksums(
+    artifact_paths: list[Path],
+    *,
+    repo_root: Path,
+) -> list[ReleaseArtifactChecksum]:
     """Compute stable checksum metadata for release artifacts."""
+    resolved_root = repo_root.resolve()
     checksums: list[ReleaseArtifactChecksum] = []
     for path in sorted(artifact_paths, key=lambda entry: entry.as_posix()):
         resolved = path.resolve()
         if not resolved.is_file():
             raise FileNotFoundError(f"Release artifact not found: {resolved.as_posix()}")
+        try:
+            relative_path = resolved.relative_to(resolved_root).as_posix()
+        except ValueError as exc:
+            raise ValueError(
+                f"Release artifact {resolved.as_posix()} is outside repo root {resolved_root.as_posix()}."
+            ) from exc
         checksums.append(
             ReleaseArtifactChecksum(
-                path=resolved.as_posix(),
+                path=relative_path,
                 sha256=_sha256_file(resolved),
                 byte_size=resolved.stat().st_size,
             )
@@ -44,7 +55,7 @@ def collect_artifact_checksums(artifact_paths: list[Path]) -> list[ReleaseArtifa
 
 
 def resolve_git_commit(*, repo_root: Path | None = None) -> str | None:
-    root = repo_root or Path(__file__).resolve().parents[3]
+    root = repo_root or Path(__file__).resolve().parents[4]
     try:
         completed = subprocess.run(
             ["git", "rev-parse", "HEAD"],
@@ -67,13 +78,13 @@ def build_release_manifest(
     schema_versions: dict[str, str] | None = None,
 ) -> ReleaseManifest:
     """Build a versioned release manifest for exported public artifacts."""
-    root = repo_root or Path(__file__).resolve().parents[3]
+    root = repo_root or Path(__file__).resolve().parents[4]
     commit = git_commit if git_commit is not None else resolve_git_commit(repo_root=root)
     return ReleaseManifest(
         release_version=release_version,
         git_commit=commit,
         schema_versions=schema_versions or dict(PUBLIC_SCHEMA_VERSIONS),
-        artifacts=collect_artifact_checksums(artifact_paths),
+        artifacts=collect_artifact_checksums(artifact_paths, repo_root=root),
     )
 
 
@@ -81,3 +92,26 @@ def write_release_manifest(*, manifest: ReleaseManifest, output_path: Path) -> P
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(manifest.model_dump_json(indent=2) + "\n", encoding="utf-8")
     return output_path
+
+
+def verify_release_manifest(*, manifest_path: Path, repo_root: Path) -> ReleaseManifest:
+    """Verify every artifact listed in a release manifest exists with matching checksums."""
+    manifest = ReleaseManifest.model_validate_json(manifest_path.read_text(encoding="utf-8"))
+    resolved_root = repo_root.resolve()
+    for artifact in manifest.artifacts:
+        artifact_path = resolved_root / artifact.path
+        if not artifact_path.is_file():
+            raise FileNotFoundError(f"Release artifact missing: {artifact.path}")
+        actual_sha256 = _sha256_file(artifact_path)
+        if actual_sha256 != artifact.sha256:
+            raise ValueError(
+                f"Checksum mismatch for {artifact.path}: "
+                f"expected {artifact.sha256}, got {actual_sha256}."
+            )
+        actual_size = artifact_path.stat().st_size
+        if actual_size != artifact.byte_size:
+            raise ValueError(
+                f"Byte size mismatch for {artifact.path}: "
+                f"expected {artifact.byte_size}, got {actual_size}."
+            )
+    return manifest

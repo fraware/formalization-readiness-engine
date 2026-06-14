@@ -36,6 +36,10 @@ jobs:
       - name: Licensing leak test
         run: |
           PYTHONPATH=packages/fre_core/src:. pytest tests/test_public_export.py -q -k "licensing or metadata_only"
+      - name: Verify committed release manifest
+        run: |
+          PYTHONPATH=packages/fre_core/src:. python -m fre_core.cli verify-release-manifest
+          PYTHONPATH=packages/fre_core/src:. pytest tests/test_release_manifest.py -q -k committed_v020
 
   docs:
     runs-on: ubuntu-latest

@@ -132,7 +132,7 @@ The mathlib Alignment Service indexes Lean/mathlib declarations and supports lex
 
 It should distinguish candidate alignment from confirmed alignment. A model or retrieval system can propose candidates; Silver and Gold records require human review.
 
-**Current implementation:** `DeclarationIndex` / `MathlibDeclaration` schemas, committed fixtures under `fixtures/mathlib_declarations/`, lexical lookup in `mathlib_index.py`, and the multi-dimensional Alignment Service in `mathlib_alignment.py` with `AlignmentCandidate` / `AlignmentResult` schemas. Candidate alignment is proposed from readiness-report fields; confirmed alignment requires explicit reviewer flags and is never auto-promoted. CLI: `align-declarations`, `align-readiness-report`. See `docs/ARCHITECTURE.md`.
+**Current implementation:** `DeclarationIndex` / `MathlibDeclaration` schemas, committed fixtures under `fixtures/mathlib_declarations/`, lexical lookup in `mathlib_index.py`, fixture-backed embedding sidecars (`*_embeddings.json`) with cosine-similarity search in `embedding_index.py`, and the multi-dimensional Alignment Service in `mathlib_alignment.py` with `AlignmentCandidate` / `AlignmentResult` schemas. Embedding vectors are precomputed offline via `scripts/build_declaration_embeddings.py` (deterministic hashed n-gram model; no API calls in CI). Candidate alignment is proposed from readiness-report fields; confirmed alignment requires explicit reviewer flags and is never auto-promoted. CLI: `align-declarations`, `align-readiness-report`. Makefile target: `build-declaration-embeddings`. See `docs/ARCHITECTURE.md`.
 
 ### 4.6 LeanTask Generator
 
@@ -281,7 +281,7 @@ Thirty theorem/proof units extracted from three to five sources with source span
 
 Target duration: 6 to 8 weeks.
 
-**Status:** Partial. Live extraction and error taxonomy are implemented; full multi-baseline comparison harness remains optional follow-on work (see `docs/NEXT_SPRINTS.md`).
+**Status:** Partial. Live extraction, error taxonomy, and the baseline harness (`fre run-baselines`, `POST /jobs/run-baselines`) are implemented on reference examples; scaling to thirty units and automated comparison reporting remains optional follow-on work (see `docs/NEXT_SPRINTS.md`).
 
 Deliverables:
 

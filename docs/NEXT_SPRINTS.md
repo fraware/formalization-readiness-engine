@@ -4,6 +4,21 @@ This document records completed engineering sprints and optional follow-on work 
 
 **Status:** Sprints 1–7, category-theory example, LeanTask generation, Phase 5–6, E2E demo, and Waves 0–6 scale-up are complete on `main`. New contributors should branch from `main` and pick items from [Optional follow-on work](#optional-follow-on-work) below.
 
+## Subsystem maturity (June 2026)
+
+Honest progress snapshot for external readers. Percentages are engineering estimates, not product KPIs.
+
+| Subsystem | Maturity | Next epic |
+|-----------|----------|-----------|
+| LaTeX ingestion | ~30% | Controlled notes only; add `\newtheorem` discovery, labels/refs, macros, multi-proof in `ingestion_v1` |
+| OpenAI extraction | ~35–40% | Harness + two live reference runs; expand into benchmark-wide live eval campaign ([`docs/evidence/live_extraction_v0.2/`](evidence/live_extraction_v0.2/)) |
+| mathlib alignment | ~30–35% | Fixture lexical + embedding sidecars; mathlib-scale index and elaboration-aware matching |
+| LeanTask | ~30% | `sorry` skeletons typecheck under mathlib v4.8.0; proof-completion loop + CI gate |
+| ReadinessBench | ~35% | Repo fixtures as gold; external expert review workflow and richer metrics beyond string overlap |
+| Atlas | Scaffold | Populate from reviewed exports, not generated-only |
+| API / review UI | ~20–25% | Demo API and static review UI; auth, reviewer identity, promotion CLI |
+| Docker | ~25% | Compose files present; `docker compose build && up` smoke test in CI |
+
 ## Sprint 1: first live extraction loop
 
 **Status:** Complete on `main`.

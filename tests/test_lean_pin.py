@@ -32,8 +32,9 @@ def test_lakefile_pins_mathlib_v4_8_0() -> None:
     assert ' @ "v4.8.0"' in content
 
 
-def test_lean_workflow_is_manual_dispatch_only() -> None:
+def test_lean_workflow_supports_dispatch_and_path_filtered_ci() -> None:
     workflow = (REPO_ROOT / ".github" / "workflows" / "lean.yml").read_text(encoding="utf-8")
 
     assert "workflow_dispatch" in workflow
-    assert "pull_request" not in workflow
+    assert "pull_request" in workflow
+    assert "lean/FRETasks/Generated" in workflow

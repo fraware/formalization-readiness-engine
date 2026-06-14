@@ -297,6 +297,20 @@
       ],
       "query_source": "lexical:existing_theorem_candidate+namespace:existing_theorem_candidate",
       "alignment_status": "candidate"
+    },
+    {
+      "declaration_id": "mathlib:CategoryTheory.Functor.map",
+      "full_name": "CategoryTheory.Functor.map",
+      "namespace": "CategoryTheory.Functor",
+      "module": "Mathlib.CategoryTheory.Functor.Basic",
+      "kind": "def",
+      "score": 107,
+      "match_reasons": [
+        "embedding:hashed_char_ngram_v0",
+        "embedding_similarity:0.3054"
+      ],
+      "query_source": "embedding:unit_statement_token",
+      "alignment_status": "candidate"
     }
   ],
   "confirmed": []
