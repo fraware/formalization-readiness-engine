@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "finite_tree_notes_001_0003_unique_path_between_vertices_in_a_tree",
+  "source_id": "finite_tree_notes_001",
+  "statement": "In a tree, any two vertices are connected by exactly one simple path.",
+  "proof": "Existence follows from connectedness. If two distinct simple paths joined the same endpoints, their union would contain a cycle, contradicting acyclicity.",
+  "local_context": null,
+  "domain": "graph_theory",
+  "statement_span": {
+    "start": 1016,
+    "end": 1087
+  },
+  "proof_span": {
+    "start": 1118,
+    "end": 1274
+  },
+  "review_status": "candidate"
+}

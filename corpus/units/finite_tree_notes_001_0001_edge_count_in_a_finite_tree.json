@@ -7,12 +7,12 @@
   "local_context": null,
   "domain": "graph_theory",
   "statement_span": {
-    "start": 68,
-    "end": 123
+    "start": 271,
+    "end": 326
   },
   "proof_span": {
-    "start": 151,
-    "end": 423
+    "start": 353,
+    "end": 625
   },
   "review_status": "candidate"
 }

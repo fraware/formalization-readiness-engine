@@ -1,9 +1,43 @@
+% FRE CORPUS GOVERNANCE
+% source_id: finite_tree_notes_001
+% license_status: permission_granted
+% release_mode: full_text_allowed
+% permission_reference: in-repo curriculum notes with author permission
+
 \section{Finite trees}
 
 \begin{theorem}[Edge count in a finite tree]
 Let $G=(V,E)$ be a finite tree. Then $|E| = |V| - 1$.
 \end{theorem}
-
 \begin{proof}
 We argue by induction on $|V|$. If $|V|=1$, then $G$ has no edges. Otherwise, choose a leaf $v$, let $G' = G - v$, and apply the induction hypothesis to $G'$. Since $v$ is a leaf, deleting $v$ removes one vertex and one edge. Hence $|E|-1 = (|V|-1)-1$, so $|E| = |V|-1$.
 \end{proof}
+
+\begin{lemma}[Leaves in a nontrivial finite tree]
+Every finite tree with at least two vertices has a leaf.
+\end{lemma}
+\begin{proof}
+If the tree is a path, its endpoints are leaves. Otherwise, take a longest simple path; its endpoints cannot have additional neighbors outside the path, so they are leaves.
+\end{proof}
+
+\begin{proposition}[Unique path between vertices in a tree]
+In a tree, any two vertices are connected by exactly one simple path.
+\end{proposition}
+\begin{proof}
+Existence follows from connectedness. If two distinct simple paths joined the same endpoints, their union would contain a cycle, contradicting acyclicity.
+\end{proof}
+
+\begin{corollary}[Tree with fixed leaf count]
+If a finite tree has $k$ leaves, then $|E| = |V| - 1$ still holds and $k \ge 2$ whenever $|V| \ge 2$.
+\end{corollary}
+\begin{proof}
+Apply the edge-count theorem. A single-vertex tree has zero leaves; for $|V| \ge 2$, a tree cannot be a single edge with no leaves on both sides, so at least two leaves occur.
+\end{proof}
+
+\begin{definition}[Leaf]
+A vertex $v$ in a graph $G$ is a leaf when its degree is $1$.
+\end{definition}
+
+\begin{remark}[Inductive tree deletions]
+Many tree proofs proceed by deleting a leaf and applying induction on $|V|$.
+\end{remark}

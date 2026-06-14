@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "category_theory_pullback_notes_001_0004_uniqueness_of_pullbacks_up_to_isomorphism",
+  "source_id": "category_theory_pullback_notes_001",
+  "statement": "Any two pullbacks of the same cospan are isomorphic by a unique isomorphism compatible with the projections.",
+  "proof": "Apply the universal property twice to obtain mediating isomorphisms in both directions; uniqueness of mediating maps yields inverses.",
+  "local_context": null,
+  "domain": "category_theory",
+  "statement_span": {
+    "start": 2016,
+    "end": 2126
+  },
+  "proof_span": {
+    "start": 2155,
+    "end": 2290
+  },
+  "review_status": "candidate"
+}

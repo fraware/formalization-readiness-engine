@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "finite_tree_notes_001_0004_tree_with_fixed_leaf_count",
+  "source_id": "finite_tree_notes_001",
+  "statement": "If a finite tree has $k$ leaves, then $|E| = |V| - 1$ still holds and $k \\ge 2$ whenever $|V| \\ge 2$.",
+  "proof": "Apply the edge-count theorem. A single-vertex tree has zero leaves; for $|V| \\ge 2$, a tree cannot be a single edge with no leaves on both sides, so at least two leaves occur.",
+  "local_context": null,
+  "domain": "graph_theory",
+  "statement_span": {
+    "start": 1332,
+    "end": 1435
+  },
+  "proof_span": {
+    "start": 1464,
+    "end": 1641
+  },
+  "review_status": "candidate"
+}

@@ -1,0 +1,15 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "finite_tree_notes_001_0005_leaf",
+  "source_id": "finite_tree_notes_001",
+  "statement": "A vertex $v$ in a graph $G$ is a leaf when its degree is $1$.",
+  "proof": null,
+  "local_context": null,
+  "domain": "graph_theory",
+  "statement_span": {
+    "start": 1678,
+    "end": 1741
+  },
+  "proof_span": null,
+  "review_status": "candidate"
+}

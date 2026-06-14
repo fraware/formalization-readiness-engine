@@ -8,6 +8,7 @@ from fre_core.benchmark import (
     default_manifest_path,
     load_manifest,
     resolve_benchmark_path,
+    run_benchmark_evaluation,
     run_readinessbench,
     validate_benchmark_item,
     validate_manifest,
@@ -27,9 +28,21 @@ def test_default_manifest_loads_and_validates() -> None:
     gold_reports = validate_manifest(manifest=manifest, benchmark_root=BENCHMARK_ROOT)
 
     assert manifest.benchmark_id == "readinessbench"
-    assert len(manifest.items) == 3
+    assert len(manifest.items) >= 3
     assert len(gold_reports) == 1
     assert gold_reports[0].review_status == ReviewStatus.EXPERT_REVIEWED
+
+
+def test_bronze_items_reject_generated_artifact_paths() -> None:
+    manifest = load_manifest(MANIFEST_PATH)
+    for item in manifest.items:
+        if item.tier != BenchmarkTier.BRONZE:
+            continue
+        resolve_benchmark_path(
+            benchmark_root=BENCHMARK_ROOT,
+            relative_path=item.unit_path,
+            context=f"item {item.item_id!r} unit_path",
+        )
 
 
 def test_gold_item_rejects_candidate_review_status(tmp_path: Path) -> None:
@@ -114,3 +127,20 @@ def test_run_readinessbench_is_repeatable() -> None:
     )
 
     assert first.model_dump() == second.model_dump()
+
+
+BASELINE_PREDICTIONS_DIR = ROOT / "tests" / "fixtures" / "baseline_predictions"
+
+
+def test_run_benchmark_evaluation_scores_full_macro_f1() -> None:
+    report = run_benchmark_evaluation(
+        manifest_path=MANIFEST_PATH,
+        predictions_dir=BASELINE_PREDICTIONS_DIR,
+        benchmark_root=BENCHMARK_ROOT,
+        repo_root=ROOT,
+    )
+
+    assert report.scored_item_count == 1
+    assert report.full_macro_f1_mean is not None
+    assert report.items[0].full_macro_f1 is not None
+    assert report.items[0].notation_readiness_f1 is not None

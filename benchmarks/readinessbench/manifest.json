@@ -162,6 +162,76 @@
       "tier": "bronze",
       "unit_path": "bronze/metadata_only_graph_sketch_001_0004_sketch_export_policy/unit.json",
       "readiness_report_path": "bronze/metadata_only_graph_sketch_001_0004_sketch_export_policy/readiness_report.json"
+    },
+    {
+      "item_id": "category_theory_pullback_notes_001_0002_equivalences_preserve_isomorphisms_bronze",
+      "unit_id": "category_theory_pullback_notes_001_0002_equivalences_preserve_isomorphisms",
+      "tier": "bronze",
+      "unit_path": "bronze/category_theory_pullback_notes_001_0002_equivalences_preserve_isomorphisms/unit.json",
+      "readiness_report_path": "bronze/category_theory_pullback_notes_001_0002_equivalences_preserve_isomorphisms/readiness_report.json"
+    },
+    {
+      "item_id": "category_theory_pullback_notes_001_0003_pullbacks_commute_with_isomorphisms_bronze",
+      "unit_id": "category_theory_pullback_notes_001_0003_pullbacks_commute_with_isomorphisms",
+      "tier": "bronze",
+      "unit_path": "bronze/category_theory_pullback_notes_001_0003_pullbacks_commute_with_isomorphisms/unit.json",
+      "readiness_report_path": "bronze/category_theory_pullback_notes_001_0003_pullbacks_commute_with_isomorphisms/readiness_report.json"
+    },
+    {
+      "item_id": "category_theory_pullback_notes_001_0004_uniqueness_of_pullbacks_up_to_isomorphism_bronze",
+      "unit_id": "category_theory_pullback_notes_001_0004_uniqueness_of_pullbacks_up_to_isomorphism",
+      "tier": "bronze",
+      "unit_path": "bronze/category_theory_pullback_notes_001_0004_uniqueness_of_pullbacks_up_to_isomorphism/unit.json",
+      "readiness_report_path": "bronze/category_theory_pullback_notes_001_0004_uniqueness_of_pullbacks_up_to_isomorphism/readiness_report.json"
+    },
+    {
+      "item_id": "category_theory_pullback_notes_001_0005_pullback_cone_bronze",
+      "unit_id": "category_theory_pullback_notes_001_0005_pullback_cone",
+      "tier": "bronze",
+      "unit_path": "bronze/category_theory_pullback_notes_001_0005_pullback_cone/unit.json",
+      "readiness_report_path": "bronze/category_theory_pullback_notes_001_0005_pullback_cone/readiness_report.json"
+    },
+    {
+      "item_id": "category_theory_pullback_notes_001_0006_equivalence_vs_isomorphism_of_categories_bronze",
+      "unit_id": "category_theory_pullback_notes_001_0006_equivalence_vs_isomorphism_of_categories",
+      "tier": "bronze",
+      "unit_path": "bronze/category_theory_pullback_notes_001_0006_equivalence_vs_isomorphism_of_categories/unit.json",
+      "readiness_report_path": "bronze/category_theory_pullback_notes_001_0006_equivalence_vs_isomorphism_of_categories/readiness_report.json"
+    },
+    {
+      "item_id": "finite_tree_notes_001_0002_leaves_in_a_nontrivial_finite_tree_bronze",
+      "unit_id": "finite_tree_notes_001_0002_leaves_in_a_nontrivial_finite_tree",
+      "tier": "bronze",
+      "unit_path": "bronze/finite_tree_notes_001_0002_leaves_in_a_nontrivial_finite_tree/unit.json",
+      "readiness_report_path": "bronze/finite_tree_notes_001_0002_leaves_in_a_nontrivial_finite_tree/readiness_report.json"
+    },
+    {
+      "item_id": "finite_tree_notes_001_0003_unique_path_between_vertices_in_a_tree_bronze",
+      "unit_id": "finite_tree_notes_001_0003_unique_path_between_vertices_in_a_tree",
+      "tier": "bronze",
+      "unit_path": "bronze/finite_tree_notes_001_0003_unique_path_between_vertices_in_a_tree/unit.json",
+      "readiness_report_path": "bronze/finite_tree_notes_001_0003_unique_path_between_vertices_in_a_tree/readiness_report.json"
+    },
+    {
+      "item_id": "finite_tree_notes_001_0004_tree_with_fixed_leaf_count_bronze",
+      "unit_id": "finite_tree_notes_001_0004_tree_with_fixed_leaf_count",
+      "tier": "bronze",
+      "unit_path": "bronze/finite_tree_notes_001_0004_tree_with_fixed_leaf_count/unit.json",
+      "readiness_report_path": "bronze/finite_tree_notes_001_0004_tree_with_fixed_leaf_count/readiness_report.json"
+    },
+    {
+      "item_id": "finite_tree_notes_001_0005_leaf_bronze",
+      "unit_id": "finite_tree_notes_001_0005_leaf",
+      "tier": "bronze",
+      "unit_path": "bronze/finite_tree_notes_001_0005_leaf/unit.json",
+      "readiness_report_path": "bronze/finite_tree_notes_001_0005_leaf/readiness_report.json"
+    },
+    {
+      "item_id": "finite_tree_notes_001_0006_inductive_tree_deletions_bronze",
+      "unit_id": "finite_tree_notes_001_0006_inductive_tree_deletions",
+      "tier": "bronze",
+      "unit_path": "bronze/finite_tree_notes_001_0006_inductive_tree_deletions/unit.json",
+      "readiness_report_path": "bronze/finite_tree_notes_001_0006_inductive_tree_deletions/readiness_report.json"
     }
   ]
 }

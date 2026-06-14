@@ -7,12 +7,12 @@
   "local_context": null,
   "domain": "category_theory",
   "statement_span": {
-    "start": 94,
-    "end": 444
+    "start": 310,
+    "end": 660
   },
   "proof_span": {
-    "start": 472,
-    "end": 1012
+    "start": 687,
+    "end": 1227
   },
   "review_status": "candidate"
 }
