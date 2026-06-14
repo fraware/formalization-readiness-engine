@@ -1,0 +1,62 @@
+services:
+  redis:
+    image: redis:7-alpine
+    ports: ["6379:6379"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  api:
+    build: {context: ., dockerfile: docker/Dockerfile.api}
+    ports: ["8000:8000"]
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      FRE_JOBS_DB: /data/jobs.db
+      FRE_ARTIFACT_DIR: /data/artifacts
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      FRE_MODEL_NAME: ${FRE_MODEL_NAME:-gpt-4.1}
+      FRE_REVIEW_WRITE_ENABLED: ${FRE_REVIEW_WRITE_ENABLED:-0}
+    volumes:
+      - fre-data:/data
+      - ./packages:/app/packages
+      - ./corpus:/app/corpus
+      - ./lean:/app/lean
+      - ./examples:/app/examples
+      - ./fixtures:/app/fixtures
+      - ./benchmarks:/app/benchmarks
+      - ./artifacts:/app/artifacts
+    depends_on:
+      redis: {condition: service_healthy}
+  worker:
+    build: {context: ., dockerfile: docker/Dockerfile.worker}
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      FRE_JOBS_DB: /data/jobs.db
+      FRE_ARTIFACT_DIR: /data/artifacts
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    volumes:
+      - fre-data:/data
+      - ./packages:/app/packages
+      - ./corpus:/app/corpus
+      - ./lean:/app/lean
+      - ./examples:/app/examples
+      - ./fixtures:/app/fixtures
+      - ./benchmarks:/app/benchmarks
+      - ./artifacts:/app/artifacts
+    depends_on:
+      redis: {condition: service_healthy}
+      api: {condition: service_started}
+  review-ui:
+    build: {context: ., dockerfile: docker/Dockerfile.review-ui}
+    ports: ["8080:8080"]
+    depends_on:
+      api: {condition: service_started}
+  lean:
+    build: {context: ., dockerfile: docker/Dockerfile.lean}
+    profiles: [lean]
+    volumes:
+      - ./lean:/workspace/lean
+      - ./examples:/workspace/examples
+volumes:
+  fre-data:

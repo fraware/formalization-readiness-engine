@@ -112,3 +112,9 @@ export-public-benchmark:
 
 export-public-atlas:
 	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli export-public-atlas
+
+validate-corpus-catalog:
+	python -m fre_core.cli validate-corpus-catalog corpus/catalog.json --repo-root .
+
+ingest-catalog:
+	python -m fre_core.cli ingest-catalog corpus/catalog.json corpus/units --repo-root . --repair
