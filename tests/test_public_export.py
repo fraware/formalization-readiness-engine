@@ -27,11 +27,13 @@ def test_export_public_benchmark_writes_all_tiers(tmp_path: Path) -> None:
     )
 
     lines = output_path.read_text(encoding="utf-8").splitlines()
-    assert manifest.record_count == 3
-    assert len(lines) == 3
+    assert manifest.record_count == 13
+    assert len(lines) == 13
 
     tiers = {json.loads(line)["tier"] for line in lines}
     assert tiers == {"bronze", "gold", "silver"}
+    gold_count = sum(1 for line in lines if json.loads(line)["tier"] == "gold")
+    assert gold_count == 11
 
 
 def test_export_public_atlas_includes_examples(tmp_path: Path) -> None:
