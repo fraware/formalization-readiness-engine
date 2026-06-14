@@ -16,6 +16,8 @@ from fre_core.review_workflow import ReviewWorkflowError, validate_review_submis
 from fre_core.schemas import AlignmentResult, ReadinessReport, ReadinessReportReviewSubmission
 from fre_core.validation import ArtifactValidationError, validate_readiness_report
 
+from apps.api.jobs import router as jobs_router
+
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 _DEFAULT_INDEX_PATH = default_index_path(repo_root=_REPO_ROOT)
 
@@ -80,6 +82,8 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+    app.include_router(jobs_router)
 
     @app.get("/health")
     def health() -> dict[str, str]:
