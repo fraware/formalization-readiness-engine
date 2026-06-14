@@ -279,6 +279,43 @@ class GoldArtifactChangelogEntry(BaseModel):
     review_submission_path: str | None = None
 
 
+class ReviewEditRecord(BaseModel):
+    """Versioned record of one reviewer edit to a readiness report."""
+
+    schema_version: Literal["0.1"] = "0.1"
+    edit_id: str
+    unit_id: str
+    editor: str
+    timestamp: str
+    parent_report_hash: str | None = None
+    corrected_report_hash: str
+    diff_summary: list[str] = Field(default_factory=list)
+    tier_promotion: Literal["silver", "gold"] | None = None
+    review_submission_path: str | None = None
+
+
+class ReviewerAgreementFieldScore(BaseModel):
+    """Agreement on one list-valued readiness-report field."""
+
+    field_name: str
+    jaccard: float
+    exact_match: bool
+    cohens_kappa: float | None = None
+
+
+class ReviewerAgreementReport(BaseModel):
+    """Inter-annotator agreement between two review submissions."""
+
+    schema_version: Literal["0.1"] = "0.1"
+    unit_id: str
+    reviewer_a: str
+    reviewer_b: str
+    list_field_agreement: list[ReviewerAgreementFieldScore] = Field(default_factory=list)
+    rubric_cohens_kappa: float | None = None
+    mean_list_jaccard: float
+    overall_percent_agreement: float
+
+
 class AlignmentCandidate(BaseModel):
     """One mathlib declaration match proposed or confirmed for a readiness report."""
 

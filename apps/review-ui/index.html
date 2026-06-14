@@ -9,9 +9,8 @@
   <body>
     <header>
       <h1>Formalization Readiness Review</h1>
-      <p>Inspect example artifacts and submit a structured readiness-report review.</p>
+      <p>Side-by-side dimension review with tier promotion and write-back.</p>
     </header>
-
     <main>
       <section class="panel">
         <h2>Example</h2>
@@ -23,30 +22,47 @@
         <button id="load-example" type="button">Load artifacts</button>
         <p id="load-status" class="status"></p>
       </section>
-
       <section class="panel">
-        <h2>Readiness report</h2>
-        <div id="report-summary"></div>
-        <pre id="report-json" class="artifact"></pre>
+        <h2>Source unit</h2>
+        <div id="source-spans"></div>
       </section>
-
       <section class="panel">
-        <h2>Review submission</h2>
-        <p>
-          Edit the JSON below to match
-          <code>docs/review/templates/readiness_report_review.json</code>, then validate through the API.
-        </p>
+        <h2>Readiness dimensions</h2>
+        <div id="dimension-grid" class="dimension-grid"></div>
+      </section>
+      <section class="panel">
+        <h2>List fields</h2>
+        <div id="list-fields"></div>
+        <label for="next-action">Recommended next action</label>
+        <textarea id="next-action" rows="3"></textarea>
+      </section>
+      <section class="panel">
+        <h2>Review metadata</h2>
+        <div class="meta-grid">
+          <div><label for="reviewer-id">Reviewer ID</label><input id="reviewer-id" type="text" value="reviewer.local" /></div>
+          <div><label for="review-date">Review date</label><input id="review-date" type="date" /></div>
+          <div><label for="tier-promotion">Tier promotion</label><select id="tier-promotion"><option value="">None</option><option value="silver">Silver</option><option value="gold">Gold</option></select></div>
+          <div><label for="review-status">Review status</label><select id="review-status"><option value="human_reviewed">human_reviewed</option><option value="expert_reviewed">expert_reviewed</option></select></div>
+        </div>
+      </section>
+      <section class="panel">
+        <h2>Usefulness rubric</h2>
+        <div id="rubric-scores" class="rubric-grid"></div>
+      </section>
+      <section class="panel">
+        <h2>Actions</h2>
         <label for="api-base">API base URL</label>
         <input id="api-base" type="text" value="http://127.0.0.1:8000" />
-        <textarea id="review-json" rows="24"></textarea>
+        <label for="review-notes">Reviewer notes</label>
+        <textarea id="review-notes" rows="3">Local review UI submission.</textarea>
         <div class="actions">
-          <button id="validate-review" type="button">Validate review submission</button>
-          <button id="validate-report" type="button">Validate readiness report</button>
+          <button id="validate-review" type="button">Validate submission</button>
+          <button id="submit-review" type="button">Submit review</button>
         </div>
         <pre id="validation-result" class="artifact"></pre>
       </section>
+      <section class="panel"><h2>Submission preview</h2><pre id="review-json" class="artifact"></pre></section>
     </main>
-
     <script src="app.js"></script>
   </body>
 </html>

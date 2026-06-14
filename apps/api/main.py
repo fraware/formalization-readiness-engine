@@ -10,8 +10,14 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
+from fre_core.benchmark import default_benchmark_root
 from fre_core.mathlib_alignment import align_readiness_report
 from fre_core.mathlib_index import default_index_path, load_index
+from fre_core.review_persistence import (
+    ReviewPersistenceError,
+    ReviewWriteDisabledError,
+    persist_review_submission,
+)
 from fre_core.review_workflow import ReviewWorkflowError, validate_review_submission
 from fre_core.schemas import AlignmentResult, ReadinessReport, ReadinessReportReviewSubmission
 from fre_core.validation import ArtifactValidationError, validate_readiness_report
@@ -56,6 +62,19 @@ class AlignReadinessReportRequest(BaseModel):
     unit: dict[str, Any] | None = None
     confirmed_full_names: list[str] = Field(default_factory=list)
     index_path: str | None = None
+
+
+class ReviewSubmitResponse(BaseModel):
+    persisted: bool = True
+    unit_id: str
+    tier: str | None = None
+    report_path: str | None = None
+    edit_record_path: str | None = None
+    submission_path: str | None = None
+    changelog_appended: bool = False
+    parent_report_hash: str | None = None
+    corrected_report_hash: str | None = None
+    message: str
 
 
 def _resolve_repo_path(relative_path: str) -> Path:
@@ -145,6 +164,30 @@ def create_app() -> FastAPI:
             index=index,
             unit=unit,
             confirmed_full_names=frozenset(request.confirmed_full_names),
+        )
+
+    @app.post("/review/submit", response_model=ReviewSubmitResponse)
+    def review_submit_endpoint(submission: ReadinessReportReviewSubmission) -> ReviewSubmitResponse:
+        try:
+            result = persist_review_submission(
+                submission=submission,
+                benchmark_root=default_benchmark_root(repo_root=_REPO_ROOT),
+                repo_root=_REPO_ROOT,
+            )
+        except ReviewWriteDisabledError as exc:
+            raise HTTPException(status_code=403, detail=str(exc)) from exc
+        except ReviewPersistenceError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        return ReviewSubmitResponse(
+            unit_id=result.unit_id,
+            tier=result.tier,
+            report_path=result.report_path,
+            edit_record_path=result.edit_record_path,
+            submission_path=result.submission_path,
+            changelog_appended=result.changelog_appended,
+            parent_report_hash=result.parent_report_hash,
+            corrected_report_hash=result.corrected_report_hash,
+            message=f"Review submission persisted to {result.tier} tier.",
         )
 
     return app
