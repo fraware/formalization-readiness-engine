@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "finite_tree_notes_001_0001_edge_count_in_a_finite_tree",
+  "source_id": "finite_tree_notes_001",
+  "statement": "Let $G=(V,E)$ be a finite tree. Then $|E| = |V| - 1$.",
+  "proof": "We argue by induction on $|V|$. If $|V|=1$, then $G$ has no edges. Otherwise, choose a leaf $v$, let $G' = G - v$, and apply the induction hypothesis to $G'$. Since $v$ is a leaf, deleting $v$ removes one vertex and one edge. Hence $|E|-1 = (|V|-1)-1$, so $|E| = |V|-1$.",
+  "local_context": null,
+  "domain": "graph_theory",
+  "statement_span": {
+    "start": 68,
+    "end": 123
+  },
+  "proof_span": {
+    "start": 151,
+    "end": 423
+  },
+  "review_status": "candidate"
+}

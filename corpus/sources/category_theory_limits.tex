@@ -1,0 +1,47 @@
+% FRE CORPUS GOVERNANCE
+% source_id: category_theory_limits_001
+% license_status: permission_granted
+% release_mode: full_text_allowed
+% permission_reference: in-repo curriculum notes with author permission
+
+\section{Limits and pullbacks}
+
+\begin{theorem}[Pullbacks as limits]
+In a category with finite products and equalizers, a pullback of $f : X \to Z$ and $g : Y \to Z$ exists and is a limit of the diagram $X \to Z \leftarrow Y$.
+\end{theorem}
+
+\begin{proof}
+Form the product $X \times Y$ with projections, then equalize the two composites $X \times Y \rightrightarrows Z$. The universal property of the equalizer yields the pullback cone.
+\end{proof}
+
+\begin{lemma}[Identity pullback]
+For any morphism $f : X \to Y$, the square with $X \xrightarrow{id} X$ and $X \xrightarrow{f} Y$ on the other leg is a pullback of $(f, id_Y)$.
+\end{lemma}
+
+\begin{proof}
+A cone over $(f, id_Y)$ is a map $q : Q \to X$ with $f q = q$, hence $q$ mediates uniquely to $X$.
+\end{proof}
+
+\begin{proposition}[Stability of pullbacks along isomorphisms]
+If $(P, \pi_1, \pi_2)$ is a pullback and $i : X' \to X$ is an isomorphism, then replacing $X$ by $X'$ and $f$ by $f i^{-1}$ yields an isomorphic pullback.
+\end{proposition}
+
+\begin{proof}
+Precompose cones with $i$ and postcompose mediating maps with $i^{-1}$.
+\end{proof}
+
+\begin{corollary}[Pullbacks of monomorphisms]
+If $f : X \to Z$ is a monomorphism, then the first projection $\pi_1 : P \to X$ of a pullback over $(f, g)$ is also a monomorphism.
+\end{corollary}
+
+\begin{proof}
+Use the universal property: two maps into $P$ that agree after $\pi_1$ define a cone, so agreement after both projections forces equality.
+\end{proof}
+
+\begin{definition}[Limit cone]
+A limit cone over a diagram $D : J \to C$ is an object $L$ with maps to each object of the diagram, compatible with the diagram arrows, and universal with respect to such cones.
+\end{definition}
+
+\begin{remark}[Finite limit recipes]
+Products, equalizers, and pullbacks are the standard building blocks for many finite limits.
+\end{remark}

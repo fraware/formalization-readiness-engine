@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "graph_theory_basics_001_0001_handshaking_lemma",
+  "source_id": "graph_theory_basics_001",
+  "statement": "In any finite graph $G=(V,E)$, the sum of vertex degrees equals twice the number of edges: $\\sum_{v \\in V} \\deg(v) = 2|E|$.",
+  "proof": "Each edge contributes exactly two to the total degree count, once at each endpoint (or twice at a loop, if allowed).",
+  "local_context": null,
+  "domain": "graph_theory",
+  "statement_span": {
+    "start": 270,
+    "end": 395
+  },
+  "proof_span": {
+    "start": 423,
+    "end": 541
+  },
+  "review_status": "candidate"
+}

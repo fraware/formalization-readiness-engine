@@ -5,16 +5,21 @@ from __future__ import annotations
 from pathlib import Path
 
 from fre_core.evaluation import score_readiness_report
+from fre_core.evaluation_atlas import score_atlas_record
+from fre_core.evaluation_leantask import score_leantask_package
+from fre_core.evaluation_proofgraph import score_proofgraph
 from fre_core.schemas import (
     BenchmarkEvaluationReport,
     BenchmarkItem,
     BenchmarkItemScore,
     BenchmarkManifest,
     BenchmarkTier,
+    ReadinessDimension,
     ReadinessReport,
     ReviewStatus,
+    TheoremProofUnit,
 )
-from fre_core.validation import load_readiness_report, load_unit
+from fre_core.validation import load_atlas_record, load_leantask_package, load_proofgraph, load_readiness_report, load_unit
 
 TIER_ALLOWED_REVIEW_STATUSES: dict[BenchmarkTier, frozenset[ReviewStatus]] = {
     BenchmarkTier.BRONZE: frozenset({ReviewStatus.CANDIDATE, ReviewStatus.MACHINE_VALIDATED}),
@@ -24,6 +29,9 @@ TIER_ALLOWED_REVIEW_STATUSES: dict[BenchmarkTier, frozenset[ReviewStatus]] = {
 
 GENERATED_ARTIFACT_SEGMENT = "artifacts/generated"
 PREDICTION_REPORT_FILENAME = "readiness_report.json"
+PREDICTION_PROOFGRAPH_FILENAME = "proofgraph.json"
+PREDICTION_ATLAS_FILENAME = "atlas_record.json"
+PREDICTION_LEANTASK_FILENAME = "leantask.json"
 
 
 class BenchmarkValidationError(ValueError):
@@ -181,6 +189,62 @@ def validate_manifest(*, manifest: BenchmarkManifest, benchmark_root: Path) -> l
     return gold_reports
 
 
+def create_bronze_readiness_placeholder(unit: TheoremProofUnit) -> ReadinessReport:
+    pending = ReadinessDimension(
+        status="pending", recovered=[], unresolved=["awaiting extraction pass"],
+        notes="Bronze placeholder generated from corpus ingestion.",
+    )
+    return ReadinessReport(
+        unit_id=unit.unit_id,
+        statement_readiness=pending,
+        context_readiness=pending,
+        notation_readiness=pending,
+        dependency_readiness=pending,
+        existing_theorem_candidates=[],
+        constructive_path=["awaiting machine extraction pass"],
+        blockers=["awaiting machine extraction pass"],
+        recommended_next_action="Run extract-report to populate bronze readiness fields.",
+        review_status=ReviewStatus.CANDIDATE,
+    )
+
+
+def promote_benchmark_item(*, unit: TheoremProofUnit, manifest: BenchmarkManifest, benchmark_root: Path, overwrite: bool = False) -> BenchmarkItem:
+    item_id = f"{unit.unit_id}_bronze"
+    existing = {item.item_id: item for item in manifest.items}
+    if item_id in existing and not overwrite:
+        raise BenchmarkValidationError(f"Benchmark item already exists for unit_id={unit.unit_id!r}: {item_id!r}")
+    item_dir = benchmark_root / "bronze" / unit.unit_id
+    item_dir.mkdir(parents=True, exist_ok=True)
+    unit_path = item_dir / "unit.json"
+    report_path = item_dir / "readiness_report.json"
+    _reject_generated_artifact_path(path=unit_path.resolve(), context="Bronze unit path")
+    _reject_generated_artifact_path(path=report_path.resolve(), context="Bronze report path")
+    bronze_unit = unit.model_copy(update={"review_status": ReviewStatus.CANDIDATE})
+    report = create_bronze_readiness_placeholder(bronze_unit)
+    unit_path.write_text(bronze_unit.model_dump_json(indent=2) + "\n", encoding="utf-8")
+    report_path.write_text(report.model_dump_json(indent=2) + "\n", encoding="utf-8")
+    item = BenchmarkItem(
+        item_id=item_id, unit_id=unit.unit_id, tier=BenchmarkTier.BRONZE,
+        unit_path=f"bronze/{unit.unit_id}/unit.json",
+        readiness_report_path=f"bronze/{unit.unit_id}/readiness_report.json",
+    )
+    validate_benchmark_item(item=item, benchmark_root=benchmark_root)
+    if item_id in existing:
+        manifest.items = [entry if entry.item_id != item_id else item for entry in manifest.items]
+    else:
+        manifest.items.append(item)
+    return item
+
+
+def promote_units_to_bronze(*, units: list[TheoremProofUnit], manifest_path: Path, benchmark_root: Path | None = None, overwrite: bool = False) -> list[BenchmarkItem]:
+    root = benchmark_root or manifest_path.parent
+    manifest = load_manifest(manifest_path)
+    promoted = [promote_benchmark_item(unit=unit, manifest=manifest, benchmark_root=root, overwrite=overwrite) for unit in sorted(units, key=lambda u: u.unit_id)]
+    manifest_path.write_text(manifest.model_dump_json(indent=2) + "\n", encoding="utf-8")
+    validate_manifest(manifest=manifest, benchmark_root=root)
+    return promoted
+
+
 def resolve_prediction_report_path(*, predictions_dir: Path, unit_id: str) -> Path:
     """Resolve a predicted readiness report path for one unit."""
     nested = predictions_dir / unit_id / PREDICTION_REPORT_FILENAME
@@ -254,3 +318,73 @@ def run_readinessbench(
         items=item_scores,
         macro_f1_mean=macro_f1_mean,
     )
+
+
+def run_benchmark_evaluation(
+    *,
+    manifest_path: Path,
+    predictions_dir: Path,
+    benchmark_root: Path | None = None,
+    baseline_manifest_path: Path | None = None,
+    repo_root: Path | None = None,
+) -> BenchmarkEvaluationReport:
+    root = repo_root or _repo_root_from_module()
+    report = run_readinessbench(
+        manifest_path=manifest_path,
+        predictions_dir=predictions_dir,
+        benchmark_root=benchmark_root or manifest_path.parent,
+    )
+    gold_dirs = _gold_example_dirs_by_unit_id(repo_root=root)
+    enriched: list[BenchmarkItemScore] = []
+    for item in report.items:
+        updates: dict[str, float | None] = {}
+        gold_dir = gold_dirs.get(item.unit_id)
+        if gold_dir is not None:
+            graph_path = resolve_prediction_artifact_path(
+                predictions_dir=predictions_dir, unit_id=item.unit_id, filename="proofgraph.json"
+            )
+            if graph_path and (gold_dir / "proofgraph.json").is_file():
+                graph_scores = score_proofgraph(
+                    predicted=load_proofgraph(graph_path),
+                    gold=load_proofgraph(gold_dir / "proofgraph.json"),
+                )
+                updates["proofgraph_node_f1"] = _round_metric(graph_scores.nodes.f1)
+                updates["proofgraph_edge_f1"] = _round_metric(graph_scores.edges.f1)
+            atlas_path = resolve_prediction_artifact_path(
+                predictions_dir=predictions_dir, unit_id=item.unit_id, filename="atlas_record.json"
+            )
+            if atlas_path and (gold_dir / "atlas_record.json").is_file():
+                updates["atlas_field_match"] = _round_metric(
+                    score_atlas_record(
+                        predicted=load_atlas_record(atlas_path),
+                        gold=load_atlas_record(gold_dir / "atlas_record.json"),
+                    ).f1
+                )
+            task_path = resolve_prediction_artifact_path(
+                predictions_dir=predictions_dir, unit_id=item.unit_id, filename="leantask.json"
+            )
+            if task_path and (gold_dir / "leantask.json").is_file():
+                updates["leantask_structural_match"] = _round_metric(
+                    score_leantask_package(
+                        predicted=load_leantask_package(task_path),
+                        gold=load_leantask_package(gold_dir / "leantask.json"),
+                    ).f1
+                )
+        merged = item.model_copy(update=updates)
+        metrics = [merged.macro_f1] + [
+            value
+            for value in (
+                merged.notation_readiness_f1,
+                merged.proofgraph_node_f1,
+                merged.proofgraph_edge_f1,
+                merged.atlas_field_match,
+                merged.leantask_structural_match,
+            )
+            if value is not None
+        ]
+        full_macro = _round_metric(sum(metrics) / len(metrics))
+        enriched.append(merged.model_copy(update={"full_macro_f1": full_macro}))
+    full_macro_f1_mean = _round_metric(
+        sum(entry.full_macro_f1 or entry.macro_f1 for entry in enriched) / len(enriched)
+    )
+    return report.model_copy(update={"items": enriched, "full_macro_f1_mean": full_macro_f1_mean})

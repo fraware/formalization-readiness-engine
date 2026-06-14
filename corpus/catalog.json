@@ -1,21 +1,10 @@
 {
   "schema_version": "0.1",
   "sources": [
-    {
-      "source_id": "finite_tree_notes_001",
-      "source_type": "author_permitted_notes",
-      "license_status": "permission_granted",
-      "release_mode": "full_text_allowed",
-      "domain": "graph_theory",
-      "path": "corpus/sources/finite_tree.tex"
-    },
-    {
-      "source_id": "category_theory_pullback_notes_001",
-      "source_type": "author_permitted_notes",
-      "license_status": "permission_granted",
-      "release_mode": "full_text_allowed",
-      "domain": "category_theory",
-      "path": "corpus/sources/category_theory_pullback.tex"
-    }
+    {"source_id": "finite_tree_notes_001", "source_type": "author_permitted_notes", "license_status": "permission_granted", "release_mode": "full_text_allowed", "domain": "graph_theory", "path": "corpus/sources/finite_tree.tex", "curator": "fre-corpus", "permission_reference": "in-repo curriculum notes with author permission"},
+    {"source_id": "category_theory_pullback_notes_001", "source_type": "author_permitted_notes", "license_status": "permission_granted", "release_mode": "full_text_allowed", "domain": "category_theory", "path": "corpus/sources/category_theory_pullback.tex", "curator": "fre-corpus", "permission_reference": "in-repo curriculum notes with author permission"},
+    {"source_id": "graph_theory_basics_001", "source_type": "author_permitted_notes", "license_status": "permission_granted", "release_mode": "full_text_allowed", "domain": "graph_theory", "path": "corpus/sources/graph_theory_basics.tex", "curator": "fre-corpus", "permission_reference": "in-repo curriculum notes with author permission"},
+    {"source_id": "category_theory_limits_001", "source_type": "author_permitted_notes", "license_status": "permission_granted", "release_mode": "full_text_allowed", "domain": "category_theory", "path": "corpus/sources/category_theory_limits.tex", "curator": "fre-corpus", "permission_reference": "in-repo curriculum notes with author permission"},
+    {"source_id": "metadata_only_graph_sketch_001", "source_type": "author_permitted_notes", "license_status": "permission_granted", "release_mode": "metadata_only", "domain": "graph_theory", "path": "corpus/sources/metadata_only_graph_sketch.tex", "curator": "fre-corpus", "permission_reference": "in-repo curriculum notes with author permission (metadata-only export)"}
   ]
 }

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -149,6 +150,7 @@ def test_validate_unit_sources_rejects_ingested_units_with_unknown_catalog() -> 
 
 def test_ingest_catalog_cli_runs_on_main_catalog(tmp_path: Path) -> None:
     output_dir = tmp_path / "units"
+    env = {**os.environ, "PYTHONPATH": os.pathsep.join([str(REPO_ROOT / "packages" / "fre_core" / "src"), str(REPO_ROOT)])}
     result = subprocess.run(
         [
             sys.executable,
@@ -163,6 +165,7 @@ def test_ingest_catalog_cli_runs_on_main_catalog(tmp_path: Path) -> None:
         check=False,
         capture_output=True,
         text=True,
+        env=env,
     )
 
     assert result.returncode == 0, result.stderr

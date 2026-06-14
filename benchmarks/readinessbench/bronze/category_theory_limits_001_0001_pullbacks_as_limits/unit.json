@@ -1,0 +1,18 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "category_theory_limits_001_0001_pullbacks_as_limits",
+  "source_id": "category_theory_limits_001",
+  "statement": "In a category with finite products and equalizers, a pullback of $f : X \\to Z$ and $g : Y \\to Z$ exists and is a limit of the diagram $X \\to Z \\leftarrow Y$.",
+  "proof": "Form the product $X \\times Y$ with projections, then equalize the two composites $X \\times Y \\rightrightarrows Z$. The universal property of the equalizer yields the pullback cone.",
+  "local_context": null,
+  "domain": "category_theory",
+  "statement_span": {
+    "start": 276,
+    "end": 435
+  },
+  "proof_span": {
+    "start": 463,
+    "end": 645
+  },
+  "review_status": "candidate"
+}

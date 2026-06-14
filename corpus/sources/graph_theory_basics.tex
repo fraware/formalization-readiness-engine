@@ -1,0 +1,63 @@
+% FRE CORPUS GOVERNANCE
+% source_id: graph_theory_basics_001
+% license_status: permission_granted
+% release_mode: full_text_allowed
+% permission_reference: in-repo curriculum notes with author permission
+
+\section{Graph theory basics}
+
+\begin{theorem}[Handshaking lemma]
+In any finite graph $G=(V,E)$, the sum of vertex degrees equals twice the number of edges: $\sum_{v \in V} \deg(v) = 2|E|$.
+\end{theorem}
+
+\begin{proof}
+Each edge contributes exactly two to the total degree count, once at each endpoint (or twice at a loop, if allowed).
+\end{proof}
+
+\begin{lemma}[Connected graph with $|V| \ge 2$ has an edge]
+If a finite graph is connected and has at least two vertices, then it has at least one edge.
+\end{lemma}
+
+\begin{proof}
+Pick distinct vertices $u$ and $v$. Connectedness gives a path from $u$ to $v$, which contains an edge.
+\end{proof}
+
+\begin{proposition}[Acyclic connected graphs are trees]
+A finite connected acyclic graph is a tree.
+\end{proposition}
+
+\begin{proof}
+By definition a tree is connected and acyclic; conversely, connected acyclic graphs satisfy the tree edge-count identity and unique-path property.
+\end{proof}
+
+\begin{corollary}[Even number of odd-degree vertices]
+Every finite graph has an even number of vertices with odd degree.
+\end{corollary}
+
+\begin{proof}
+The handshaking lemma shows the sum of odd degrees is even, so an odd number of odd terms cannot occur.
+\end{proof}
+
+\begin{theorem}[Forest edge count]
+If a finite forest has $c$ connected components, then $|E| = |V| - c$.
+\end{theorem}
+
+\begin{proof}
+Apply the tree edge-count theorem on each component and sum.
+\end{proof}
+
+\begin{definition}[Connected graph]
+A graph is connected when every pair of vertices is joined by a path.
+\end{definition}
+
+\begin{lemma}[Deletion of a leaf preserves acyclicity]
+If $v$ is a leaf in a graph $G$, then $G-v$ is acyclic whenever $G$ is acyclic.
+\end{lemma}
+
+\begin{proof}
+Any cycle in $G-v$ would also be a cycle in $G$.
+\end{proof}
+
+\begin{remark}[Forests and induction]
+Forests are often analyzed by deleting leaves, the same inductive pattern used for trees.
+\end{remark}

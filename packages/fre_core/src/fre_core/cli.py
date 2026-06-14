@@ -12,6 +12,7 @@ from fre_core.corpus import (
     ingest_catalog,
     load_corpus_catalog,
     load_units_from_dir,
+    validate_corpus_catalog,
     write_units,
 )
 from fre_core.extract_atlas import extract_atlas_record
@@ -43,6 +44,8 @@ from fre_core.public_export import (
 from fre_core.benchmark import (
     default_manifest_path,
     load_manifest,
+    promote_benchmark_item,
+    promote_units_to_bronze,
     run_readinessbench,
     validate_manifest,
 )
@@ -148,15 +151,28 @@ def ingest_latex(
     print(f"[green]parsed units[/green] {len(units)}")
 
 
+@app.command("validate-corpus-catalog")
+def validate_corpus_catalog_cmd(
+    catalog_path: Path = typer.Argument(..., help="Path to corpus catalog JSON"),
+    repo_root: Path = typer.Option(Path("."), help="Repository root for source paths"),
+) -> None:
+    catalog = load_corpus_catalog(catalog_path)
+    validate_corpus_catalog(catalog=catalog, repo_root=repo_root)
+    release_modes = sorted({source.release_mode for source in catalog.sources})
+    print(f"[green]valid corpus catalog[/green] {len(catalog.sources)} sources (release_modes: {', '.join(release_modes)})")
+
+
 @app.command("ingest-catalog")
 def ingest_catalog_cmd(
     catalog_path: Path = typer.Argument(..., help="Path to corpus catalog JSON"),
     output_dir: Path = typer.Argument(..., help="Directory for unit JSON output"),
     repo_root: Path = typer.Option(Path("."), help="Repository root for source paths"),
+    repair: bool = typer.Option(False, help="Repair segmentation with a structured model when parsing fails."),
 ) -> None:
     """Ingest catalog sources into theorem/proof unit JSON files."""
     catalog = load_corpus_catalog(catalog_path)
-    units = ingest_catalog(catalog=catalog, repo_root=repo_root)
+    model_client = OpenAIResponsesProvider() if repair else None
+    units = ingest_catalog(catalog=catalog, repo_root=repo_root, repair=repair, model_client=model_client)
     written = write_units(units, output_dir)
     for path in written:
         print(f"[green]wrote unit[/green] {path}")
@@ -471,6 +487,34 @@ def enrich_report_candidates_cmd(
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(enriched.model_dump_json(indent=2), encoding="utf-8")
     print(f"[green]wrote enriched readiness report[/green] {output_path}")
+
+
+@app.command("promote-benchmark-item")
+def promote_benchmark_item_cmd(
+    unit_path: Path = typer.Argument(..., help="Path to an ingested unit JSON file"),
+    manifest_path: Path = typer.Option(default_manifest_path(), help="ReadinessBench manifest path."),
+    benchmark_root: Path | None = typer.Option(None, help="Benchmark root (defaults to manifest parent)."),
+    overwrite: bool = typer.Option(False, help="Replace an existing bronze item for the same unit."),
+) -> None:
+    root = benchmark_root or manifest_path.parent
+    unit = load_unit(unit_path)
+    manifest = load_manifest(manifest_path)
+    item = promote_benchmark_item(unit=unit, manifest=manifest, benchmark_root=root, overwrite=overwrite)
+    manifest_path.write_text(manifest.model_dump_json(indent=2) + "\n", encoding="utf-8")
+    print(f"[green]promoted bronze item[/green] {item.item_id} -> {item.unit_path}")
+
+
+@app.command("promote-benchmark-units")
+def promote_benchmark_units_cmd(
+    units_dir: Path = typer.Argument(..., help="Directory containing ingested unit JSON files"),
+    manifest_path: Path = typer.Option(default_manifest_path(), help="ReadinessBench manifest path."),
+    benchmark_root: Path | None = typer.Option(None, help="Benchmark root (defaults to manifest parent)."),
+    overwrite: bool = typer.Option(False, help="Replace existing bronze items for the same units."),
+) -> None:
+    root = benchmark_root or manifest_path.parent
+    units = load_units_from_dir(units_dir)
+    promoted = promote_units_to_bronze(units=units, manifest_path=manifest_path, benchmark_root=root, overwrite=overwrite)
+    print(f"[green]promoted bronze items[/green] {len(promoted)}")
 
 
 @app.command("validate-readinessbench")

@@ -1,0 +1,15 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "metadata_only_graph_sketch_001_0001_sketch_tree_edge_bound",
+  "source_id": "metadata_only_graph_sketch_001",
+  "statement": "Every finite tree satisfies $|E| \\le |V| - 1$.",
+  "proof": null,
+  "local_context": null,
+  "domain": "graph_theory",
+  "statement_span": {
+    "start": 321,
+    "end": 369
+  },
+  "proof_span": null,
+  "review_status": "candidate"
+}

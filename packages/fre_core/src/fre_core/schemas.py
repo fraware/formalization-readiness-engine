@@ -30,6 +30,19 @@ class SourceDocument(BaseModel):
     release_mode: str
     domain: str
     path: str
+    curator: str | None = None
+    permission_reference: str | None = None
+
+
+class RepairedUnitSpan(BaseModel):
+    statement: str
+    proof: str | None = None
+    statement_span: SourceSpan
+    proof_span: SourceSpan | None = None
+
+
+class SegmentationRepairResult(BaseModel):
+    units: list[RepairedUnitSpan] = Field(default_factory=list)
 
 
 class SourceSpan(BaseModel):
@@ -177,6 +190,12 @@ class BenchmarkItemScore(BaseModel):
     existing_theorem_candidates_f1: float
     constructive_path_f1: float
     blockers_f1: float
+    notation_readiness_f1: float | None = None
+    proofgraph_node_f1: float | None = None
+    proofgraph_edge_f1: float | None = None
+    atlas_field_match: float | None = None
+    leantask_structural_match: float | None = None
+    full_macro_f1: float | None = None
 
 
 class BenchmarkEvaluationReport(BaseModel):
@@ -188,6 +207,7 @@ class BenchmarkEvaluationReport(BaseModel):
     scored_item_count: int
     items: list[BenchmarkItemScore] = Field(default_factory=list)
     macro_f1_mean: float
+    full_macro_f1_mean: float | None = None
 
 
 class ReadinessDimensionReview(BaseModel):
