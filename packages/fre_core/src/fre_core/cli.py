@@ -214,7 +214,8 @@ def render_leantask(task_path: Path, output_path: Path) -> None:
 @app.command()
 def check_lean(path: Path, project_dir: Path = Path("lean"), timeout_seconds: int = 60) -> None:
     """Check one Lean file through the configured Lake project."""
-    result = check_lean_file(path=path, cwd=project_dir, timeout_seconds=timeout_seconds)
+    resolved_path = path.resolve()
+    result = check_lean_file(path=resolved_path, cwd=project_dir.resolve(), timeout_seconds=timeout_seconds)
     if result.passed:
         print(f"[green]Lean check passed[/green] {path}")
         return

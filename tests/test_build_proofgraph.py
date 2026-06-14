@@ -1,6 +1,6 @@
 import pytest
 from fre_core.build_proofgraph import build_proofgraph, build_proofgraph_prompt
-from fre_core.schemas import ProofGraph, ReadinessDimension, ReadinessReport, TheoremProofUnit
+from fre_core.schemas import ReadinessDimension, ReadinessReport, TheoremProofUnit
 from fre_core.validation import ArtifactValidationError
 
 class Fake:

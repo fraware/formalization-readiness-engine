@@ -8,8 +8,7 @@ sys.path.insert(0, str(root / "packages" / "fre_core" / "src"))
 
 
 def main() -> None:
-    from redis import Redis
-    from rq import Queue, Worker
+    from rq import Worker
 
     from fre_core.jobs.queue import JobQueue
 

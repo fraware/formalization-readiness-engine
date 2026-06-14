@@ -20,6 +20,9 @@ function Invoke-Setup {
 
 function Invoke-SetupModels {
     python -m pip install -r packages/fre_core/requirements-models.txt
+    # Use Windows certificate store for OpenAI HTTPS when miniconda SSL fails.
+    python -m pip install pip-system-certs 2>$null
+    python -c "import pip_system_certs.bootstrap" 2>$null
 }
 
 function Invoke-SetupApi {

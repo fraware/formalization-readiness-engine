@@ -1,6 +1,9 @@
 import Mathlib.CategoryTheory.Limits.Shapes.Pullbacks
 import Mathlib.CategoryTheory.Equivalence
 
+open CategoryTheory
+open CategoryTheory.Limits
+
 /-
 LeanTask: category_theory_pullback_equivalence_L1
 Unit: category_theory_pullback_equivalence
@@ -19,6 +22,6 @@ Fallback path:
 sorry-based cone transport skeleton
 -/
 
-theorem category_theory_pullback_equivalence_L1 (C : Type u) [Category C] (D : Type v) [Category D] (e : C ≌ D) {X Y Z : C} (f : X ⟶ Z) (g : Y ⟶ Z) [HasPullback f g] :
+theorem category_theory_pullback_equivalence_L1 {C : Type*} [Category C] {D : Type*} [Category D] (e : C ≌ D) {X Y Z : C} (f : X ⟶ Z) (g : Y ⟶ Z) (hpb : HasPullback f g) :
     HasPullback (e.functor.map f) (e.functor.map g) := by
   sorry

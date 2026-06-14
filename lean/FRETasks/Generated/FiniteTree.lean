@@ -9,10 +9,10 @@ Informal statement:
 Let G=(V,E) be a finite tree. Then |E| = |V| - 1.
 
 Next action:
-Replace sorry with an alignment proof against the pinned mathlib theorem.
+Typecheck this skeleton against the pinned lean/ Lake project and confirm mathlib alignment.
 
 Proof path:
-existing theorem alignment candidate (SimpleGraph.IsTree.card_edgeFinset)
+existing theorem alignment candidate
 
 Fallback path:
 constructive decomposition into leaf-removal tasks

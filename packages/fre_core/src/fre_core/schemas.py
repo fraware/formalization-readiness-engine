@@ -134,6 +134,7 @@ class LeanTaskPackage(BaseModel):
     level: LeanTaskLevel
     informal_statement: str
     imports: list[str] = Field(default_factory=list)
+    opens: list[str] = Field(default_factory=list)
     formal_target: str | None = None
     hypotheses: list[str] = Field(default_factory=list)
     alignment_declarations: list[str] = Field(default_factory=list)

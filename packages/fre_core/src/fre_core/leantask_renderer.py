@@ -81,6 +81,9 @@ def render_leantask(task: LeanTaskPackage) -> str:
     imports = task.imports or ["Mathlib"]
     lines: list[str] = []
     lines.extend(f"import {module}" for module in imports)
+    if task.opens:
+        lines.append("")
+        lines.extend(f"open {namespace}" for namespace in task.opens)
     lines.append("")
     lines.extend(_render_doc_header(task))
 

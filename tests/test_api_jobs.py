@@ -8,7 +8,6 @@ from fastapi.testclient import TestClient
 
 from apps.api.main import create_app
 from fre_core.jobs import JobStatus, JobStore, JobType, reset_job_queue, reset_job_store
-from fre_core.jobs.queue import InlineJobQueue
 
 
 class FakeJobQueue:

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from fre_core.evaluation import _normalize_label
 from fre_core.schemas import (
-    ReadinessReport,
     ReadinessReportReviewSubmission,
     ReviewerAgreementFieldScore,
     ReviewerAgreementReport,

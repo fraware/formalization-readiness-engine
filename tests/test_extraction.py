@@ -47,3 +47,36 @@ def test_extract_readiness_report_forces_unit_id_alignment() -> None:
 
     assert report.unit_id == "finite_tree_edge_count"
     assert report.existing_theorem_candidates == ["SimpleGraph.IsTree.card_edgeFinset"]
+
+
+class PrefixModelClient:
+    def extract_json(self, *, prompt: str, schema: type[ReadinessReport]) -> ReadinessReport:
+        dimension = ReadinessDimension(status="clear", recovered=[], unresolved=[])
+        return schema(
+            unit_id="finite_tree_edge_count",
+            statement_readiness=dimension,
+            context_readiness=dimension,
+            notation_readiness=dimension,
+            dependency_readiness=dimension,
+            existing_theorem_candidates=[
+                "mathlib:SimpleGraph.IsTree.card_edgeFinset",
+                "mathlib:SimpleGraph.IsTree.card_edgeFinset",
+            ],
+            constructive_path=[],
+            blockers=[],
+            recommended_next_action="Confirm alignment.",
+        )
+
+
+def test_extract_readiness_report_strips_mathlib_prefix_from_candidates() -> None:
+    unit = TheoremProofUnit(
+        unit_id="finite_tree_edge_count",
+        source_id="source",
+        statement="Let G be a finite tree.",
+        proof="Use induction.",
+        domain="graph_theory",
+    )
+
+    report = extract_readiness_report(unit=unit, model_client=PrefixModelClient())
+
+    assert report.existing_theorem_candidates == ["SimpleGraph.IsTree.card_edgeFinset"]

@@ -90,6 +90,17 @@ Public exports in live mode are written to `artifacts/generated/demo_run/live/pu
 | `DEMO_SKIP_LEAN` | unset | Set to `1` to skip Lean checking (used in CI and offline Make targets). |
 | `OPENAI_API_KEY` | unset | Required for `--live` mode only. |
 
+### Windows SSL (miniconda / corporate proxies)
+
+If live extraction fails with SSL certificate errors when calling OpenAI, install `pip-system-certs` so Python uses the Windows certificate store:
+
+```powershell
+python -m pip install pip-system-certs
+python -c "import pip_system_certs.bootstrap"
+```
+
+Run this once per environment before `make demo-live` or `.\scripts\dev.ps1 demo-live`. Do not commit API keys or `.env` files.
+
 ## Expected output
 
 At the end of a successful run, the demo prints a summary table with:

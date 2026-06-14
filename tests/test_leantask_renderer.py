@@ -79,15 +79,19 @@ def test_render_l1_preserves_implicit_binder_braces() -> None:
         level=LeanTaskLevel.L1,
         informal_statement="Pullback transport under equivalence.",
         imports=["Mathlib.CategoryTheory.Limits.Shapes.Pullbacks"],
+        opens=["CategoryTheory", "CategoryTheory.Limits"],
         formal_target="HasPullback (e.functor.map f) (e.functor.map g)",
-        hypotheses=["{X Y Z : C}", "f : X ⟶ Z", "g : Y ⟶ Z", "[HasPullback f g]"],
+        hypotheses=["{X Y Z : C}", "f : X ⟶ Z", "g : Y ⟶ Z", "(hpb : HasPullback f g)"],
         next_action="Typecheck skeleton.",
     )
 
     rendered = render_leantask(task)
 
+    assert "open CategoryTheory" in rendered
+    assert "open CategoryTheory.Limits" in rendered
     assert "{X Y Z : C}" in rendered
     assert "({X Y Z : C})" not in rendered
+    assert "(hpb : HasPullback f g)" in rendered
 
 
 def test_validate_l2_requires_alignment_and_sub_lemmas() -> None:

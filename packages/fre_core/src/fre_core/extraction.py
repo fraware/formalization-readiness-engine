@@ -24,7 +24,35 @@ Follow these rules:
 3. Do not invent formal theorem names unless they are presented as candidates.
 4. Keep every field concise and actionable.
 5. The recommended next action must be specific enough for a formalizer to act on.
+6. For existing_theorem_candidates, emit Lean/mathlib declaration full names only (dot-separated, e.g. SimpleGraph.IsTree.card_edgeFinset). Do not use mathlib: prefixes, Coq/Isabelle names, or other ecosystems.
+7. Use readiness dimension status values clear, partial, blocked, or pending (not ready or partially_ready).
 """.strip()
+
+
+def _normalize_theorem_candidate(value: str) -> str:
+    """Normalize model-emitted theorem candidates to mathlib full_name form."""
+    stripped = value.strip()
+    if stripped.casefold().startswith("mathlib:"):
+        return stripped.split(":", 1)[1].strip()
+    return stripped
+
+
+def _normalize_readiness_report(report: ReadinessReport) -> ReadinessReport:
+    """Apply deterministic post-processing to model extraction output."""
+    candidates = [_normalize_theorem_candidate(item) for item in report.existing_theorem_candidates]
+    deduped: list[str] = []
+    seen: set[str] = set()
+    for candidate in candidates:
+        if not candidate:
+            continue
+        key = candidate.casefold()
+        if key in seen:
+            continue
+        seen.add(key)
+        deduped.append(candidate)
+    if deduped == report.existing_theorem_candidates:
+        return report
+    return report.model_copy(update={"existing_theorem_candidates": deduped})
 
 
 def build_readiness_prompt(unit: TheoremProofUnit) -> str:
@@ -64,6 +92,7 @@ def extract_readiness_report(
     """
     prompt = build_readiness_prompt(unit)
     report = model_client.extract_json(prompt=prompt, schema=ReadinessReport)
+    report = _normalize_readiness_report(report)
     if report.unit_id != unit.unit_id:
         report = report.model_copy(update={"unit_id": unit.unit_id})
     if enrich_candidates:

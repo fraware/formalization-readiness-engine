@@ -18,6 +18,6 @@ Fallback path:
 constructive decomposition into leaf-removal tasks
 -/
 
-theorem finite_tree_edge_count_L1 (V : Type*) [Fintype V] (G : SimpleGraph V) (hG : G.IsTree) :
+theorem finite_tree_edge_count_L1 (V : Type*) [Fintype V] (G : SimpleGraph V) [Fintype G.edgeSet] (hG : G.IsTree) :
     G.edgeFinset.card + 1 = Fintype.card V := by
   sorry

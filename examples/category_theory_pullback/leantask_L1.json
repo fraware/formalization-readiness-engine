@@ -8,17 +8,18 @@
     "Mathlib.CategoryTheory.Limits.Shapes.Pullbacks",
     "Mathlib.CategoryTheory.Equivalence"
   ],
+  "opens": ["CategoryTheory", "CategoryTheory.Limits"],
   "formal_target": "HasPullback (e.functor.map f) (e.functor.map g)",
   "hypotheses": [
-    "C : Type u",
+    "{C : Type*}",
     "[Category C]",
-    "D : Type v",
+    "{D : Type*}",
     "[Category D]",
     "e : C ≌ D",
     "{X Y Z : C}",
     "f : X ⟶ Z",
     "g : Y ⟶ Z",
-    "[HasPullback f g]"
+    "(hpb : HasPullback f g)"
   ],
   "proof_path": "apply Equivalence.preservesLimitsOfShape to the pullback diagram",
   "fallback_path": "sorry-based cone transport skeleton",
