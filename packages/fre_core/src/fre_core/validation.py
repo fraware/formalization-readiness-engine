@@ -7,6 +7,18 @@ from pathlib import Path
 
 from fre_core.schemas import AtlasRecord, LeanTaskPackage, ProofGraph, ReadinessReport, TheoremProofUnit
 
+PROOFGRAPH_EDGE_TYPES: frozenset[str] = frozenset(
+    {
+        "uses",
+        "uses_assumption",
+        "depends_on",
+        "aligns_with_library_candidate",
+        "aligns_with_library_theorem",
+        "requires_lemma",
+        "blocked_by",
+    }
+)
+
 
 @dataclass(frozen=True)
 class ValidationIssue:
@@ -47,6 +59,13 @@ def validate_proofgraph(graph: ProofGraph) -> None:
                 ValidationIssue(
                     "missing_edge_target",
                     f"Edge target {edge.target!r} does not match any node identifier.",
+                )
+            )
+        if edge.edge_type not in PROOFGRAPH_EDGE_TYPES:
+            issues.append(
+                ValidationIssue(
+                    "invalid_edge_type",
+                    f"Edge type {edge.edge_type!r} is not in the ProofGraph allowlist.",
                 )
             )
 
@@ -96,6 +115,34 @@ def validate_leantask_package(task: LeanTaskPackage) -> None:
         issues.append(
             ValidationIssue("missing_formal_target", "L1/L2 LeanTaskPackage needs a formal target.")
         )
+    if task.level.value == "L2":
+        if not task.alignment_declarations:
+            issues.append(
+                ValidationIssue(
+                    "missing_alignment_declarations",
+                    "L2 LeanTaskPackage needs at least one alignment declaration.",
+                )
+            )
+        if not task.sub_lemmas:
+            issues.append(
+                ValidationIssue(
+                    "missing_sub_lemmas",
+                    "L2 LeanTaskPackage needs at least one sub-lemma for decomposition.",
+                )
+            )
+        sub_lemma_ids = [sub_lemma.lemma_id for sub_lemma in task.sub_lemmas]
+        if len(sub_lemma_ids) != len(set(sub_lemma_ids)):
+            issues.append(
+                ValidationIssue("duplicate_sub_lemma_id", "L2 sub-lemma identifiers must be unique.")
+            )
+        for sub_lemma in task.sub_lemmas:
+            if not sub_lemma.statement.strip():
+                issues.append(
+                    ValidationIssue(
+                        "missing_sub_lemma_statement",
+                        f"Sub-lemma {sub_lemma.lemma_id!r} needs a statement.",
+                    )
+                )
 
     if issues:
         raise ArtifactValidationError(issues)

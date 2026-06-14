@@ -6,7 +6,9 @@ PYTHONPATH_VALUE := packages/fre_core/src:.
 	extract-finite-tree-proofgraph extract-finite-tree-atlas lookup-finite-tree-declarations \
 	generate-finite-tree-leantask generate-category-theory-leantask \
 	validate-readinessbench run-readinessbench validate-review-submission validate-gold-changelog \
-	run-api run-review-ui export-public-benchmark export-public-atlas
+	run-api run-review-ui export-public-benchmark export-public-atlas \
+	setup-lean build-lean render-finite-tree-leantask check-lean-finite-tree \
+	render-category-theory-leantask check-lean-category-theory
 
 PREDICTIONS_DIR ?= tests/fixtures/readinessbench_predictions
 
@@ -112,3 +114,32 @@ export-public-benchmark:
 
 export-public-atlas:
 	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli export-public-atlas
+
+
+setup-lean:
+	cd lean && lake update && lake exe cache get
+
+build-lean:
+	cd lean && lake build
+
+render-finite-tree-leantask:
+	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli render-leantask \
+		examples/finite_tree/leantask_L1.json \
+		lean/FRETasks/Generated/FiniteTree.lean
+
+check-lean-finite-tree:
+	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli check-lean \
+		lean/FRETasks/Generated/FiniteTree.lean \
+		--project-dir lean \
+		--timeout-seconds 300
+
+render-category-theory-leantask:
+	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli render-leantask \
+		examples/category_theory_pullback/leantask_L1.json \
+		lean/FRETasks/Generated/CategoryTheoryPullback.lean
+
+check-lean-category-theory:
+	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli check-lean \
+		lean/FRETasks/Generated/CategoryTheoryPullback.lean \
+		--project-dir lean \
+		--timeout-seconds 300
