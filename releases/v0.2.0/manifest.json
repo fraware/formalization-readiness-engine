@@ -1,7 +1,7 @@
 {
   "schema_version": "0.1",
   "release_version": "v0.2.0",
-  "git_commit": "51406ce9360e1fbb0bd3195f059ef461a77f5fe2",
+  "git_commit": "3d8feb98bf8844ab22352765d060d5b2ac824749",
   "schema_versions": {
     "readiness_report": "0.1",
     "theorem_proof_unit": "0.1",
@@ -23,8 +23,8 @@
     },
     {
       "path": "C:/Users/mateo/formalization-readiness-engine/public_exports/readinessbench.jsonl",
-      "sha256": "2b70e4044e01a2ba0571ea18f58ea67eecae831b98e105566ec0742f8d420289",
-      "byte_size": 71614
+      "sha256": "478e9ad60ce70474904be1c01b66e6435fc1e92fcb263e10c01ea43e8e835bda",
+      "byte_size": 27381
     }
   ]
 }

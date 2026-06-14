@@ -33,6 +33,8 @@ from fre_core.mathlib_index import (
     load_index,
     search,
 )
+from fre_core.atlas_generator import generate_atlas_cluster_report, write_atlas_cluster_report
+from fre_core.release_manifest import build_release_manifest, write_release_manifest
 from fre_core.public_export import (
     assert_no_licensing_leak,
     default_public_exports_dir,
@@ -625,6 +627,54 @@ def check_licensing_leak_cmd(
     )
     print(f"[green]no licensing leak detected[/green] {jsonl_path}")
 
+
+
+@app.command("generate-atlas-clusters")
+def generate_atlas_clusters_cmd(
+    manifest_path: Path = typer.Option(
+        default_manifest_path(),
+        help="ReadinessBench manifest path.",
+    ),
+    output_path: Path = typer.Option(
+        Path("public_exports/atlas_clusters.json"),
+        help="Output path for the cluster report JSON.",
+    ),
+) -> None:
+    """Cluster gold benchmark blockers into a deterministic Atlas report."""
+    report = generate_atlas_cluster_report(manifest_path=manifest_path)
+    write_atlas_cluster_report(report=report, output_path=output_path)
+    print(f"[green]wrote atlas cluster report[/green] {report.cluster_count} clusters -> {output_path}")
+
+
+@app.command("build-release-manifest")
+def build_release_manifest_cmd(
+    release_version: str = typer.Option("v0.2.0", help="Release version label."),
+    output_path: Path = typer.Option(
+        Path("releases/v0.2.0/manifest.json"),
+        help="Output path for the release manifest JSON.",
+    ),
+    artifact_path: list[Path] = typer.Option(
+        [],
+        help="Artifact file paths to checksum (repeatable). Defaults to public exports.",
+    ),
+    git_commit: str | None = typer.Option(None, help="Optional git commit override."),
+) -> None:
+    """Build a versioned release manifest with artifact checksums."""
+    artifacts = artifact_path
+    if not artifacts:
+        exports_dir = default_public_exports_dir()
+        artifacts = [
+            exports_dir / "readinessbench.jsonl",
+            exports_dir / "atlas.jsonl",
+            exports_dir / "atlas_clusters.json",
+        ]
+    manifest = build_release_manifest(
+        release_version=release_version,
+        artifact_paths=artifacts,
+        git_commit=git_commit,
+    )
+    write_release_manifest(manifest=manifest, output_path=output_path)
+    print(f"[green]wrote release manifest[/green] {output_path} ({len(manifest.artifacts)} artifacts)")
 
 @app.command()
 def demo(
