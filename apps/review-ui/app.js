@@ -1,139 +1,25 @@
-const exampleSelect = document.getElementById("example-select");
-const loadButton = document.getElementById("load-example");
-const loadStatus = document.getElementById("load-status");
-const reportSummary = document.getElementById("report-summary");
-const reportJson = document.getElementById("report-json");
-const reviewJson = document.getElementById("review-json");
-const apiBaseInput = document.getElementById("api-base");
-const validateReviewButton = document.getElementById("validate-review");
-const validateReportButton = document.getElementById("validate-report");
-const validationResult = document.getElementById("validation-result");
-
-let currentReport = null;
-let currentUnit = null;
-
-function apiBase() {
-  return apiBaseInput.value.replace(/\/$/, "");
-}
-
-async function fetchJson(path) {
-  const response = await fetch(path);
-  if (!response.ok) {
-    throw new Error(`Failed to load ${path}: ${response.status}`);
-  }
-  return response.json();
-}
-
-function renderReportSummary(report) {
-  const blockers = report.blockers?.length ? report.blockers.join("; ") : "(none)";
-  const candidates = report.existing_theorem_candidates?.join(", ") || "(none)";
-  reportSummary.innerHTML = `
-    <dl>
-      <dt>Unit</dt><dd>${report.unit_id}</dd>
-      <dt>Next action</dt><dd>${report.recommended_next_action}</dd>
-      <dt>Blockers</dt><dd>${blockers}</dd>
-      <dt>Theorem candidates</dt><dd>${candidates}</dd>
-      <dt>Statement status</dt><dd>${report.statement_readiness.status}</dd>
-      <dt>Context status</dt><dd>${report.context_readiness.status}</dd>
-    </dl>
-  `;
-}
-
-function defaultReviewTemplate(report) {
-  return {
-    schema_version: "0.1",
-    unit_id: report.unit_id,
-    item_id: null,
-    reviewer_id: "reviewer.local",
-    review_date: new Date().toISOString().slice(0, 10),
-    tier_promotion: null,
-    review_status: "human_reviewed",
-    rubric_scores: {
-      source_fidelity: 4,
-      actionability: 4,
-      library_alignment: 4,
-      blocker_specificity: 4,
-      path_clarity: 4,
-    },
-    dimension_reviews: {
-      statement_readiness: {
-        status_accurate: true,
-        recovered_accurate: true,
-        unresolved_accurate: true,
-        notes: null,
-      },
-      context_readiness: {
-        status_accurate: true,
-        recovered_accurate: true,
-        unresolved_accurate: true,
-        notes: null,
-      },
-      notation_readiness: {
-        status_accurate: true,
-        recovered_accurate: true,
-        unresolved_accurate: true,
-        notes: null,
-      },
-      dependency_readiness: {
-        status_accurate: true,
-        recovered_accurate: true,
-        unresolved_accurate: true,
-        notes: null,
-      },
-    },
-    list_fields_accurate: true,
-    recommended_next_action_accurate: true,
-    corrected_report_path: null,
-    corrected_report: null,
-    notes: "Local review UI submission.",
-  };
-}
-
-async function loadExample() {
-  const name = exampleSelect.value;
-  loadStatus.textContent = "Loading...";
-  validationResult.textContent = "";
-
-  try {
-    const metadata = await fetchJson(`${apiBase()}/examples/${name}`);
-    const reportPath = `../../${metadata.artifacts.readiness_report}`;
-    const unitPath = `../../${metadata.artifacts.unit}`;
-    currentReport = await fetchJson(reportPath);
-    currentUnit = await fetchJson(unitPath);
-    renderReportSummary(currentReport);
-    reportJson.textContent = JSON.stringify(currentReport, null, 2);
-    reviewJson.value = JSON.stringify(defaultReviewTemplate(currentReport), null, 2);
-    loadStatus.textContent = `Loaded ${name} from committed example artifacts.`;
-  } catch (error) {
-    loadStatus.textContent = String(error);
-  }
-}
-
-async function postValidation(path, payload) {
-  const response = await fetch(`${apiBase()}${path}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-  const body = await response.json();
-  validationResult.textContent = JSON.stringify(body, null, 2);
-}
-
-loadButton.addEventListener("click", loadExample);
-validateReviewButton.addEventListener("click", async () => {
-  try {
-    const submission = JSON.parse(reviewJson.value);
-    await postValidation("/validate/review-submission", submission);
-  } catch (error) {
-    validationResult.textContent = String(error);
-  }
-});
-validateReportButton.addEventListener("click", async () => {
-  if (!currentReport) {
-    validationResult.textContent = "Load an example readiness report first.";
-    return;
-  }
-  await postValidation("/validate/readiness-report", currentReport);
-});
-
+const DIMENSIONS=["statement_readiness","context_readiness","notation_readiness","dependency_readiness"];
+const LIST_FIELDS=[["existing_theorem_candidates","Existing theorem candidates"],["constructive_path","Constructive path"],["blockers","Blockers"]];
+const RUBRIC=[["source_fidelity","Source fidelity"],["actionability","Actionability"],["library_alignment","Library alignment"],["blocker_specificity","Blocker specificity"],["path_clarity","Path clarity"]];
+let currentReport=null,currentUnit=null,correctedState=null;
+const $=id=>document.getElementById(id);
+const apiBase=()=>$("api-base").value.replace(/\/$/,"");
+const linesToList=v=>v.split("\n").map(s=>s.trim()).filter(Boolean);
+const listToLines=v=>(v||[]).join("\n");
+const clone=o=>JSON.parse(JSON.stringify(o));
+async function fetchJson(path){const r=await fetch(path);if(!r.ok)throw new Error(`${path} ${r.status}`);return r.json();}
+function renderSource(unit){$("source-spans").innerHTML=`<dl class="source-dl"><dt>Unit</dt><dd>${unit.unit_id}</dd><dt>Statement span</dt><dd>${unit.statement_span?`[${unit.statement_span.start}, ${unit.statement_span.end})`:"(none)"}</dd><dt>Proof span</dt><dd>${unit.proof_span?`[${unit.proof_span.start}, ${unit.proof_span.end})`:"(none)"}</dd><dt>Statement</dt><dd>${unit.statement}</dd><dt>Proof</dt><dd>${unit.proof||"(none)"}</dd></dl>`;}
+function renderDimensions(){$("dimension-grid").innerHTML=DIMENSIONS.map(n=>{const c=currentReport[n],e=correctedState[n];return `<article class="dimension-card" data-dimension="${n}"><h3>${n}</h3><div class="side-by-side"><div><h4>Candidate</h4><p>${c.status}</p><pre>${listToLines(c.recovered)}</pre><pre>${listToLines(c.unresolved)}</pre></div><div><h4>Corrected</h4><input class="dim-status" value="${e.status}"/><textarea class="dim-recovered">${listToLines(e.recovered)}</textarea><textarea class="dim-unresolved">${listToLines(e.unresolved)}</textarea><textarea class="dim-notes">${e.notes||""}</textarea></div></div></article>`;}).join("");}
+function renderLists(){$("list-fields").innerHTML=LIST_FIELDS.map(([k,l])=>`<div class="list-field" data-field="${k}"><h3>${l}</h3><div class="side-by-side"><pre>${listToLines(currentReport[k])}</pre><textarea class="corrected-list">${listToLines(correctedState[k])}</textarea></div></div>`).join("");$("next-action").value=correctedState.recommended_next_action;}
+function renderRubric(){$("rubric-scores").innerHTML=RUBRIC.map(([k,l])=>`<label class="rubric-row"><span>${l}</span><input type="number" min="1" max="5" data-rubric="${k}" value="4"/></label>`).join("");}
+function readCorrected(){const r=clone(correctedState);for(const n of DIMENSIONS){const card=$("dimension-grid").querySelector(`[data-dimension="${n}"]`);r[n]={status:card.querySelector(".dim-status").value.trim(),recovered:linesToList(card.querySelector(".dim-recovered").value),unresolved:linesToList(card.querySelector(".dim-unresolved").value),notes:card.querySelector(".dim-notes").value.trim()||null};}
+for(const [k] of LIST_FIELDS){r[k]=linesToList($("list-fields").querySelector(`[data-field="${k}"] .corrected-list`).value);}r.recommended_next_action=$("next-action").value.trim();r.review_status=$("review-status").value;return r;}
+function buildSubmission(){const tier=$("tier-promotion").value||null;const rubric={};$("rubric-scores").querySelectorAll("[data-rubric]").forEach(i=>{rubric[i.dataset.rubric]=Number(i.value);});return{schema_version:"0.1",unit_id:currentReport.unit_id,item_id:tier?`${currentReport.unit_id}_${tier}`:null,reviewer_id:$("reviewer-id").value.trim(),review_date:$("review-date").value,tier_promotion:tier,review_status:$("review-status").value,rubric_scores:rubric,dimension_reviews:{statement_readiness:{status_accurate:true,recovered_accurate:true,unresolved_accurate:true,notes:null},context_readiness:{status_accurate:true,recovered_accurate:true,unresolved_accurate:true,notes:null},notation_readiness:{status_accurate:true,recovered_accurate:true,unresolved_accurate:true,notes:null},dependency_readiness:{status_accurate:true,recovered_accurate:true,unresolved_accurate:true,notes:null}},list_fields_accurate:false,recommended_next_action_accurate:true,corrected_report_path:null,corrected_report:readCorrected(),notes:$("review-notes").value.trim()};}
+function preview(){if(currentReport)$("review-json").textContent=JSON.stringify(buildSubmission(),null,2);}
+async function loadExample(){try{const m=await fetchJson(`${apiBase()}/examples/${$("example-select").value}`);currentReport=await fetchJson(`../../${m.artifacts.readiness_report}`);currentUnit=await fetchJson(`../../${m.artifacts.unit}`);correctedState=clone(currentReport);correctedState.review_status="human_reviewed";renderSource(currentUnit);renderDimensions();renderLists();renderRubric();$("review-date").value=new Date().toISOString().slice(0,10);$("review-status").value=$("tier-promotion").value==="gold"?"expert_reviewed":"human_reviewed";preview();$("load-status").textContent="Loaded.";}catch(e){$("load-status").textContent=String(e);}}
+async function postJson(path,payload){const r=await fetch(`${apiBase()}${path}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});const b=await r.json();if(!r.ok)throw new Error(JSON.stringify(b.detail||b));return b;}
+$("load-example").onclick=loadExample;$("tier-promotion").onchange=()=>{$("review-status").value=$("tier-promotion").value==="gold"?"expert_reviewed":"human_reviewed";preview();};
+["review-status","reviewer-id","review-notes","next-action"].forEach(id=>$(id).oninput=preview);$("dimension-grid").oninput=preview;$("list-fields").oninput=preview;$("rubric-scores").oninput=preview;
+$("validate-review").onclick=async()=>{try{$("validation-result").textContent=JSON.stringify(await postJson("/validate/review-submission",buildSubmission()),null,2);}catch(e){$("validation-result").textContent=String(e);}};
+$("submit-review").onclick=async()=>{try{$("validation-result").textContent=JSON.stringify(await postJson("/review/submit",buildSubmission()),null,2);}catch(e){$("validation-result").textContent=String(e);}};
 loadExample();

@@ -30,6 +30,24 @@ class SourceDocument(BaseModel):
     release_mode: str
     domain: str
     path: str
+    curator: str | None = None
+    permission_reference: str | None = None
+
+
+class RepairedUnitSpan(BaseModel):
+    env: str
+    title: str | None = None
+    statement_start: int = Field(ge=0)
+    statement_end: int = Field(ge=0)
+    proof_start: int | None = Field(default=None, ge=0)
+    proof_end: int | None = Field(default=None, ge=0)
+
+
+class SegmentationRepairResult(BaseModel):
+    schema_version: Literal["0.1"] = "0.1"
+    source_id: str
+    units: list[RepairedUnitSpan] = Field(default_factory=list)
+    repair_notes: str | None = None
 
 
 class SourceSpan(BaseModel):
@@ -177,6 +195,11 @@ class BenchmarkItemScore(BaseModel):
     existing_theorem_candidates_f1: float
     constructive_path_f1: float
     blockers_f1: float
+    notation_readiness_f1: float | None = None
+    proofgraph_node_f1: float | None = None
+    proofgraph_edge_f1: float | None = None
+    atlas_field_match: float | None = None
+    leantask_structural_match: float | None = None
 
 
 class BenchmarkEvaluationReport(BaseModel):
@@ -188,6 +211,7 @@ class BenchmarkEvaluationReport(BaseModel):
     scored_item_count: int
     items: list[BenchmarkItemScore] = Field(default_factory=list)
     macro_f1_mean: float
+    full_macro_f1_mean: float | None = None
 
 
 class ReadinessDimensionReview(BaseModel):
@@ -246,6 +270,43 @@ class GoldArtifactChangelogEntry(BaseModel):
     summary: str
     fields_changed: list[str] = Field(default_factory=list)
     review_submission_path: str | None = None
+
+
+class ReviewEditRecord(BaseModel):
+    """Versioned record of one reviewer edit to a readiness report."""
+
+    schema_version: Literal["0.1"] = "0.1"
+    edit_id: str
+    unit_id: str
+    editor: str
+    timestamp: str
+    parent_report_hash: str | None = None
+    corrected_report_hash: str
+    diff_summary: list[str] = Field(default_factory=list)
+    tier_promotion: Literal["silver", "gold"] | None = None
+    review_submission_path: str | None = None
+
+
+class ReviewerAgreementFieldScore(BaseModel):
+    """Agreement on one list-valued readiness-report field."""
+
+    field_name: str
+    jaccard: float
+    exact_match: bool
+    cohens_kappa: float | None = None
+
+
+class ReviewerAgreementReport(BaseModel):
+    """Inter-annotator agreement between two review submissions."""
+
+    schema_version: Literal["0.1"] = "0.1"
+    unit_id: str
+    reviewer_a: str
+    reviewer_b: str
+    list_field_agreement: list[ReviewerAgreementFieldScore] = Field(default_factory=list)
+    rubric_cohens_kappa: float | None = None
+    mean_list_jaccard: float
+    overall_percent_agreement: float
 
 
 class AlignmentCandidate(BaseModel):
