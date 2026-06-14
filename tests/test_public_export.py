@@ -34,6 +34,14 @@ def test_export_public_benchmark_writes_all_tiers(tmp_path: Path) -> None:
     assert tiers == {"bronze", "gold", "silver"}
     gold_count = sum(1 for line in lines if json.loads(line)["tier"] == "gold")
     assert gold_count == 11
+    for line in lines:
+        payload = json.loads(line)
+        if payload["tier"] == "gold":
+            assert payload.get("review_origin") == "internal_seed"
+
+    gold_rows = [json.loads(line) for line in lines if json.loads(line)["tier"] == "gold"]
+    assert all(row.get("review_origin") == "internal_seed" for row in gold_rows)
+    assert all(row["readiness_report"].get("review_origin") == "internal_seed" for row in gold_rows)
 
 
 def test_export_public_atlas_includes_examples(tmp_path: Path) -> None:

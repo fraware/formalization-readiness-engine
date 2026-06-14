@@ -51,5 +51,6 @@
     "open cover transport under continuous maps"
   ],
   "recommended_next_action": "Prefer existing compactness image lemma if available.",
-  "review_status": "expert_reviewed"
+  "review_status": "expert_reviewed",
+  "review_origin": "internal_seed"
 }

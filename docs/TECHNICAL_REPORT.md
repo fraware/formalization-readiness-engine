@@ -49,6 +49,10 @@ External evaluators should:
 3. Run `make run-readinessbench` with a predictions directory.
 4. Compare Atlas cluster reports across model versions to track blocker regressions.
 
+### Lexical F1 baseline (v0.2)
+
+ReadinessBench macro-F1 uses normalized set overlap on string lists (theorem candidates, constructive paths, blockers, notation fields). Scores reflect **lexical** agreement with gold strings, not semantic correctness or mathlib declaration equivalence. A semantically relevant prediction that uses different naming can score 0.0. Treat v0.2 metrics as a reproducible baseline, not a claim of formalization quality. Semantic metrics are planned for v0.3.
+
 ## Limitations
 
 Wave 6 does not claim end-to-end automated formalization. Model outputs remain candidate artifacts until reviewed. Lean typechecking for L1/L2 tasks remains a local or optional CI workflow (`workflow_dispatch`). The review UI is a thin inspection surface; full in-browser annotation is optional follow-on work.

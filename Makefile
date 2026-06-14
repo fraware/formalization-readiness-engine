@@ -8,7 +8,7 @@ PYTHONPATH_VALUE := packages/fre_core/src:.
 	extract-finite-tree-proofgraph extract-finite-tree-atlas lookup-finite-tree-declarations \
 	generate-finite-tree-leantask generate-category-theory-leantask \
 	validate-readinessbench run-readinessbench validate-review-submission validate-gold-changelog \
-	build-release-manifest verify-release-manifest record-live-extraction \
+	build-release-manifest verify-release-manifest record-live-extraction smoke \
 	run-api run-review-ui export-public-benchmark export-public-atlas
 
 PREDICTIONS_DIR ?= tests/fixtures/readinessbench_predictions
@@ -174,3 +174,5 @@ verify-release-manifest:
 
 record-live-extraction:
 	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) scripts/record_live_extraction.py
+
+smoke: setup test validate-examples validate-readinessbench verify-release-manifest docs

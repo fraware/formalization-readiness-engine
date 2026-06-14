@@ -71,5 +71,6 @@
     "decision between existing-theorem reuse and constructive decomposition"
   ],
   "recommended_next_action": "Confirm existing theorem alignment before generating constructive missing-lemma tasks.",
-  "review_status": "candidate"
+  "review_status": "candidate",
+  "review_origin": null
 }

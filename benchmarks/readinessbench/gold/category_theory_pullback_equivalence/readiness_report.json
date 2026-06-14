@@ -71,5 +71,6 @@
     "mathlib module candidates: CategoryTheory.Limits.Shapes.Pullbacks and CategoryTheory.Equivalence"
   ],
   "recommended_next_action": "Confirm whether mathlib already provides pullback preservation for equivalences before decomposing the cone-transport proof.",
-  "review_status": "expert_reviewed"
+  "review_status": "expert_reviewed",
+  "review_origin": "internal_seed"
 }

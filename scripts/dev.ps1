@@ -3,7 +3,7 @@
 
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("setup", "setup-models", "setup-api", "test", "demo", "demo-live", "demo-finite-tree", "demo-category-theory", "validate-examples", "export-schemas", "lint", "check", "setup-lean", "build-lean", "render-finite-tree-leantask", "check-lean-finite-tree", "ingest-corpus", "export-corpus-shareable", "extract-finite-tree-proofgraph", "extract-finite-tree-atlas", "lookup-finite-tree-declarations", "generate-finite-tree-leantask", "generate-category-theory-leantask", "validate-readinessbench", "run-readinessbench", "validate-review-submission", "validate-gold-changelog", "run-api", "run-review-ui", "export-public-benchmark", "export-public-atlas")]
+    [ValidateSet("setup", "setup-models", "setup-api", "test", "demo", "demo-live", "demo-finite-tree", "demo-category-theory", "validate-examples", "export-schemas", "lint", "check", "setup-lean", "build-lean", "render-finite-tree-leantask", "check-lean-finite-tree", "ingest-corpus", "export-corpus-shareable", "extract-finite-tree-proofgraph", "extract-finite-tree-atlas", "lookup-finite-tree-declarations", "generate-finite-tree-leantask", "generate-category-theory-leantask", "validate-readinessbench", "run-readinessbench", "validate-review-submission", "validate-gold-changelog", "docs", "verify-release-manifest", "record-live-extraction", "smoke", "run-api", "run-review-ui", "export-public-benchmark", "export-public-atlas")]
     [string]$Command = "test",
     [string]$PredictionsDir = "tests/fixtures/readinessbench_predictions"
 )
@@ -152,6 +152,31 @@ switch ($Command) {
     }
     "validate-gold-changelog" {
         python -m fre_core.cli validate-gold-changelog
+    }
+    "docs" {
+        python -m pip install -r requirements-docs.txt
+        python -m mkdocs build -f apps/docs-site/mkdocs.yml
+    }
+    "verify-release-manifest" {
+        python -m fre_core.cli verify-release-manifest `
+            --manifest-path releases/v0.2.0/manifest.json `
+            --repo-root .
+    }
+    "record-live-extraction" {
+        python scripts/record_live_extraction.py
+    }
+    "smoke" {
+        Invoke-Setup
+        python -m pytest -q
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        python -m fre_core.cli validate-example-dir examples/finite_tree
+        python -m fre_core.cli validate-example-dir examples/category_theory_pullback
+        python -m fre_core.cli validate-readinessbench
+        python -m fre_core.cli verify-release-manifest `
+            --manifest-path releases/v0.2.0/manifest.json `
+            --repo-root .
+        python -m pip install -r requirements-docs.txt
+        python -m mkdocs build -f apps/docs-site/mkdocs.yml
     }
     "run-api" {
         python -m uvicorn apps.api.main:app --reload --host 127.0.0.1 --port 8000

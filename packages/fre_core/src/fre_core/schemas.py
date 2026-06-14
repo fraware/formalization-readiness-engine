@@ -17,6 +17,15 @@ class ReviewStatus(str, Enum):
     DEFERRED = "deferred"
 
 
+class ReviewOrigin(str, Enum):
+    """Provenance label for reviewed benchmark artifacts."""
+
+    INTERNAL_SEED = "internal_seed"
+    MACHINE_VALIDATED = "machine_validated"
+    EXTERNAL_EXPERT = "external_expert"
+    COMMUNITY_REVIEWED = "community_reviewed"
+
+
 class LeanTaskLevel(str, Enum):
     L0 = "L0"
     L1 = "L1"
@@ -121,6 +130,7 @@ class ReadinessReport(BaseModel):
     blockers: list[str] = Field(default_factory=list)
     recommended_next_action: str
     review_status: ReviewStatus = ReviewStatus.CANDIDATE
+    review_origin: ReviewOrigin | None = None
 
 
 class ProofGraphNode(BaseModel):
@@ -221,6 +231,7 @@ class BenchmarkItem(BaseModel):
     tier: BenchmarkTier
     unit_path: str
     readiness_report_path: str
+    review_origin: ReviewOrigin | None = None
 
 
 class BenchmarkManifest(BaseModel):
@@ -318,6 +329,7 @@ class GoldArtifactChangelogEntry(BaseModel):
     summary: str
     fields_changed: list[str] = Field(default_factory=list)
     review_submission_path: str | None = None
+    review_origin: ReviewOrigin | None = None
 
 
 class ReviewEditRecord(BaseModel):
@@ -391,6 +403,7 @@ class PublicBenchmarkExportRecord(BaseModel):
     tier: str
     unit: TheoremProofUnit
     readiness_report: ReadinessReport
+    review_origin: ReviewOrigin | None = None
 
 
 class PublicAtlasExportRecord(BaseModel):

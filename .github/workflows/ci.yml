@@ -29,6 +29,12 @@ jobs:
         run: |
           PYTHONPATH=packages/fre_core/src:. python -m fre_core.cli validate-example-dir examples/finite_tree
           PYTHONPATH=packages/fre_core/src:. python -m fre_core.cli validate-example-dir examples/category_theory_pullback
+      - name: Validate corpus catalog
+        run: |
+          PYTHONPATH=packages/fre_core/src:. python -m fre_core.cli validate-corpus-catalog corpus/catalog.json --repo-root .
+      - name: Validate ReadinessBench manifest
+        run: |
+          PYTHONPATH=packages/fre_core/src:. python -m fre_core.cli validate-readinessbench
       - name: Export public artifacts
         run: |
           PYTHONPATH=packages/fre_core/src:. python -m fre_core.cli export-public-benchmark

@@ -1,4 +1,4 @@
-﻿"""Versioned release manifest generation with artifact checksums."""
+"""Versioned release manifest generation with artifact checksums."""
 
 from __future__ import annotations
 
@@ -17,13 +17,27 @@ PUBLIC_SCHEMA_VERSIONS: dict[str, str] = {
     "public_export_manifest": "0.1",
 }
 
+_TEXT_ARTIFACT_SUFFIXES = frozenset({".json", ".jsonl"})
+
+
+def normalize_text_artifact_line_endings(path: Path, data: bytes | None = None) -> bytes:
+    """Normalize CRLF to LF for text release artifacts so checksums match across platforms."""
+    raw = data if data is not None else path.read_bytes()
+    if path.suffix.lower() not in _TEXT_ARTIFACT_SUFFIXES:
+        return raw
+    return raw.replace(b"\r\n", b"\n")
+
+
+def _artifact_bytes(path: Path) -> bytes:
+    return normalize_text_artifact_line_endings(path)
+
+
+def _sha256_bytes(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
 
 def _sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
+    return _sha256_bytes(_artifact_bytes(path))
 
 
 def collect_artifact_checksums(
@@ -44,11 +58,12 @@ def collect_artifact_checksums(
             raise ValueError(
                 f"Release artifact {resolved.as_posix()} is outside repo root {resolved_root.as_posix()}."
             ) from exc
+        artifact_bytes = _artifact_bytes(resolved)
         checksums.append(
             ReleaseArtifactChecksum(
                 path=relative_path,
-                sha256=_sha256_file(resolved),
-                byte_size=resolved.stat().st_size,
+                sha256=_sha256_bytes(artifact_bytes),
+                byte_size=len(artifact_bytes),
             )
         )
     return checksums
@@ -102,13 +117,14 @@ def verify_release_manifest(*, manifest_path: Path, repo_root: Path) -> ReleaseM
         artifact_path = resolved_root / artifact.path
         if not artifact_path.is_file():
             raise FileNotFoundError(f"Release artifact missing: {artifact.path}")
-        actual_sha256 = _sha256_file(artifact_path)
+        artifact_bytes = _artifact_bytes(artifact_path)
+        actual_sha256 = _sha256_bytes(artifact_bytes)
         if actual_sha256 != artifact.sha256:
             raise ValueError(
                 f"Checksum mismatch for {artifact.path}: "
                 f"expected {artifact.sha256}, got {actual_sha256}."
             )
-        actual_size = artifact_path.stat().st_size
+        actual_size = len(artifact_bytes)
         if actual_size != artifact.byte_size:
             raise ValueError(
                 f"Byte size mismatch for {artifact.path}: "

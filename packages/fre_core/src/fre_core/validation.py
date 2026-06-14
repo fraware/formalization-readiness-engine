@@ -18,7 +18,8 @@ from fre_core.schemas import (
     TheoremProofUnit,
 )
 
-ValidationMode = Literal["strict", "permissive"]
+ValidationMode = Literal["strict", "permissive", "public_export"]
+ValidationProfile = Literal["candidate", "reviewed", "public_export"]
 
 PROOFGRAPH_EDGE_TYPES: frozenset[str] = frozenset({
     "uses", "uses_assumption", "uses_definition", "depends_on", "blocked_by",
@@ -84,6 +85,25 @@ def validation_mode_for_review_status(review_status: ReviewStatus) -> Validation
     return "permissive"
 
 
+def validation_mode_for_profile(profile: ValidationProfile) -> ValidationMode:
+    """Map a named validation profile to a validation mode.
+
+    Profiles:
+    - ``candidate``: permissive checks for model output and bronze artifacts.
+    - ``reviewed``: strict enum enforcement for human- or expert-reviewed artifacts.
+    - ``public_export``: strict checks used before ReadinessBench export and gold/silver validation.
+    """
+    if profile == "candidate":
+        return "permissive"
+    if profile == "reviewed":
+        return "strict"
+    return "public_export"
+
+
+def _is_strict_mode(mode: ValidationMode) -> bool:
+    return mode in {"strict", "public_export"}
+
+
 def _validate_readiness_dimension_statuses(
     report: ReadinessReport,
     *,
@@ -104,11 +124,11 @@ def _validate_readiness_dimension_statuses(
                     f"{field_name}.status {dimension.status!r} is not a known readiness status.",
                 )
             )
-        elif mode == "strict" and dimension.status == ReadinessDimensionStatus.PENDING.value:
+        elif _is_strict_mode(mode) and dimension.status == ReadinessDimensionStatus.PENDING.value:
             issues.append(
                 ValidationIssue(
                     "pending_dimension_status",
-                    f"{field_name}.status must not be pending for reviewed artifacts.",
+                    f"{field_name}.status must not be pending for reviewed or exported artifacts.",
                 )
             )
 
@@ -121,7 +141,7 @@ def validate_proofgraph(graph: ProofGraph, *, mode: ValidationMode | None = None
     node_id_set = set(node_ids)
     allowed_node_types = (
         KNOWN_PROOFGRAPH_NODE_TYPES_STRICT
-        if resolved_mode == "strict"
+        if _is_strict_mode(resolved_mode)
         else KNOWN_PROOFGRAPH_NODE_TYPES_PERMISSIVE
     )
 
@@ -129,7 +149,7 @@ def validate_proofgraph(graph: ProofGraph, *, mode: ValidationMode | None = None
         issues.append(ValidationIssue("duplicate_node_id", "ProofGraph node identifiers must be unique."))
 
     for node in graph.nodes:
-        if resolved_mode == "strict" and node.node_type not in allowed_node_types:
+        if _is_strict_mode(resolved_mode) and node.node_type not in allowed_node_types:
             issues.append(
                 ValidationIssue(
                     "invalid_node_type",
@@ -191,7 +211,7 @@ def validate_atlas_record(record: AtlasRecord, *, mode: ValidationMode | None = 
     if not record.recommended_action.strip():
         issues.append(ValidationIssue("missing_recommended_action", "AtlasRecord needs an action."))
 
-    if resolved_mode == "strict":
+    if _is_strict_mode(resolved_mode):
         if record.blocker_type not in KNOWN_ATLAS_BLOCKER_TYPES_STRICT:
             issues.append(
                 ValidationIssue(

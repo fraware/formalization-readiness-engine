@@ -15,6 +15,7 @@ from fre_core.corpus import (
     load_corpus_catalog,
     load_units_from_dir,
     validate_corpus_catalog,
+    validate_corpus_unit_spans,
     write_units,
 )
 from fre_core.extract_atlas import extract_atlas_record
@@ -166,11 +167,22 @@ def ingest_latex(
 def validate_corpus_catalog_cmd(
     catalog_path: Path = typer.Argument(..., help="Path to corpus catalog JSON"),
     repo_root: Path = typer.Option(Path("."), help="Repository root for source paths"),
+    check_spans: bool = typer.Option(
+        True,
+        "--check-spans/--no-check-spans",
+        help="Validate corpus unit source spans against catalog sources.",
+    ),
 ) -> None:
     catalog = load_corpus_catalog(catalog_path)
     validate_corpus_catalog(catalog=catalog, repo_root=repo_root)
+    if check_spans:
+        validate_corpus_unit_spans(catalog=catalog, repo_root=repo_root)
     release_modes = sorted({source.release_mode for source in catalog.sources})
-    print(f"[green]valid corpus catalog[/green] {len(catalog.sources)} sources (release_modes: {', '.join(release_modes)})")
+    span_note = " with span checks" if check_spans else ""
+    print(
+        f"[green]valid corpus catalog[/green] {len(catalog.sources)} sources "
+        f"(release_modes: {', '.join(release_modes)}){span_note}"
+    )
 
 
 @app.command("ingest-catalog")

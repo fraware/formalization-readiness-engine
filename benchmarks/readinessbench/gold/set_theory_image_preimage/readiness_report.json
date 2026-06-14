@@ -51,5 +51,6 @@
     "surjectivity hypothesis packaging"
   ],
   "recommended_next_action": "Import standard image-preimage lemmas from mathlib.",
-  "review_status": "expert_reviewed"
+  "review_status": "expert_reviewed",
+  "review_origin": "internal_seed"
 }

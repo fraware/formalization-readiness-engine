@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 from fre_core.baseline_runner import default_baseline_manifest_path, load_baseline_manifest
+from fre_core.corpus import load_corpus_catalog, resolve_source_path
 from fre_core.evaluation import score_readiness_report
 from fre_core.evaluation_atlas import score_atlas_record
 from fre_core.evaluation_leantask import score_leantask_package
@@ -18,9 +19,11 @@ from fre_core.schemas import (
     BenchmarkTier,
     ReadinessDimension,
     ReadinessReport,
+    ReviewOrigin,
     ReviewStatus,
     TheoremProofUnit,
 )
+from fre_core.review_workflow import load_changelog_entries
 from fre_core.validation import (
     load_atlas_record,
     load_leantask_package,
@@ -36,6 +39,8 @@ TIER_ALLOWED_REVIEW_STATUSES: dict[BenchmarkTier, frozenset[ReviewStatus]] = {
 }
 
 GENERATED_ARTIFACT_SEGMENT = "artifacts/generated"
+REVIEW_SUBMISSION_TEMPLATE_PATH = "docs/review/templates/readiness_report_review.json"
+GOLD_CHANGELOG_RELATIVE = "gold/changelog.jsonl"
 PREDICTION_REPORT_FILENAME = "readiness_report.json"
 PREDICTION_REPORT_MODEL_FILENAME = "readiness_report.model.json"
 PREDICTION_PROOFGRAPH_FILENAME = "proofgraph.json"
@@ -117,7 +122,93 @@ def validate_review_status_for_tier(*, tier: BenchmarkTier, review_status: Revie
         )
 
 
-def validate_benchmark_item(*, item: BenchmarkItem, benchmark_root: Path) -> ReadinessReport:
+def _repo_root_from_benchmark(benchmark_root: Path) -> Path:
+    return benchmark_root.parent.parent
+
+
+def _resolve_unit_source_text(*, unit: TheoremProofUnit, repo_root: Path) -> str | None:
+    catalog_path = repo_root / "corpus" / "catalog.json"
+    if not catalog_path.is_file():
+        return None
+    catalog = load_corpus_catalog(catalog_path)
+    source = catalog.by_source_id().get(unit.source_id)
+    if source is None:
+        return None
+    source_path = resolve_source_path(source=source, repo_root=repo_root)
+    if not source_path.is_file():
+        return None
+    return source_path.read_text(encoding="utf-8")
+
+
+def _load_gold_changelog_entries(*, benchmark_root: Path) -> list:
+    changelog_path = benchmark_root / GOLD_CHANGELOG_RELATIVE
+    if not changelog_path.is_file():
+        return []
+    return load_changelog_entries(changelog_path)
+
+
+def _changelog_entries_for_item(*, item_id: str, entries: list) -> list:
+    return [entry for entry in entries if entry.item_id == item_id]
+
+
+def _is_template_review_submission_path(path: str) -> bool:
+    normalized = path.replace("\\", "/").strip()
+    return normalized == REVIEW_SUBMISSION_TEMPLATE_PATH
+
+
+def validate_gold_review_origin(
+    *,
+    item: BenchmarkItem,
+    report: ReadinessReport,
+    benchmark_root: Path,
+    repo_root: Path,
+) -> None:
+    if item.tier != BenchmarkTier.GOLD:
+        return
+
+    review_origin = report.review_origin or item.review_origin
+    if review_origin is None:
+        raise BenchmarkValidationError(
+            f"item {item.item_id!r} gold readiness report must declare review_origin."
+        )
+
+    changelog_entries = _load_gold_changelog_entries(benchmark_root=benchmark_root)
+    item_entries = _changelog_entries_for_item(item_id=item.item_id, entries=changelog_entries)
+    if not item_entries:
+        raise BenchmarkValidationError(
+            f"item {item.item_id!r} gold tier requires a matching entry in {GOLD_CHANGELOG_RELATIVE}."
+        )
+
+    if review_origin == ReviewOrigin.EXTERNAL_EXPERT:
+        submission_paths = [
+            entry.review_submission_path
+            for entry in item_entries
+            if entry.review_submission_path
+        ]
+        if not submission_paths:
+            raise BenchmarkValidationError(
+                f"item {item.item_id!r} with review_origin='external_expert' "
+                f"requires review_submission_path in {GOLD_CHANGELOG_RELATIVE}."
+            )
+        valid_paths = [
+            path
+            for path in submission_paths
+            if not _is_template_review_submission_path(path)
+            and (repo_root / path).is_file()
+        ]
+        if not valid_paths:
+            raise BenchmarkValidationError(
+                f"item {item.item_id!r} with review_origin='external_expert' "
+                f"requires a persisted review submission on disk (not the template placeholder)."
+            )
+
+
+def validate_benchmark_item(
+    *,
+    item: BenchmarkItem,
+    benchmark_root: Path,
+    repo_root: Path | None = None,
+) -> ReadinessReport:
     unit_path = resolve_benchmark_path(
         benchmark_root=benchmark_root,
         relative_path=item.unit_path,
@@ -134,8 +225,13 @@ def validate_benchmark_item(*, item: BenchmarkItem, benchmark_root: Path) -> Rea
         raise BenchmarkValidationError(
             f"Missing readiness report for item {item.item_id!r}: {report_path.as_posix()}"
         )
-    unit = load_unit(unit_path)
-    report = load_readiness_report(report_path)
+    resolved_repo_root = repo_root or _repo_root_from_benchmark(benchmark_root)
+    unit_payload = unit_path.read_text(encoding="utf-8")
+    unit_model = TheoremProofUnit.model_validate_json(unit_payload)
+    source_text = _resolve_unit_source_text(unit=unit_model, repo_root=resolved_repo_root)
+    unit = load_unit(unit_path, source_text=source_text)
+    validation_mode = "public_export" if item.tier in {BenchmarkTier.GOLD, BenchmarkTier.SILVER} else None
+    report = load_readiness_report(report_path, mode=validation_mode)
     if unit.unit_id != item.unit_id:
         raise BenchmarkValidationError(
             f"item {item.item_id!r} unit_id={item.unit_id!r} does not match unit artifact {unit.unit_id!r}."
@@ -158,6 +254,12 @@ def validate_benchmark_item(*, item: BenchmarkItem, benchmark_root: Path) -> Rea
                 f"item {item.item_id!r} tier={item.tier.value} but {label}={relative!r} "
                 f"is not under {expected_tier_prefix!r}."
             )
+    validate_gold_review_origin(
+        item=item,
+        report=report,
+        benchmark_root=benchmark_root,
+        repo_root=resolved_repo_root,
+    )
     return report
 
 
@@ -370,28 +472,47 @@ def _gold_example_dir_for_unit(*, unit_id: str, repo_root: Path) -> Path | None:
     return None
 
 
+def _gold_benchmark_dir_for_unit(*, unit_id: str, benchmark_root: Path) -> Path | None:
+    candidate = benchmark_root / "gold" / unit_id
+    if candidate.is_dir():
+        return candidate
+    return None
+
+
 def _score_optional_artifacts(
     *,
     unit_id: str,
     predictions_dir: Path,
     repo_root: Path,
+    benchmark_root: Path | None = None,
 ) -> dict[str, float | None]:
     scores: dict[str, float | None] = {
         "proofgraph_f1": None,
         "atlas_f1": None,
         "leantask_f1": None,
     }
-    gold_dir = _gold_example_dir_for_unit(unit_id=unit_id, repo_root=repo_root)
-    if gold_dir is None:
-        return scores
+    bench_root = benchmark_root or default_benchmark_root(repo_root=repo_root)
+    example_dir = _gold_example_dir_for_unit(unit_id=unit_id, repo_root=repo_root)
+    benchmark_gold_dir = _gold_benchmark_dir_for_unit(unit_id=unit_id, benchmark_root=bench_root)
+
+    def _resolve_gold_artifact(filename: str) -> Path | None:
+        if benchmark_gold_dir is not None:
+            candidate = benchmark_gold_dir / filename
+            if candidate.is_file():
+                return candidate
+        if example_dir is not None:
+            candidate = example_dir / filename
+            if candidate.is_file():
+                return candidate
+        return None
 
     predicted_graph = resolve_prediction_artifact_path(
         predictions_dir=predictions_dir,
         unit_id=unit_id,
         filename=PREDICTION_PROOFGRAPH_FILENAME,
     )
-    gold_graph = gold_dir / PREDICTION_PROOFGRAPH_FILENAME
-    if predicted_graph is not None and gold_graph.exists():
+    gold_graph = _resolve_gold_artifact(PREDICTION_PROOFGRAPH_FILENAME)
+    if predicted_graph is not None and gold_graph is not None:
         graph_scores = score_proofgraph(
             predicted=load_proofgraph(predicted_graph),
             gold=load_proofgraph(gold_graph),
@@ -403,8 +524,8 @@ def _score_optional_artifacts(
         unit_id=unit_id,
         filename=PREDICTION_ATLAS_FILENAME,
     )
-    gold_atlas = gold_dir / PREDICTION_ATLAS_FILENAME
-    if predicted_atlas is not None and gold_atlas.exists():
+    gold_atlas = _resolve_gold_artifact(PREDICTION_ATLAS_FILENAME)
+    if predicted_atlas is not None and gold_atlas is not None:
         atlas_scores = score_atlas_record(
             predicted=load_atlas_record(predicted_atlas),
             gold=load_atlas_record(gold_atlas),
@@ -416,8 +537,8 @@ def _score_optional_artifacts(
         unit_id=unit_id,
         filename=PREDICTION_LEANTASK_FILENAME,
     )
-    gold_leantask = gold_dir / PREDICTION_LEANTASK_FILENAME
-    if predicted_leantask is not None and gold_leantask.exists():
+    gold_leantask = _resolve_gold_artifact(PREDICTION_LEANTASK_FILENAME)
+    if predicted_leantask is not None and gold_leantask is not None:
         leantask_scores = score_leantask_package(
             predicted=load_leantask_package(predicted_leantask),
             gold=load_leantask_package(gold_leantask),
@@ -479,6 +600,7 @@ def run_readinessbench(
             unit_id=item.unit_id,
             predictions_dir=predictions_dir,
             repo_root=resolved_repo_root,
+            benchmark_root=root,
         )
         readiness_macro_f1 = _round_metric(scores.macro_f1)
         full_macro_f1 = _full_macro_f1(

@@ -130,6 +130,12 @@ def test_run_readinessbench_accepts_generated_prediction_paths(tmp_path: Path) -
         (BENCHMARK_ROOT / "gold" / unit_id / "readiness_report.json").read_text(encoding="utf-8"),
         encoding="utf-8",
     )
+    gold_changelog_dir = benchmark_root / "gold"
+    gold_changelog_dir.mkdir(parents=True, exist_ok=True)
+    (gold_changelog_dir / "changelog.jsonl").write_text(
+        (BENCHMARK_ROOT / "gold" / "changelog.jsonl").read_text(encoding="utf-8"),
+        encoding="utf-8",
+    )
     manifest_path = benchmark_root / "manifest.json"
     manifest_path.write_text(
         (

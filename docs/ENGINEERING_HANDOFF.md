@@ -35,7 +35,7 @@ The category-theory stack includes L0 and L1 LeanTask packages, a corpus LaTeX s
 |----------|-------|
 | ReadinessBench manifest items | 43 (11 gold, 1 silver, 31 bronze) |
 | Corpus ingested units | 30 from 5 catalog sources |
-| Unit tests | 165 |
+| Unit tests | 340 |
 
 Gold items are evaluated truth. Bronze items hold corpus-scale candidate units. Silver preserves the promotion workflow example.
 
@@ -175,7 +175,7 @@ make setup
 make check
 ```
 
-The test suite (165 tests) covers:
+The test suite (340 tests) covers:
 
 - schema loading;
 - semantic artifact validation;

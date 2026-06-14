@@ -88,7 +88,9 @@ def export_public_benchmark(
             context=f"export item {item.item_id!r} readiness_report_path",
         )
         unit = _shareable_unit(unit=load_unit(unit_path), catalog=catalog)
-        report = load_readiness_report(report_path)
+        export_mode = "public_export" if item.tier.value in {"gold", "silver"} else "permissive"
+        report = load_readiness_report(report_path, mode=export_mode)
+        review_origin = report.review_origin
         records.append(
             PublicBenchmarkExportRecord(
                 item_id=item.item_id,
@@ -96,6 +98,7 @@ def export_public_benchmark(
                 tier=item.tier.value,
                 unit=unit,
                 readiness_report=report,
+                review_origin=review_origin,
             )
         )
 

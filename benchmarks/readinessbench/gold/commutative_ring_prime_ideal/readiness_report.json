@@ -51,5 +51,6 @@
     "library route for prime ideal intersection"
   ],
   "recommended_next_action": "Search mathlib for nilradical-prime intersection theorem.",
-  "review_status": "expert_reviewed"
+  "review_status": "expert_reviewed",
+  "review_origin": "internal_seed"
 }

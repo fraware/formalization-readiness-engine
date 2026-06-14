@@ -14,6 +14,7 @@ from fre_core.validation import (
     load_proofgraph,
     load_readiness_report,
     load_unit,
+    validation_mode_for_profile,
     validation_mode_for_review_status,
 )
 
@@ -110,6 +111,29 @@ def test_gold_readiness_reports_use_strict_validation() -> None:
         assert validation_mode_for_review_status(report.review_status) == "strict"
 
 
+def test_gold_readiness_reports_pass_public_export_profile() -> None:
+    gold_reports = sorted((ROOT / "benchmarks" / "readinessbench" / "gold").rglob("readiness_report.json"))
+    assert validation_mode_for_profile("public_export") == "public_export"
+    for path in gold_reports:
+        report = load_readiness_report(path, mode="public_export")
+        assert report.review_origin is not None
+        assert report.review_origin.value == "internal_seed"
+
+
+def test_bronze_candidate_reports_fail_public_export_when_pending() -> None:
+    candidate_path = (
+        ROOT
+        / "benchmarks"
+        / "readinessbench"
+        / "bronze"
+        / "metadata_only_graph_sketch_001_0004_sketch_export_policy"
+        / "readiness_report.json"
+    )
+    load_readiness_report(candidate_path, mode="permissive")
+    with pytest.raises(ArtifactValidationError):
+        load_readiness_report(candidate_path, mode="public_export")
+
+
 def test_live_demo_candidate_artifacts_validate_permissively() -> None:
     live_root = ROOT / "artifacts" / "generated" / "demo_run" / "live"
     if not live_root.is_dir():
@@ -127,3 +151,5 @@ def test_live_demo_candidate_artifacts_validate_permissively() -> None:
             load_atlas_record(atlas_path, mode="permissive")
             with pytest.raises(ArtifactValidationError):
                 load_atlas_record(atlas_path, mode="strict")
+            with pytest.raises(ArtifactValidationError):
+                load_atlas_record(atlas_path, mode="public_export")

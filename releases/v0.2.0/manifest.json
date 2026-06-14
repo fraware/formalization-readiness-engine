@@ -1,7 +1,7 @@
 {
   "schema_version": "0.1",
   "release_version": "v0.2.0",
-  "git_commit": "56e48e83e760df24d35359ed230d934debadd094",
+  "git_commit": "20a7200f26498973c8988b9e146909f73125cac9",
   "schema_versions": {
     "readiness_report": "0.1",
     "theorem_proof_unit": "0.1",
@@ -13,18 +13,18 @@
   "artifacts": [
     {
       "path": "releases/v0.2.0/exports/atlas.jsonl",
-      "sha256": "672f44254edd65437168653036e9c49caf6b0d111145025bab52125a18748b89",
-      "byte_size": 13388
+      "sha256": "4338a3283bfa3ff2dfeaf9239d68c369618c4cd236c000023b32c25310d9e646",
+      "byte_size": 13377
     },
     {
       "path": "releases/v0.2.0/exports/atlas_clusters.json",
-      "sha256": "799cb9eefef095df5abbe56d463fd9ad586c1250d205036931d02fc7d3a75962",
-      "byte_size": 15747
+      "sha256": "abbaffab8e9d136b51cec5c48a9fff7a9e024a0b29589430aa2e26529c81f6cc",
+      "byte_size": 15350
     },
     {
       "path": "releases/v0.2.0/exports/readinessbench.jsonl",
-      "sha256": "abdad7a74b3cfdcdcd4106f0157804f72fd16435fbed0c1b259d49f745fc84ac",
-      "byte_size": 82492
+      "sha256": "4937264c2e92e593ecdfadded37778adf72d9a5a5cbb5129a0974422f880de51",
+      "byte_size": 84669
     }
   ]
 }

@@ -1,10 +1,12 @@
 ﻿"""Tests for versioned release manifest generation."""
 
+import hashlib
 from pathlib import Path
 
 from fre_core.release_manifest import (
     build_release_manifest,
     collect_artifact_checksums,
+    normalize_text_artifact_line_endings,
     verify_release_manifest,
 )
 
@@ -24,7 +26,7 @@ def test_collect_artifact_checksums_uses_repo_relative_paths(tmp_path: Path) -> 
 
     assert [entry.path for entry in checksums] == ["a.jsonl", "b.jsonl"]
     assert all(len(entry.sha256) == 64 for entry in checksums)
-    assert checksums[0].byte_size == len(first.read_bytes())
+    assert checksums[0].byte_size == len(normalize_text_artifact_line_endings(first))
 
 
 def test_build_release_manifest_includes_schema_versions(tmp_path: Path) -> None:
@@ -43,6 +45,17 @@ def test_build_release_manifest_includes_schema_versions(tmp_path: Path) -> None
     assert manifest.schema_versions["readiness_report"] == "0.1"
     assert len(manifest.artifacts) == 1
     assert manifest.artifacts[0].path == "readinessbench.jsonl"
+
+
+def test_crlf_jsonl_checksum_matches_lf_normalized_bytes(tmp_path: Path) -> None:
+    artifact = tmp_path / "readinessbench.jsonl"
+    artifact.write_bytes(b'{"id": 1}\r\n{"id": 2}\r\n')
+
+    checksums = collect_artifact_checksums([artifact], repo_root=tmp_path)
+
+    expected_bytes = normalize_text_artifact_line_endings(artifact)
+    assert checksums[0].byte_size == len(expected_bytes)
+    assert checksums[0].sha256 == hashlib.sha256(expected_bytes).hexdigest()
 
 
 def test_committed_v020_manifest_matches_exports() -> None:

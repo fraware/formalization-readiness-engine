@@ -9,6 +9,7 @@ from pydantic import BaseModel, Field
 from fre_core.latex_ingestion import ingest_latex_file
 from fre_core.model_client import StructuredModelClient
 from fre_core.schemas import SourceDocument, TheoremProofUnit
+from fre_core.validation import ArtifactValidationError, load_unit
 
 VALID_RELEASE_MODES = frozenset({"full_text_allowed", "metadata_only", "derived_annotations_only"})
 
@@ -52,6 +53,40 @@ def validate_corpus_catalog(*, catalog: CorpusCatalog, repo_root: Path) -> None:
         raise CorpusValidationError("Corpus catalog must include at least one full_text_allowed source.")
     if "metadata_only" not in release_modes:
         raise CorpusValidationError("Corpus catalog must include at least one metadata_only source for leak-test coverage.")
+
+
+def validate_corpus_unit_spans(
+    *,
+    catalog: CorpusCatalog,
+    repo_root: Path,
+    units_dir: Path | None = None,
+) -> None:
+    """Validate that corpus unit source spans fall within resolved source files."""
+    resolved_units_dir = units_dir or (repo_root / "corpus" / "units")
+    if not resolved_units_dir.is_dir():
+        raise CorpusValidationError(f"Missing corpus units directory: {resolved_units_dir.as_posix()}")
+
+    sources = catalog.by_source_id()
+    issues: list[str] = []
+    for unit_path in sorted(resolved_units_dir.glob("*.json")):
+        unit = TheoremProofUnit.model_validate_json(unit_path.read_text(encoding="utf-8"))
+        if unit.statement_span is None and unit.proof_span is None:
+            continue
+        source = sources.get(unit.source_id)
+        if source is None:
+            issues.append(f"{unit_path.name}: unknown source_id {unit.source_id!r}")
+            continue
+        source_path = resolve_source_path(source=source, repo_root=repo_root)
+        if not source_path.is_file():
+            issues.append(f"{unit_path.name}: missing source file {source_path.as_posix()}")
+            continue
+        try:
+            load_unit(unit_path, source_text=source_path.read_text(encoding="utf-8"))
+        except ArtifactValidationError as exc:
+            issues.append(f"{unit_path.name}: {exc}")
+
+    if issues:
+        raise CorpusValidationError("Corpus unit span validation failed:\n" + "\n".join(issues))
 
 
 def ingest_catalog(*, catalog: CorpusCatalog, repo_root: Path, repair: bool = False, model_client: StructuredModelClient | None = None) -> list[TheoremProofUnit]:

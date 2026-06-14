@@ -51,5 +51,6 @@
     "factorization prerequisites"
   ],
   "recommended_next_action": "Import gcd-lcm identity from mathlib if present.",
-  "review_status": "expert_reviewed"
+  "review_status": "expert_reviewed",
+  "review_origin": "internal_seed"
 }

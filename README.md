@@ -7,7 +7,7 @@
 [![CI](https://github.com/fraware/formalization-readiness-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/fraware/formalization-readiness-engine/actions/workflows/ci.yml)
 [![Lean](https://img.shields.io/badge/Lean-4.8.0-2a5db0)](lean/README.md)
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)](requirements.txt)
-[![Tests](https://img.shields.io/badge/tests-334-brightgreen)](tests/)
+[![Tests](https://img.shields.io/badge/tests-339-brightgreen)](tests/)
 [![Release](https://img.shields.io/badge/release-v0.2.0-informational)](releases/v0.2.0/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
@@ -28,7 +28,7 @@ FRE is a research and engineering foundation for measuring formalization readine
 <table>
 <tr>
 <td align="center" width="25%">
-<strong>334</strong><br>unit tests<br><sub>CI on every push</sub>
+<strong>339</strong><br>unit tests<br><sub>CI on every push</sub>
 </td>
 <td align="center" width="25%">
 <strong>43</strong><br>benchmark items<br><sub>11 gold · 1 silver · 31 bronze</sub>
@@ -45,7 +45,8 @@ FRE is a research and engineering foundation for measuring formalization readine
 | | |
 |:--|:--|
 | **Lean toolchain** | Lean 4.8.0 + mathlib v4.8.0; both reference LeanTasks verified 2026-06-14 ([status](lean/README.md#verification-status)) — L1 scaffolds use `sorry`, not completed proofs |
-| **Public release** | [`releases/v0.2.0/`](releases/v0.2.0/) manifest, checksums, and committed exports |
+| **Public release** | Frozen v0.2.0 snapshot at [`56e48e83`](releases/v0.2.0/) — see [release README](releases/v0.2.0/README.md) |
+| **Development** | Current branch HEAD; CI badge above tracks `main` |
 | **Repository** | [github.com/fraware/formalization-readiness-engine](https://github.com/fraware/formalization-readiness-engine) |
 
 ---
@@ -141,7 +142,7 @@ make setup-models
 make demo-live
 ```
 
-Committed reference scores and error analysis for the two live examples: [`docs/evidence/live_extraction_v0.2/`](docs/evidence/live_extraction_v0.2/). Score live outputs with `make run-readinessbench PREDICTIONS_DIR=artifacts/generated/demo_run/live` or `make record-live-extraction` after a fresh run.
+Committed reference scores (regenerable via `make record-live-extraction`) and error analysis for the two live examples: [`docs/evidence/live_extraction_v0.2/`](docs/evidence/live_extraction_v0.2/) — see the [evidence README](docs/evidence/live_extraction_v0.2/README.md) for regeneration steps and lexical F1 limits. Score live outputs with `make run-readinessbench PREDICTIONS_DIR=artifacts/generated/demo_run/live` or refresh evidence with `make record-live-extraction` after `make demo-live`.
 
 Windows:
 
@@ -199,6 +200,10 @@ flowchart LR
 
 ## Project layout
 
+**Current development branch** — checked-out HEAD (CI badge above). Code, tests, and docs evolve here.
+
+**Frozen public release v0.2.0** — snapshot at commit [`56e48e83`](https://github.com/fraware/formalization-readiness-engine/commit/56e48e83e760df24d35359ed230d934debadd094); committed exports and checksums live under [`releases/v0.2.0/`](releases/v0.2.0/) ([release README](releases/v0.2.0/README.md)). `main` may be ahead of that commit.
+
 ```
 formalization-readiness-engine/
 ├── packages/fre_core/          # Core: schemas, ingestion, extraction, validation, CLI
@@ -211,9 +216,10 @@ formalization-readiness-engine/
 │   ├── review-ui/              # Static review interface
 │   └── docs-site/              # MkDocs config (sources in docs/)
 ├── docs/                       # Architecture, demo, release, review guides
-├── tests/                      # Unit and integration tests (333+)
-├── releases/v0.2.0/            # Release manifest, checksums, and committed exports
-│   └── exports/                # ReadinessBench and Atlas JSONL (v0.2.0 bundle)
+│   └── evidence/               # Committed evaluation evidence (e.g. live extraction v0.2)
+├── tests/                      # Unit and integration tests (339)
+├── releases/v0.2.0/            # Frozen v0.2.0 manifest + committed exports (not live HEAD)
+│   └── exports/                # ReadinessBench and Atlas JSONL (checksums in manifest.json)
 └── scripts/dev.ps1             # Windows equivalent of Makefile targets
 ```
 
@@ -233,9 +239,10 @@ On Windows: `.\scripts\dev.ps1 <target>` — e.g. `.\scripts\dev.ps1 export-sche
 | Export schemas | `make export-schemas` | `.\scripts\dev.ps1 export-schemas` |
 | Ingest corpus | `make ingest-corpus` | `.\scripts\dev.ps1 ingest-corpus` |
 | Validate benchmark | `make validate-readinessbench` | `.\scripts\dev.ps1 validate-readinessbench` |
+| Full smoke checklist | `make smoke` | `.\scripts\dev.ps1 smoke` |
 | Run benchmark eval | `make run-readinessbench` | `.\scripts\dev.ps1 run-readinessbench` |
 | Export public benchmark | `make export-public-benchmark` | `.\scripts\dev.ps1 export-public-benchmark` |
-| Build docs | `make docs` | `pip install -r requirements-docs.txt` then `python -m mkdocs build -f apps/docs-site/mkdocs.yml` |
+| Build docs | `make docs` | `.\scripts\dev.ps1 docs` |
 | Review API + UI | `make setup-api && make run-api` | `.\scripts\dev.ps1 setup-api` then `.\scripts\dev.ps1 run-api` |
 
 Review UI: [http://127.0.0.1:8080](http://127.0.0.1:8080) · Docker stack: [docs/DOCKER.md](docs/DOCKER.md)
@@ -267,7 +274,9 @@ Contributions are welcome. Build around **artifacts** — every feature should c
 | **Review** | Validate reports with the reviewer guide — [REVIEWER_GUIDE](docs/review/REVIEWER_GUIDE.md) |
 | **Documentation** | Architecture, demos, and release workflows in `docs/` |
 
-CI runs tests, offline demo, example validation, public exports, and documentation build on every push and pull request.
+CI runs tests, offline demo, example validation, corpus catalog span checks, ReadinessBench manifest validation, public exports, licensing tests, release manifest verification, and documentation build on every push and pull request ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)). Lean checks run in a separate path-filtered workflow ([`.github/workflows/lean.yml`](.github/workflows/lean.yml)); dispatch manually when generated Lean or toolchain files change.
+
+Latest local verification record: [`docs/evidence/current_main_status.md`](docs/evidence/current_main_status.md).
 
 ---
 

@@ -266,6 +266,23 @@ Acceptance criteria:
 
 These items are not blockers for the v0.2.0 public release. They extend coverage, reviewer tooling, or deployment depth.
 
+### v0.3 semantic evaluation metrics
+
+Goal: complement lexical F1 with declaration-aware and embedding-based scoring so benchmark results better reflect formalization relevance.
+
+Tasks:
+
+1. Declaration-aware theorem matching using mathlib `full_name` normalization and alias tables.
+2. Dimension `status` field accuracy scoring (clear/partial/blocked vs gold).
+3. Optional embedding similarity for constructive paths and blockers.
+4. Keep lexical F1 as a reproducible v0.2 baseline column for regression comparison.
+
+Acceptance criteria:
+
+- semantic scores are deterministic given fixed embedding fixtures;
+- gold fixtures document which metric version was used;
+- README and technical report distinguish lexical vs semantic columns.
+
 ### Annotation workflow in review UI
 
 Goal: let reviewers produce Silver and Gold artifacts through the web interface instead of manual JSON editing.

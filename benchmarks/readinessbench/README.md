@@ -20,6 +20,25 @@ The committed manifest (`manifest.json`) lists 43 items:
 | silver | `human_reviewed` | Reviewer-corrected reports with checked spans and fixed obvious errors |
 | gold | `human_reviewed`, `expert_reviewed` | Expert-reviewed benchmark truth used for scoring |
 
+## Gold provenance (v0.2)
+
+All 11 v0.2 gold items carry `review_origin: internal_seed`. They are **engineering-curated fixtures** seeded for benchmark scale, not community-validated external truth. The `review_status: expert_reviewed` label reflects internal curation quality targets, not independent expert sign-off.
+
+Reserve `review_origin: external_expert` or `community_reviewed` for items promoted through the external review workflow with persisted submissions under `benchmarks/readinessbench/edits/`. Public JSONL exports include `review_origin` on each record.
+
+## v0.2 lexical baseline metrics
+
+ReadinessBench scoring uses **normalized set-overlap F1** (lexical token matching) for:
+
+- `existing_theorem_candidates`
+- `constructive_path`
+- `blockers`
+- `notation_readiness.recovered` / `unresolved`
+
+This measures string overlap, not semantic equivalence. A prediction can cite a mathematically relevant mathlib declaration and still score 0.0 when the gold string differs lexically (for example `CategoryTheory` vs `category_theory`). Optional ProofGraph, Atlas, and LeanTask scores use the same lexical overlap approach.
+
+Semantic or embedding-based metrics are planned for v0.3; see `docs/NEXT_SPRINTS.md`.
+
 ## Layout
 
 ```text

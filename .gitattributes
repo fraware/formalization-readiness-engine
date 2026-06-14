@@ -1,0 +1,7 @@
+# Release artifacts must use LF so checksums match Linux CI checkout.
+releases/** export-ignore
+releases/**/*.jsonl text eol=lf
+releases/**/*.json text eol=lf
+
+# Public export outputs (gitignored) and JSONL fixtures.
+*.jsonl text eol=lf

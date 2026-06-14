@@ -2,11 +2,28 @@
 
 This document explains how external users inspect examples, run ReadinessBench, and consume public JSONL exports from the Formalization Readiness Engine.
 
+## Release semantics
+
+A **public release** is a frozen, checksum-verified bundle under `releases/<version>/`, not whatever happens to be on `main` at checkout time.
+
+| Concept | Meaning |
+|---------|---------|
+| Frozen snapshot | `releases/v0.2.0/` records a specific `git_commit` in `manifest.json` plus committed exports whose SHA-256 checksums are listed in that manifest |
+| Current development | The checked-out branch (typically `main`) may advance after the snapshot was cut; only a new tag and manifest update creates a new public release |
+| Local regeneration | `make export-public-benchmark` and `make export-public-atlas` write to gitignored `public_exports/` for inspection; they do not replace the frozen bundle unless you intentionally copy outputs and rebuild the manifest |
+| Manifest updates | Run `make build-release-manifest` only when cutting a release (see `.github/workflows/release.yml`); do not bump `git_commit` on every push |
+
+Verify a committed bundle:
+
+```bash
+make verify-release-manifest
+```
+
 ## v0.2.0 release
 
-The committed public release is version v0.2.0:
+The committed public release is version v0.2.0, frozen at git commit [`56e48e83e760df24d35359ed230d934debadd094`](https://github.com/fraware/formalization-readiness-engine/commit/56e48e83e760df24d35359ed230d934debadd094):
 
-- Release manifest: `releases/v0.2.0/manifest.json`
+- Release manifest: `releases/v0.2.0/manifest.json` (see also `releases/v0.2.0/README.md`)
 - Committed release exports: `releases/v0.2.0/exports/readinessbench.jsonl`, `releases/v0.2.0/exports/atlas.jsonl`, `releases/v0.2.0/exports/atlas_clusters.json`
 - ReadinessBench: 43 manifest items (11 gold, 1 silver, 31 bronze)
 - JSON Schemas: `schemas/`
@@ -133,6 +150,10 @@ PYTHONPATH=packages/fre_core/src:. pytest tests/test_public_export.py -q -k "lic
 
 See `docs/CORPUS_GOVERNANCE.md` for catalog policy.
 
+## Gold provenance disclaimer
+
+v0.2 gold items are labeled `review_origin: internal_seed` in public exports. They are curated internal fixtures for reproducible evaluation, not externally validated community benchmark truth. Promoting an item to `external_expert` requires a persisted review submission on disk (not the template placeholder) and a matching changelog entry.
+
 ## JSONL record shapes
 
 ### Benchmark item
@@ -144,8 +165,9 @@ See `docs/CORPUS_GOVERNANCE.md` for catalog policy.
   "item_id": "finite_tree_edge_count_gold",
   "unit_id": "finite_tree_edge_count",
   "tier": "gold",
+  "review_origin": "internal_seed",
   "unit": { "...": "TheoremProofUnit" },
-  "readiness_report": { "...": "ReadinessReport" }
+  "readiness_report": { "...": "ReadinessReport with review_origin" }
 }
 ```
 

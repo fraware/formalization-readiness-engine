@@ -11,6 +11,12 @@ Each review unit consists of:
 
 Your job is to decide whether the readiness report is accurate, useful to an external formalizer, and ready for promotion to Silver or Gold.
 
+## v0.2 gold disclaimer
+
+The 11 gold fixtures in `benchmarks/readinessbench/gold/` are labeled `review_origin: internal_seed`. They were seeded by the engineering team for benchmark scale and reproducibility. They are **not** community-validated external truth despite carrying `review_status: expert_reviewed`.
+
+To promote an item to `review_origin: external_expert`, complete this review workflow, persist the submission under `benchmarks/readinessbench/edits/`, and reference that path (not the template placeholder) in `gold/changelog.jsonl`.
+
 ## Before you start
 
 Collect these files for the unit under review:
@@ -109,7 +115,7 @@ After review approval:
 1. Write the corrected readiness report with the appropriate `review_status`.
 2. Copy reviewed artifacts into `benchmarks/readinessbench/silver/<unit_id>/` or `benchmarks/readinessbench/gold/<unit_id>/`.
 3. Update `benchmarks/readinessbench/manifest.json` if the item is new.
-4. For Gold changes, append an entry to `benchmarks/readinessbench/gold/changelog.jsonl` and `benchmarks/readinessbench/gold/CHANGELOG.md`.
+4. For Gold changes, append an entry to `benchmarks/readinessbench/gold/changelog.jsonl` and `benchmarks/readinessbench/gold/CHANGELOG.md`, including `review_origin` (`external_expert` when this guide's workflow produced the submission).
 
 Never promote directly from `artifacts/generated/` without completing this review workflow.
 
