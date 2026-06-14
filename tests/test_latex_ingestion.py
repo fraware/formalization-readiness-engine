@@ -60,3 +60,24 @@ def test_ingest_latex_file(tmp_path: Path) -> None:
 
     assert len(units) == 2
     assert units[0].statement_span is not None
+
+
+DEFINITION_REMARK_SOURCE = r"""
+\begin{definition}[Connected graph]
+A graph is connected when every pair of vertices is joined by a path.
+\end{definition}
+
+\begin{remark}[Forests and induction]
+Forests are acyclic and satisfy $|E|=|V|-c$ for $c$ components.
+\end{remark}
+"""
+
+
+def test_parse_latex_definition_and_remark_environments() -> None:
+    blocks = parse_latex_theorem_blocks(DEFINITION_REMARK_SOURCE)
+
+    assert len(blocks) == 2
+    assert blocks[0].env == "definition"
+    assert blocks[1].env == "remark"
+    assert blocks[0].statement_span.start < blocks[0].statement_span.end
+    assert blocks[1].proof is None
