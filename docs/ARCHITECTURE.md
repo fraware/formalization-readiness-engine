@@ -19,7 +19,7 @@ ReadinessReport   <-- extraction + StructuredModelClient
         |
         +--> DeclarationIndex lookup (mathlib_index / mathlib_alignment) --> candidate theorem names
         |
-        +--> ProofGraph      <-- extract_proofgraph + StructuredModelClient
+        +--> ProofGraph      <-- build_proofgraph / extract_proofgraph + StructuredModelClient
         +--> AtlasRecord     <-- extract_atlas + StructuredModelClient
         |
         v
@@ -41,7 +41,7 @@ ReadinessBench    <-- evaluation
 |------|---------|
 | `corpus/catalog.json` | Committed source catalog with license and release metadata |
 | `corpus/sources/` | Permitted LaTeX inputs referenced by the catalog |
-| `fixtures/mathlib_declarations/` | Committed mathlib declaration index fixtures (v0 lexical lookup; finite-tree and category-theory) |
+| `fixtures/mathlib_declarations/` | Committed mathlib declaration index fixtures (v0 domain slices; trimmed `mathlib_v4.8.0.json` for CI) |
 | `examples/category_theory_pullback/` | Hand-authored category-theory reference artifacts (pullback transport along equivalence) |
 | `benchmarks/readinessbench/` | ReadinessBench manifest and Bronze/Silver/Gold readiness-report fixtures |
 | `examples/corpus_shareable/` | Shareable export demo with full-text and metadata-only fixtures |
@@ -55,11 +55,13 @@ packages/fre_core/src/fre_core/
   latex_ingestion.py         LaTeX -> TheoremProofUnit
   corpus.py                  Catalog load, ingest, validate, shareable export
   extraction.py              ReadinessReport orchestration
-  extract_proofgraph.py      ProofGraph orchestration
+  build_proofgraph.py        ProofGraph builder from unit + readiness report + alignment
+  extract_proofgraph.py      ProofGraph orchestration (delegates to build_proofgraph)
   extract_atlas.py           AtlasRecord orchestration
   extract_leantask.py        LeanTaskPackage orchestration from unit + readiness report
   mathlib_index.py           Declaration index load, lexical search, candidate enrichment
   mathlib_alignment.py       Multi-dimensional alignment service (candidate vs confirmed)
+  embedding_index.py         EmbeddingIndex protocol and stub for Phase 4b semantic search
   public_export.py           Public ReadinessBench and Atlas JSONL export
   benchmark.py               ReadinessBench manifest validation and evaluation runner
   review_workflow.py         External review submission and Gold changelog validation
@@ -95,14 +97,22 @@ Or on Windows:
 
 ## Sprint 5 mathlib index workflow
 
-1. Load a committed declaration index fixture (for example `fixtures/mathlib_declarations/finite_tree_v0.json`).
+1. Load a committed declaration index fixture (for example `fixtures/mathlib_declarations/finite_tree_v0.json` for domain demos, or the trimmed CI fixture `fixtures/mathlib_declarations/mathlib_v4.8.0.json`).
 2. Build a lexical query from a unit or readiness report.
 3. Search the index for ranked candidate theorem names (Bronze candidates only).
 4. Optionally enrich `existing_theorem_candidates` on a readiness report.
 
+### Index export and update cadence
+
+1. Export declarations from the pinned Lean project with `scripts/export_mathlib_declarations.py export` (requires a local Mathlib build).
+2. Trim large exports for CI with `scripts/export_mathlib_declarations.py trim` or rebuild the merged CI fixture with `build-ci-fixture`.
+3. Commit updated fixtures when the Lean toolchain pin changes in `lean/lean-toolchain`.
+4. Review workflows and the API default to the trimmed CI fixture; domain v0 fixtures remain for focused examples and tests.
+
 Commands:
 
 ```bash
+PYTHONPATH=packages/fre_core/src python scripts/export_mathlib_declarations.py build-ci-fixture
 make lookup-finite-tree-declarations
 PYTHONPATH=packages/fre_core/src python -m fre_core.cli lookup-declarations --query "finite tree edge card"
 PYTHONPATH=packages/fre_core/src python -m fre_core.cli enrich-report-candidates \
@@ -198,6 +208,7 @@ Candidate outputs are written under `artifacts/generated/`. Reviewed gold artifa
 3. Load example artifact metadata from `GET /examples/{name}`.
 4. Validate readiness reports and review submissions through artifact-first POST endpoints.
 5. Propose mathlib alignment candidates with `POST /align/readiness-report` (confirmed alignment requires explicit reviewer flags).
+6. Promote reviewer-confirmed alignments with `POST /review/promote-alignment` to attach `confirmed_alignment_full_names` and `suggested_import_modules` to the submission payload.
 
 See `apps/review-ui/README.md` and `docs/PUBLIC_RELEASE.md`.
 

@@ -10,14 +10,17 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
-from fre_core.mathlib_alignment import align_readiness_report
-from fre_core.mathlib_index import default_index_path, load_index
+from fre_core.mathlib_alignment import (
+    align_readiness_report,
+    suggest_import_modules_from_alignment,
+)
+from fre_core.mathlib_index import load_index, trimmed_index_path
 from fre_core.review_workflow import ReviewWorkflowError, validate_review_submission
 from fre_core.schemas import AlignmentResult, ReadinessReport, ReadinessReportReviewSubmission
 from fre_core.validation import ArtifactValidationError, validate_readiness_report
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
-_DEFAULT_INDEX_PATH = default_index_path(repo_root=_REPO_ROOT)
+_DEFAULT_INDEX_PATH = trimmed_index_path(repo_root=_REPO_ROOT)
 
 _EXAMPLES: dict[str, dict[str, str]] = {
     "finite_tree": {
@@ -54,6 +57,20 @@ class AlignReadinessReportRequest(BaseModel):
     unit: dict[str, Any] | None = None
     confirmed_full_names: list[str] = Field(default_factory=list)
     index_path: str | None = None
+
+
+class PromoteAlignmentRequest(BaseModel):
+    report: ReadinessReport
+    unit: dict[str, Any] | None = None
+    confirmed_full_names: list[str] = Field(default_factory=list)
+    index_path: str | None = None
+
+
+class PromoteAlignmentResponse(BaseModel):
+    unit_id: str
+    alignment: AlignmentResult
+    confirmed_alignment_full_names: list[str]
+    suggested_import_modules: list[str]
 
 
 def _resolve_repo_path(relative_path: str) -> Path:
@@ -141,6 +158,32 @@ def create_app() -> FastAPI:
             index=index,
             unit=unit,
             confirmed_full_names=frozenset(request.confirmed_full_names),
+        )
+
+    @app.post("/review/promote-alignment", response_model=PromoteAlignmentResponse)
+    def promote_alignment_endpoint(request: PromoteAlignmentRequest) -> PromoteAlignmentResponse:
+        index_path = _resolve_repo_path(request.index_path) if request.index_path else _DEFAULT_INDEX_PATH
+        if not index_path.exists():
+            raise HTTPException(status_code=404, detail=f"Index not found: {index_path.as_posix()}")
+
+        index = load_index(index_path)
+        unit = None
+        if request.unit is not None:
+            unit = load_unit_from_payload(request.unit)
+
+        alignment = align_readiness_report(
+            report=request.report,
+            index=index,
+            unit=unit,
+            confirmed_full_names=frozenset(request.confirmed_full_names),
+        )
+        confirmed_names = [candidate.full_name for candidate in alignment.confirmed]
+        suggested_imports = suggest_import_modules_from_alignment(alignment=alignment)
+        return PromoteAlignmentResponse(
+            unit_id=request.report.unit_id,
+            alignment=alignment,
+            confirmed_alignment_full_names=confirmed_names,
+            suggested_import_modules=suggested_imports,
         )
 
     return app

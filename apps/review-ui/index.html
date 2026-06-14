@@ -1,52 +1,122 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
   <head>
+
     <meta charset="utf-8" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <title>Formalization Readiness Review</title>
+
     <link rel="stylesheet" href="styles.css" />
+
   </head>
+
   <body>
+
     <header>
+
       <h1>Formalization Readiness Review</h1>
-      <p>Inspect example artifacts and submit a structured readiness-report review.</p>
+
+      <p>Inspect example artifacts, confirm mathlib alignments, and submit a structured readiness-report review.</p>
+
     </header>
 
+
+
     <main>
+
       <section class="panel">
+
         <h2>Example</h2>
+
         <label for="example-select">Load example</label>
+
         <select id="example-select">
+
           <option value="finite_tree">finite_tree</option>
+
           <option value="category_theory_pullback">category_theory_pullback</option>
+
         </select>
+
         <button id="load-example" type="button">Load artifacts</button>
+
         <p id="load-status" class="status"></p>
+
       </section>
 
+
+
       <section class="panel">
+
         <h2>Readiness report</h2>
+
         <div id="report-summary"></div>
+
         <pre id="report-json" class="artifact"></pre>
+
       </section>
 
+
+
       <section class="panel">
-        <h2>Review submission</h2>
-        <p>
-          Edit the JSON below to match
-          <code>docs/review/templates/readiness_report_review.json</code>, then validate through the API.
-        </p>
-        <label for="api-base">API base URL</label>
-        <input id="api-base" type="text" value="http://127.0.0.1:8000" />
-        <textarea id="review-json" rows="24"></textarea>
-        <div class="actions">
-          <button id="validate-review" type="button">Validate review submission</button>
-          <button id="validate-report" type="button">Validate readiness report</button>
-        </div>
-        <pre id="validation-result" class="artifact"></pre>
+
+        <h2>Alignment candidates</h2>
+
+        <p id="alignment-status" class="status">Load an example to fetch alignment candidates.</p>
+
+        <div id="alignment-candidates" class="alignment-list"></div>
+
+        <h3>Suggested import modules</h3>
+
+        <pre id="suggested-imports" class="artifact">(none promoted yet)</pre>
+
+        <button id="promote-alignment" type="button" disabled>Promote confirmed alignments</button>
+
       </section>
+
+
+
+      <section class="panel">
+
+        <h2>Review submission</h2>
+
+        <p>
+
+          Edit the JSON below to match
+
+          <code>docs/review/templates/readiness_report_review.json</code>, then validate through the API.
+
+        </p>
+
+        <label for="api-base">API base URL</label>
+
+        <input id="api-base" type="text" value="http://127.0.0.1:8000" />
+
+        <textarea id="review-json" rows="24"></textarea>
+
+        <div class="actions">
+
+          <button id="validate-review" type="button">Validate review submission</button>
+
+          <button id="validate-report" type="button">Validate readiness report</button>
+
+        </div>
+
+        <pre id="validation-result" class="artifact"></pre>
+
+      </section>
+
     </main>
 
+
+
     <script src="app.js"></script>
+
   </body>
+
 </html>
+

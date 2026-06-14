@@ -14,6 +14,7 @@ from fre_core.corpus import (
     load_units_from_dir,
     write_units,
 )
+from fre_core.build_proofgraph import build_proofgraph
 from fre_core.extract_atlas import extract_atlas_record
 from fre_core.extract_leantask import extract_leantask_package
 from fre_core.extract_proofgraph import extract_proofgraph
@@ -32,6 +33,7 @@ from fre_core.mathlib_index import (
     enrich_readiness_candidates,
     load_index,
     search,
+    trimmed_index_path,
 )
 from fre_core.public_export import (
     assert_no_licensing_leak,
@@ -239,11 +241,66 @@ def extract_proofgraph_cmd(
     unit_path: Path,
     output_path: Path,
     model: str | None = None,
+    report_path: Path | None = typer.Option(
+        None,
+        help="Optional readiness report for the full proof-graph builder path.",
+    ),
+    alignment_path: Path | None = typer.Option(
+        None,
+        help="Optional AlignmentResult JSON for the full proof-graph builder path.",
+    ),
+    from_unit_only: bool = typer.Option(
+        False,
+        help="Use the legacy unit-only prompt (ablation baseline).",
+    ),
 ) -> None:
     """Extract a proof graph from a theorem/proof unit using the model provider."""
     unit = load_unit(unit_path)
     provider = OpenAIResponsesProvider(model=model)
-    graph = extract_proofgraph(unit=unit, model_client=provider)
+    report = load_readiness_report(report_path) if report_path is not None else None
+    alignment = None
+    if alignment_path is not None:
+        from fre_core.schemas import AlignmentResult
+
+        alignment = AlignmentResult.model_validate_json(alignment_path.read_text(encoding="utf-8"))
+    graph = extract_proofgraph(
+        unit=unit,
+        model_client=provider,
+        report=report,
+        alignment=alignment,
+        from_unit_only=from_unit_only or (report is None and alignment is None),
+    )
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(graph.model_dump_json(indent=2), encoding="utf-8")
+    print(f"[green]wrote proof graph[/green] {output_path}")
+
+
+@app.command("build-proofgraph")
+def build_proofgraph_cmd(
+    unit_path: Path,
+    report_path: Path,
+    output_path: Path,
+    model: str | None = None,
+    alignment_path: Path | None = typer.Option(
+        None,
+        help="Optional AlignmentResult JSON to include confirmed library names.",
+    ),
+) -> None:
+    """Build a proof graph from unit, readiness report, and optional alignment evidence."""
+    unit = load_unit(unit_path)
+    report = load_readiness_report(report_path)
+    alignment = None
+    if alignment_path is not None:
+        from fre_core.schemas import AlignmentResult
+
+        alignment = AlignmentResult.model_validate_json(alignment_path.read_text(encoding="utf-8"))
+    provider = OpenAIResponsesProvider(model=model)
+    graph = build_proofgraph(
+        unit=unit,
+        model_client=provider,
+        report=report,
+        alignment=alignment,
+    )
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(graph.model_dump_json(indent=2), encoding="utf-8")
     print(f"[green]wrote proof graph[/green] {output_path}")
@@ -401,7 +458,7 @@ def align_readiness_report_cmd(
     output_path: Path,
     unit_path: Path | None = typer.Option(None, help="Optional source unit for statement tokens."),
     index_path: Path = typer.Option(
-        default_index_path(),
+        trimmed_index_path(),
         help="Declaration index JSON path.",
     ),
     confirmed_name: list[str] = typer.Option(
