@@ -62,6 +62,17 @@ def _pytest_collection_count() -> int:
     return int(match.group(1))
 
 
+def _git_diff_paths(from_ref: str, to_ref: str) -> set[str]:
+    completed = subprocess.run(
+        ["git", "diff", "--name-only", from_ref, to_ref],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return {line for line in completed.stdout.splitlines() if line}
+
+
 def test_current_main_status_matches_head() -> None:
     assert STATUS_META.is_file(), (
         "docs/evidence/status_meta.json is missing; run make record-main-status"
@@ -72,11 +83,26 @@ def test_current_main_status_matches_head() -> None:
 
     meta = json.loads(STATUS_META.read_text(encoding="utf-8"))
     head = _git_head()
-    assert meta.get("commit_sha") == head
+    recorded = meta.get("commit_sha")
+    assert recorded, "status_meta.json must include commit_sha"
 
     status_text = CURRENT_MAIN_STATUS.read_text(encoding="utf-8")
-    assert head in status_text
+    assert recorded in status_text
     assert meta.get("pytest_collection_count") == _pytest_collection_count()
+
+    if recorded == head:
+        return
+
+    # Allow a docs-only status refresh commit on top of the recorded sprint SHA.
+    evidence_only = {
+        "docs/evidence/current_main_status.md",
+        "docs/evidence/status_meta.json",
+    }
+    diff_paths = _git_diff_paths(recorded, head)
+    assert diff_paths <= evidence_only, (
+        f"status_meta commit_sha {recorded!r} != HEAD {head!r} and diff is not "
+        f"evidence-only: {sorted(diff_paths)}; run make record-main-status"
+    )
 
 
 def test_docs_do_not_claim_stale_test_count_165() -> None:
