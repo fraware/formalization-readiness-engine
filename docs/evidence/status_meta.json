@@ -1,11 +1,11 @@
 {
   "schema_version": "0.1",
-  "commit_sha": "e9bdfbb62fda0344b2eb9a4f968ef96ea491ed40",
+  "commit_sha": "74129a97330c0c1aa92bcf333c4068f7647518b2",
   "pytest_collection_count": 352,
   "verification_date": "2026-06-15",
   "verify_release_manifest": true,
   "validate_readinessbench": true,
-  "ci_run_url": "https://github.com/fraware/formalization-readiness-engine/actions/runs/27514939879",
+  "ci_run_url": "https://github.com/fraware/formalization-readiness-engine/actions/runs/27529550333",
   "ci_run_status": "success",
   "lean_run_url": "https://github.com/fraware/formalization-readiness-engine/actions/runs/27514933703",
   "lean_run_status": "success"
