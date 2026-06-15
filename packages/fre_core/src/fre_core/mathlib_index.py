@@ -196,3 +196,38 @@ def enrich_readiness_report_from_unit(
     """Enrich candidates using a query derived from the source unit."""
     query = build_search_query_from_unit(unit)
     return enrich_readiness_candidates(report=report, index=index, query=query, top_k=top_k)
+
+
+def suggest_declarations_for_unit(
+    *,
+    unit: TheoremProofUnit,
+    index: DeclarationIndex,
+    top_k: int = 5,
+) -> list[str]:
+    """Return ranked mathlib declaration full names for prompt augmentation."""
+    query = build_search_query_from_unit(unit)
+    hits = search(index=index, query=query, top_k=top_k)
+    return [hit.declaration.full_name for hit in hits]
+
+
+def lookup_declaration(
+    *,
+    index: DeclarationIndex,
+    candidate: str,
+) -> MathlibDeclaration | None:
+    """Resolve a candidate string to a declaration in the index, if present."""
+    normalized = candidate.strip()
+    if normalized.casefold().startswith("mathlib:"):
+        normalized = normalized.split(":", 1)[1].strip()
+    if not normalized:
+        return None
+    normalized_key = normalized.casefold()
+    for declaration in index.declarations:
+        if declaration.full_name.casefold() == normalized_key:
+            return declaration
+        if declaration.declaration_id.casefold() == normalized_key:
+            return declaration
+        decl_suffix = declaration.declaration_id.split(":", 1)[-1]
+        if decl_suffix.casefold() == normalized_key:
+            return declaration
+    return None

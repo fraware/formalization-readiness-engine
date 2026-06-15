@@ -21,7 +21,7 @@ make verify-release-manifest
 
 ## v0.2.0 release
 
-The committed public release is version v0.2.0, frozen at git commit [`56e48e83e760df24d35359ed230d934debadd094`](https://github.com/fraware/formalization-readiness-engine/commit/56e48e83e760df24d35359ed230d934debadd094):
+The committed public release is version v0.2.0, frozen at git commit [`f411fd5f1a6b6e4a5624970a26d1c33614b17f0b`](https://github.com/fraware/formalization-readiness-engine/commit/f411fd5f1a6b6e4a5624970a26d1c33614b17f0b) (release bundle cut). Lean skeleton verification is documented separately at `56e48e83` in [`lean/README.md`](../lean/README.md).
 
 - Release manifest: `releases/v0.2.0/manifest.json` (see also `releases/v0.2.0/README.md`)
 - Committed release exports: `releases/v0.2.0/exports/readinessbench.jsonl`, `releases/v0.2.0/exports/atlas.jsonl`, `releases/v0.2.0/exports/atlas_clusters.json`

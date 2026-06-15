@@ -591,7 +591,9 @@ def run_readinessbench_cmd(
         output_path.write_text(payload + "\n", encoding="utf-8")
         print(f"[green]wrote evaluation report[/green] {output_path}")
     print(payload)
-    print(f"[green]macro_f1_mean[/green] {report.macro_f1_mean}")
+    print(f"[green]macro_f1_mean (lexical)[/green] {report.macro_f1_mean}")
+    if report.v03_macro_f1_mean is not None:
+        print(f"[green]v03_macro_f1_mean[/green] {report.v03_macro_f1_mean}")
 
 
 
@@ -626,7 +628,9 @@ def run_benchmark_evaluation_cmd(
         output_path.write_text(payload + "\n", encoding="utf-8")
         print(f"[green]wrote evaluation report[/green] {output_path}")
     print(payload)
-    print(f"[green]full_macro_f1_mean[/green] {report.full_macro_f1_mean}")
+    print(f"[green]full_macro_f1_mean (lexical)[/green] {report.full_macro_f1_mean}")
+    if report.v03_macro_f1_mean is not None:
+        print(f"[green]v03_macro_f1_mean[/green] {report.v03_macro_f1_mean}")
 
 
 @app.command("run-baselines")
@@ -832,13 +836,20 @@ def build_release_manifest_cmd(
         [],
         help="Artifact file paths to checksum (repeatable). Defaults to public exports.",
     ),
-    git_commit: str | None = typer.Option(None, help="Optional git commit override."),
+    git_commit: str | None = typer.Option(
+        None,
+        help="Frozen release commit SHA. Required when cutting a release; do not use moving HEAD on main.",
+    ),
     repo_root: Path = typer.Option(
         Path("."),
         help="Repository root for repo-relative artifact paths in the manifest.",
     ),
 ) -> None:
-    """Build a versioned release manifest with artifact checksums."""
+    """Build a versioned release manifest with artifact checksums.
+
+    Pass ``--git-commit`` when cutting a release so ``manifest.json`` records the
+    frozen bundle cut, not whatever happens to be checked out.
+    """
     root = repo_root.resolve()
     artifacts = artifact_path
     if not artifacts:

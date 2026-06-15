@@ -125,6 +125,23 @@ def _validation_passes(load_fn, path: Path, *, mode: str) -> bool:
         return False
 
 
+def _validation_passes_normalized(load_fn, path: Path, filename: str) -> bool:
+    from fre_core.artifact_normalization import normalize_atlas_record, normalize_proofgraph
+    from fre_core.validation import ArtifactValidationError, validate_atlas_record, validate_proofgraph
+
+    try:
+        artifact = load_fn(path, mode="permissive")
+        if filename == "proofgraph.model.json":
+            validate_proofgraph(normalize_proofgraph(artifact), mode="public_export")
+        elif filename == "atlas_record.model.json":
+            validate_atlas_record(normalize_atlas_record(artifact), mode="public_export")
+        else:
+            load_fn(path, mode="public_export")
+        return True
+    except (ArtifactValidationError, ValueError):
+        return False
+
+
 def _validate_live_artifacts(example_key: str, live_root: Path) -> dict[str, dict[str, bool]]:
     from fre_core.validation import load_atlas_record, load_proofgraph, load_readiness_report
 
@@ -142,6 +159,7 @@ def _validate_live_artifacts(example_key: str, live_root: Path) -> dict[str, dic
         checks[filename] = {
             "strict": _validation_passes(loader, path, mode="strict"),
             "permissive": _validation_passes(loader, path, mode="permissive"),
+            "public_export": _validation_passes_normalized(loader, path, filename),
         }
     return checks
 
@@ -158,11 +176,16 @@ def _write_error_analysis(
     validation: dict[str, dict[str, bool]],
 ) -> None:
     macro_f1 = scores.get("macro_f1")
+    v03_metrics = scores.get("v03_metrics") or {}
+    v03_macro = v03_metrics.get("v03_macro_f1")
+    v03_theorem = v03_metrics.get("theorem_candidates_declaration_f1")
     analysis_path = output_root / f"{example_key}.md"
     gold_ref = f"benchmarks/readinessbench/gold/{unit_id}/"
     artifact_ref = live_root.relative_to(REPO_ROOT).as_posix()
     validation_lines = [
-        f"- `{name}` strict: {'pass' if modes['strict'] else 'fail'}, permissive: {'pass' if modes['permissive'] else 'fail'}"
+        f"- `{name}` strict: {'pass' if modes['strict'] else 'fail'}, "
+        f"permissive: {'pass' if modes['permissive'] else 'fail'}, "
+        f"public_export (normalized): {'pass' if modes.get('public_export') else 'fail'}"
         for name, modes in sorted(validation.items())
     ]
     narrative = ERROR_ANALYSIS_SECTIONS.get(example_key, "")
@@ -176,15 +199,18 @@ def _write_error_analysis(
 
 | Metric | Score |
 |--------|------:|
-| macro F1 | {macro_f1} |
-| existing theorem candidates F1 | {scores.get('existing_theorem_candidates_f1')} |
+| macro F1 (lexical v0.2) | {macro_f1} |
+| existing theorem candidates F1 (lexical) | {scores.get('existing_theorem_candidates_f1')} |
 | constructive path F1 | {scores.get('constructive_path_f1')} |
 | blockers F1 | {scores.get('blockers_f1')} |
 | notation readiness F1 | {scores.get('notation_readiness_f1')} |
+| v0.3 macro F1 | {v03_macro} |
+| theorem candidates F1 (declaration-ID v0.3) | {v03_theorem} |
 
 ## Validation (tiered)
 
 Gold fixtures use strict validation; live candidate artifacts use permissive validation.
+ProofGraph and Atlas public_export checks apply after artifact normalization.
 
 {chr(10).join(validation_lines)}
 
@@ -241,6 +267,16 @@ def _score_example(
             prediction_path.read_text(encoding="utf-8"),
             encoding="utf-8",
         )
+        for model_name, bench_name in (
+            ("proofgraph.model.json", "proofgraph.json"),
+            ("atlas_record.model.json", "atlas_record.json"),
+        ):
+            model_path = live_root / example_key / model_name
+            if model_path.is_file():
+                (unit_predictions / bench_name).write_text(
+                    model_path.read_text(encoding="utf-8"),
+                    encoding="utf-8",
+                )
         report = run_benchmark_evaluation(
             manifest_path=manifest_path,
             predictions_dir=predictions_dir,
@@ -259,6 +295,8 @@ def _score_example(
         "blockers_f1": item.blockers_f1,
         "notation_readiness_f1": item.notation_readiness_f1,
         "full_macro_f1": item.full_macro_f1,
+        "v03_metrics": item.v03_metrics or {},
+        "v03_macro_f1": report.v03_macro_f1_mean,
     }
     _write_error_analysis(
         output_root=output_root,

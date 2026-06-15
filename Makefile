@@ -8,7 +8,7 @@ PYTHONPATH_VALUE := packages/fre_core/src:.
 	extract-finite-tree-proofgraph extract-finite-tree-atlas lookup-finite-tree-declarations \
 	generate-finite-tree-leantask generate-category-theory-leantask \
 	validate-readinessbench run-readinessbench validate-review-submission validate-gold-changelog \
-	build-release-manifest verify-release-manifest record-live-extraction smoke \
+	build-release-manifest verify-release-manifest record-live-extraction record-main-status smoke \
 	run-api run-review-ui export-public-benchmark export-public-atlas
 
 PREDICTIONS_DIR ?= tests/fixtures/readinessbench_predictions
@@ -161,6 +161,7 @@ export-public-atlas:
 build-release-manifest:
 	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) -m fre_core.cli build-release-manifest \
 		--release-version v0.2.0 \
+		--git-commit f411fd5f1a6b6e4a5624970a26d1c33614b17f0b \
 		--output-path releases/v0.2.0/manifest.json \
 		--artifact-path releases/v0.2.0/exports/readinessbench.jsonl \
 		--artifact-path releases/v0.2.0/exports/atlas.jsonl \
@@ -174,5 +175,8 @@ verify-release-manifest:
 
 record-live-extraction:
 	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) scripts/record_live_extraction.py
+
+record-main-status:
+	PYTHONPATH=$(PYTHONPATH_VALUE) $(PYTHON) scripts/record_main_status.py
 
 smoke: setup test validate-examples validate-readinessbench verify-release-manifest docs

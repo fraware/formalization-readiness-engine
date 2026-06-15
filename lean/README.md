@@ -32,6 +32,8 @@ On Windows without GNU Make:
 
 **Last verified:** 2026-06-14 at commit [`56e48e83`](https://github.com/fraware/formalization-readiness-engine/commit/56e48e83e760df24d35359ed230d934debadd094) (Windows, Lean 4.8.0, mathlib v4.8.0).
 
+This commit records **Lean skeleton verification** only. The public release bundle cut (`f411fd5`) is documented separately in [`releases/v0.2.0/README.md`](../releases/v0.2.0/README.md); the two SHAs are not required to match.
+
 | Check | Result |
 |-------|--------|
 | `lake build` | Pass |

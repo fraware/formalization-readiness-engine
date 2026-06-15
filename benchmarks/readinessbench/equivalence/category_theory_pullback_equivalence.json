@@ -1,0 +1,14 @@
+{
+  "schema_version": "0.1",
+  "unit_id": "category_theory_pullback_equivalence",
+  "theorem_candidate_groups": [
+    [
+      "CategoryTheory.Equivalence.preservesLimitsOfShape",
+      "CategoryTheory.Limits.hasPullback_of_equivalence",
+      "CategoryTheory.Limits.isLimit.mapConeEquivalence"
+    ],
+    [
+      "CategoryTheory.Limits.PreservesPullback"
+    ]
+  ]
+}

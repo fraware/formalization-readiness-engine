@@ -23,6 +23,8 @@ From [`summary.json`](summary.json):
 
 Requires `OPENAI_API_KEY` and model dependencies (`make setup-models`).
 
+**Stale lexical scores:** The committed scores below were recorded from live artifacts under `artifacts/generated/demo_run/live/`. After index-in-prompt retrieval (Fix 5) or artifact normalization (Fix 4), those artifacts are stale until you re-run a full live demo. Without `OPENAI_API_KEY`, the recording script can only re-score existing live JSON; it cannot refresh model outputs. Category-theory `existing_theorem_candidates_f1` in particular may remain 0.0 on old artifacts even when the extraction pipeline is fixed — run `make demo-live` then `make record-live-extraction` before trusting lexical F1 as a regression signal.
+
 ```bash
 make demo-live
 make record-live-extraction

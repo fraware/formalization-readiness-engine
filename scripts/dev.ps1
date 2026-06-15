@@ -3,7 +3,7 @@
 
 param(
     [Parameter(Position = 0)]
-    [ValidateSet("setup", "setup-models", "setup-api", "test", "demo", "demo-live", "demo-finite-tree", "demo-category-theory", "validate-examples", "export-schemas", "lint", "check", "setup-lean", "build-lean", "render-finite-tree-leantask", "check-lean-finite-tree", "ingest-corpus", "export-corpus-shareable", "extract-finite-tree-proofgraph", "extract-finite-tree-atlas", "lookup-finite-tree-declarations", "generate-finite-tree-leantask", "generate-category-theory-leantask", "validate-readinessbench", "run-readinessbench", "validate-review-submission", "validate-gold-changelog", "docs", "verify-release-manifest", "record-live-extraction", "smoke", "run-api", "run-review-ui", "export-public-benchmark", "export-public-atlas")]
+    [ValidateSet("setup", "setup-models", "setup-api", "test", "demo", "demo-live", "demo-finite-tree", "demo-category-theory", "validate-examples", "export-schemas", "lint", "check", "setup-lean", "build-lean", "render-finite-tree-leantask", "check-lean-finite-tree", "ingest-corpus", "export-corpus-shareable", "extract-finite-tree-proofgraph", "extract-finite-tree-atlas", "lookup-finite-tree-declarations", "generate-finite-tree-leantask", "generate-category-theory-leantask", "validate-readinessbench", "run-readinessbench", "validate-review-submission", "validate-gold-changelog", "docs", "verify-release-manifest", "record-live-extraction", "record-main-status", "smoke", "run-api", "run-review-ui", "export-public-benchmark", "export-public-atlas")]
     [string]$Command = "test",
     [string]$PredictionsDir = "tests/fixtures/readinessbench_predictions"
 )
@@ -164,6 +164,9 @@ switch ($Command) {
     }
     "record-live-extraction" {
         python scripts/record_live_extraction.py
+    }
+    "record-main-status" {
+        python scripts/record_main_status.py --ci-run-id 27514939879 --lean-run-id 27514933703
     }
     "smoke" {
         Invoke-Setup

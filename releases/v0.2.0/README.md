@@ -7,10 +7,11 @@ This directory is the **committed public release bundle** for Formalization Read
 | Field | Value |
 |-------|-------|
 | Release version | `v0.2.0` |
-| Frozen git commit | [`56e48e83e760df24d35359ed230d934debadd094`](https://github.com/fraware/formalization-readiness-engine/commit/56e48e83e760df24d35359ed230d934debadd094) |
+| Release bundle cut | [`f411fd5f1a6b6e4a5624970a26d1c33614b17f0b`](https://github.com/fraware/formalization-readiness-engine/commit/f411fd5f1a6b6e4a5624970a26d1c33614b17f0b) |
+| Lean verification | [`56e48e83e760df24d35359ed230d934debadd094`](https://github.com/fraware/formalization-readiness-engine/commit/56e48e83e760df24d35359ed230d934debadd094) — see [`lean/README.md`](../../lean/README.md) |
 | Manifest | [`manifest.json`](manifest.json) |
 
-The `git_commit` in `manifest.json` records the repository state when this bundle was cut. **Current `main` may be ahead** of that commit; development continues independently of this directory.
+The `git_commit` in `manifest.json` records the **release bundle cut** (LF-normalized exports and checksums in this directory). **Lean skeleton verification** was last run at a different commit (`56e48e83`); see [`lean/README.md`](../../lean/README.md). **Current `main` may be ahead** of the bundle cut; development continues independently of this directory.
 
 ## Contents
 

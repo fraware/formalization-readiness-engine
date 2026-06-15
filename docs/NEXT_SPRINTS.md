@@ -6,18 +6,41 @@ This document records completed engineering sprints and optional follow-on work 
 
 ## Subsystem maturity (June 2026)
 
-Honest progress snapshot for external readers. Percentages are engineering estimates, not product KPIs.
+Honest progress snapshot for external readers. Percentages are engineering estimates, not product KPIs. Updated after the June 2026 stabilization sprint and external review.
 
 | Subsystem | Maturity | Next epic |
 |-----------|----------|-----------|
+| Core schemas / validation | ~65–70% | Artifact normalization landed (Phase B); mathlib-scale strict profiles |
 | LaTeX ingestion | ~30% | Controlled notes only; add `\newtheorem` discovery, labels/refs, macros, multi-proof in `ingestion_v1` |
-| OpenAI extraction | ~35–40% | Harness + two live reference runs; expand into benchmark-wide live eval campaign ([`docs/evidence/live_extraction_v0.2/`](evidence/live_extraction_v0.2/)) |
+| OpenAI extraction | ~35–40% | Index-in-prompt retrieval landed (Phase B); benchmark-wide live eval ([`docs/evidence/live_extraction_v0.2/`](evidence/live_extraction_v0.2/)) |
 | mathlib alignment | ~30–35% | Fixture lexical + embedding sidecars; mathlib-scale index and elaboration-aware matching |
 | LeanTask | ~30% | `sorry` skeletons typecheck under mathlib v4.8.0; proof-completion loop + CI gate |
-| ReadinessBench | ~35% | Repo fixtures as gold; external expert review workflow and richer metrics beyond string overlap |
+| ReadinessBench | ~50% | v0.3 semantic metrics landed (Phase B); external expert review workflow at scale |
 | Atlas | Scaffold | Populate from reviewed exports, not generated-only |
-| API / review UI | ~20–25% | Demo API and static review UI; auth, reviewer identity, promotion CLI |
+| API / review UI | ~20–25% | Demo API and static review UI; **Phase C:** production hardening (auth, rate limits, multi-user) |
 | Docker | ~25% | Compose files present; `docker compose build && up` smoke test in CI |
+| Packaging | Minimal | **Phase C:** migrate to `pyproject.toml` with extras (`fre-core[api,worker,models,docs]`) |
+
+## Phase C — Acknowledged gaps (documented, not v0.2 blockers)
+
+These items are intentionally deferred past the public-readiness doc-integrity sprint. They are tracked here so external reviewers see honest distance-to-vision without blocking the frozen v0.2.0 bundle.
+
+| Gap | Assessment | Epic |
+|-----|------------|------|
+| API prototype-grade | FastAPI works locally; no auth, rate limits, or multi-user tenancy | **Production API hardening** — JWT/API keys, Redis rate limiting, review tenant model |
+| Minimal packaging | `packages/fre_core/setup.py` ships only pydantic/typer/rich | **Packaging extras** — `pyproject.toml` with `fre-core[api,worker,models,docs]` mapping `requirements-*.txt` |
+| Live F1 still low after normalization + retrieval | Expected for v0.2; instrumentation precedes solved extraction | Honest positioning in [`TECHNICAL_REPORT.md`](TECHNICAL_REPORT.md): lexical v0.2 baseline + v0.3 semantic layer, not mature public benchmark |
+
+### Distance to vision (June 2026 review)
+
+| Vision component | Current state | Gap |
+|------------------|---------------|-----|
+| Trusted public docs | Release manifest, evidence automation, stale-claim guards | Maintenance on each release cut |
+| Reproducible benchmarks | 43-item ReadinessBench, lexical + v0.3 dual metrics | External expert review at scale |
+| Extraction quality | Two live reference runs, index-in-prompt, artifact normalization | Benchmark-wide live eval; mathlib-scale index |
+| Formalization loop | L1 `sorry` skeletons typecheck under mathlib v4.8.0 | Proof-completion loop, L2 promotion |
+| Reviewer tooling | Static review UI + JSON templates | In-browser annotation workflow |
+| Operations | Docker Compose + SQLite job store | PostgreSQL, object storage, production API |
 
 ## Sprint 1: first live extraction loop
 
@@ -268,14 +291,16 @@ These items are not blockers for the v0.2.0 public release. They extend coverage
 
 ### v0.3 semantic evaluation metrics
 
+**Status:** Core layer landed in Phase B (`fre_core.evaluation_v03`, dual lexical/semantic benchmark columns).
+
 Goal: complement lexical F1 with declaration-aware and embedding-based scoring so benchmark results better reflect formalization relevance.
 
 Tasks:
 
-1. Declaration-aware theorem matching using mathlib `full_name` normalization and alias tables.
+1. Declaration-aware theorem matching using mathlib `full_name` normalization and alias tables — **done** (`equivalence/<unit_id>.json`).
 2. Dimension `status` field accuracy scoring (clear/partial/blocked vs gold).
 3. Optional embedding similarity for constructive paths and blockers.
-4. Keep lexical F1 as a reproducible v0.2 baseline column for regression comparison.
+4. Keep lexical F1 as a reproducible v0.2 baseline column for regression comparison — **done**.
 
 Acceptance criteria:
 
@@ -324,16 +349,6 @@ Tasks:
 3. Update `manifest.json` and Gold changelog.
 
 ### PostgreSQL and object storage
-
-Goal: move job metadata and artifact storage off SQLite/local disk for multi-user deployments.
-
-Tasks:
-
-1. Add PostgreSQL service to Docker Compose.
-2. Migrate `FRE_JOBS_DB` schema.
-3. Document backup and retention policy.
-
-### Technical report automation
 
 Goal: generate release notes and evaluation summaries from manifest and cluster artifacts.
 

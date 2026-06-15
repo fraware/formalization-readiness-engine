@@ -8,19 +8,22 @@
 
 | Metric | Score |
 |--------|------:|
-| macro F1 | 0.25 |
-| existing theorem candidates F1 | 1.0 |
+| macro F1 (lexical v0.2) | 0.25 |
+| existing theorem candidates F1 (lexical) | 1.0 |
 | constructive path F1 | 0.0 |
 | blockers F1 | 0.0 |
 | notation readiness F1 | 0.0 |
+| v0.3 macro F1 | 0.833333 |
+| theorem candidates F1 (declaration-ID v0.3) | 1.0 |
 
 ## Validation (tiered)
 
 Gold fixtures use strict validation; live candidate artifacts use permissive validation.
+ProofGraph and Atlas public_export checks apply after artifact normalization.
 
-- `atlas_record.model.json` strict: fail, permissive: pass
-- `proofgraph.model.json` strict: fail, permissive: pass
-- `readiness_report.model.json` strict: pass, permissive: pass
+- `atlas_record.model.json` strict: fail, permissive: pass, public_export (normalized): pass
+- `proofgraph.model.json` strict: fail, permissive: pass, public_export (normalized): pass
+- `readiness_report.model.json` strict: pass, permissive: pass, public_export (normalized): pass
 
 ## Theorem candidate comparison
 

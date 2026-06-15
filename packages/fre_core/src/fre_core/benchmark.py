@@ -11,12 +11,15 @@ from fre_core.evaluation import score_readiness_report
 from fre_core.evaluation_atlas import score_atlas_record
 from fre_core.evaluation_leantask import score_leantask_package
 from fre_core.evaluation_proofgraph import score_proofgraph
+from fre_core.evaluation_v03 import score_v03_metrics
 from fre_core.schemas import (
+    AtlasRecord,
     BenchmarkEvaluationReport,
     BenchmarkItem,
     BenchmarkItemScore,
     BenchmarkManifest,
     BenchmarkTier,
+    ProofGraph,
     ReadinessDimension,
     ReadinessReport,
     ReviewOrigin,
@@ -479,6 +482,29 @@ def _gold_benchmark_dir_for_unit(*, unit_id: str, benchmark_root: Path) -> Path 
     return None
 
 
+def _resolve_gold_artifact_for_v03(
+    *,
+    unit_id: str,
+    filename: str,
+    repo_root: Path,
+    benchmark_root: Path,
+) -> ProofGraph | AtlasRecord | None:
+    """Load a gold artifact for v0.3 scoring when present."""
+    benchmark_gold_dir = _gold_benchmark_dir_for_unit(unit_id=unit_id, benchmark_root=benchmark_root)
+    example_dir = _gold_example_dir_for_unit(unit_id=unit_id, repo_root=repo_root)
+    for base in (benchmark_gold_dir, example_dir):
+        if base is None:
+            continue
+        candidate = base / filename
+        if not candidate.is_file():
+            continue
+        if filename == PREDICTION_PROOFGRAPH_FILENAME:
+            return load_proofgraph(candidate)
+        if filename == PREDICTION_ATLAS_FILENAME:
+            return load_atlas_record(candidate)
+    return None
+
+
 def _score_optional_artifacts(
     *,
     unit_id: str,
@@ -609,6 +635,44 @@ def run_readinessbench(
             atlas_f1=optional_scores["atlas_f1"],
             leantask_f1=optional_scores["leantask_f1"],
         )
+
+        predicted_graph_path = resolve_prediction_artifact_path(
+            predictions_dir=predictions_dir,
+            unit_id=item.unit_id,
+            filename=PREDICTION_PROOFGRAPH_FILENAME,
+        )
+        predicted_atlas_path = resolve_prediction_artifact_path(
+            predictions_dir=predictions_dir,
+            unit_id=item.unit_id,
+            filename=PREDICTION_ATLAS_FILENAME,
+        )
+        gold_graph = _resolve_gold_artifact_for_v03(
+            unit_id=item.unit_id,
+            filename=PREDICTION_PROOFGRAPH_FILENAME,
+            repo_root=resolved_repo_root,
+            benchmark_root=root,
+        )
+        gold_atlas = _resolve_gold_artifact_for_v03(
+            unit_id=item.unit_id,
+            filename=PREDICTION_ATLAS_FILENAME,
+            repo_root=resolved_repo_root,
+            benchmark_root=root,
+        )
+        predicted_graph = (
+            load_proofgraph(predicted_graph_path) if predicted_graph_path is not None else None
+        )
+        predicted_atlas_record = (
+            load_atlas_record(predicted_atlas_path) if predicted_atlas_path is not None else None
+        )
+        v03_metrics = score_v03_metrics(
+            predicted_report=predicted,
+            gold_report=gold,
+            predicted_proofgraph=predicted_graph,
+            gold_proofgraph=gold_graph,
+            predicted_atlas=predicted_atlas_record,
+            gold_atlas=gold_atlas,
+            repo_root=resolved_repo_root,
+        )
         try:
             prediction_report_path = prediction_path.resolve().relative_to(resolved_repo_root.resolve()).as_posix()
         except ValueError:
@@ -627,6 +691,7 @@ def run_readinessbench(
                 atlas_f1=optional_scores["atlas_f1"],
                 leantask_f1=optional_scores["leantask_f1"],
                 full_macro_f1=full_macro_f1,
+                v03_metrics=v03_metrics,
             )
         )
     gold_item_count = sum(1 for item in manifest.items if item.tier == BenchmarkTier.GOLD)
@@ -640,6 +705,12 @@ def run_readinessbench(
     full_macro_f1_mean = (
         _round_metric(sum(full_values) / len(full_values)) if full_values else None
     )
+    v03_values = [
+        score.v03_metrics["v03_macro_f1"]
+        for score in item_scores
+        if score.v03_metrics is not None and "v03_macro_f1" in score.v03_metrics
+    ]
+    v03_macro_f1_mean = _round_metric(sum(v03_values) / len(v03_values)) if v03_values else None
 
     return BenchmarkEvaluationReport(
         benchmark_id=manifest.benchmark_id,
@@ -648,6 +719,7 @@ def run_readinessbench(
         items=item_scores,
         macro_f1_mean=macro_f1_mean,
         full_macro_f1_mean=full_macro_f1_mean,
+        v03_macro_f1_mean=v03_macro_f1_mean,
     )
 
 

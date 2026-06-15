@@ -138,6 +138,7 @@ class ProofGraphNode(BaseModel):
     node_type: str
     text: str
     source_span: SourceSpan | None = None
+    raw_node_type: str | None = None
 
 
 class ProofGraphEdge(BaseModel):
@@ -158,6 +159,7 @@ class AtlasRecord(BaseModel):
     schema_version: Literal["0.1"] = "0.1"
     unit_id: str
     blocker_type: str
+    blocker_type_raw: str | None = None
     mathematical_pattern: str
     evidence: str
     candidate_formal_object: str | None = None
@@ -257,6 +259,7 @@ class BenchmarkItemScore(BaseModel):
     atlas_f1: float | None = None
     leantask_f1: float | None = None
     full_macro_f1: float | None = None
+    v03_metrics: dict[str, float] | None = None
 
 
 class BenchmarkEvaluationReport(BaseModel):
@@ -269,6 +272,12 @@ class BenchmarkEvaluationReport(BaseModel):
     items: list[BenchmarkItemScore] = Field(default_factory=list)
     macro_f1_mean: float
     full_macro_f1_mean: float | None = None
+    v03_macro_f1_mean: float | None = None
+
+    @property
+    def lexical_macro_f1_mean(self) -> float:
+        """Alias for ``macro_f1_mean`` (v0.2 lexical overlap baseline)."""
+        return self.macro_f1_mean
 
 
 class ReadinessDimensionReview(BaseModel):

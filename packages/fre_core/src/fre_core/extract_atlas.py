@@ -6,6 +6,7 @@ an injected structured model client. It does not import provider SDKs directly.
 
 from __future__ import annotations
 
+from fre_core.artifact_normalization import normalize_atlas_record
 from fre_core.model_client import StructuredModelClient
 from fre_core.schemas import AtlasRecord, TheoremProofUnit
 from fre_core.validation import validate_atlas_record
@@ -55,5 +56,7 @@ def extract_atlas_record(
     record = model_client.extract_json(prompt=prompt, schema=AtlasRecord)
     if record.unit_id != unit.unit_id:
         record = record.model_copy(update={"unit_id": unit.unit_id})
+    record = normalize_atlas_record(record)
     validate_atlas_record(record)
+    validate_atlas_record(record, mode="public_export")
     return record

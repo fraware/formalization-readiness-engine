@@ -34,6 +34,24 @@ def test_build_readiness_prompt_contains_source_material() -> None:
     assert "Use induction." in prompt
 
 
+def test_build_readiness_prompt_includes_index_suggestions() -> None:
+    unit = TheoremProofUnit(
+        unit_id="finite_tree_edge_count",
+        source_id="source",
+        statement="Let G be a finite tree.",
+        proof="Use induction.",
+        domain="graph_theory",
+    )
+
+    prompt = build_readiness_prompt(
+        unit,
+        suggested_declarations=["SimpleGraph.IsTree.card_edgeFinset"],
+    )
+
+    assert "Suggested mathlib declarations from index" in prompt
+    assert "SimpleGraph.IsTree.card_edgeFinset" in prompt
+
+
 def test_extract_readiness_report_forces_unit_id_alignment() -> None:
     unit = TheoremProofUnit(
         unit_id="finite_tree_edge_count",

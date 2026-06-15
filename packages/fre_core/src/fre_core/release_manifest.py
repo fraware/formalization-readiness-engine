@@ -92,7 +92,11 @@ def build_release_manifest(
     repo_root: Path | None = None,
     schema_versions: dict[str, str] | None = None,
 ) -> ReleaseManifest:
-    """Build a versioned release manifest for exported public artifacts."""
+    """Build a versioned release manifest for exported public artifacts.
+
+  When cutting a public release, pass ``git_commit`` explicitly (see
+  ``make build-release-manifest``). Do not rely on moving ``HEAD`` on ``main``.
+    """
     root = repo_root or Path(__file__).resolve().parents[4]
     commit = git_commit if git_commit is not None else resolve_git_commit(repo_root=root)
     return ReleaseManifest(

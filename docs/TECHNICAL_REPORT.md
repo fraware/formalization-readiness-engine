@@ -38,7 +38,7 @@ Docker Compose provides API (`:8000`), review UI (`:8080`), Redis-backed RQ work
 
 ## Documentation and CI
 
-MkDocs builds the public documentation site from `docs/` with navigation for architecture, demo, release, Docker, corpus governance, and review workflows. CI runs the documentation build on every push and pull request. The test suite includes 165 unit tests.
+MkDocs builds the public documentation site from `docs/` with navigation for architecture, demo, release, Docker, corpus governance, and review workflows. CI runs the documentation build on every push and pull request. The test suite includes 352 unit tests (run `pytest --collect-only -q` on HEAD). The stabilization sprint added `review_origin` on gold exports, LF-normalized release checksums, and a `make smoke` gate (`setup`, `test`, `validate-examples`, `validate-readinessbench`, `verify-release-manifest`, `docs`).
 
 ## Evaluation guidance
 

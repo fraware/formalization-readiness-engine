@@ -7,7 +7,7 @@
 [![CI](https://github.com/fraware/formalization-readiness-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/fraware/formalization-readiness-engine/actions/workflows/ci.yml)
 [![Lean](https://img.shields.io/badge/Lean-4.8.0-2a5db0)](lean/README.md)
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)](requirements.txt)
-[![Tests](https://img.shields.io/badge/tests-339-brightgreen)](tests/)
+[![Tests](https://img.shields.io/badge/tests-352-brightgreen)](tests/)
 [![Release](https://img.shields.io/badge/release-v0.2.0-informational)](releases/v0.2.0/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
@@ -28,7 +28,7 @@ FRE is a research and engineering foundation for measuring formalization readine
 <table>
 <tr>
 <td align="center" width="25%">
-<strong>339</strong><br>unit tests<br><sub>CI on every push</sub>
+<strong>352</strong><br>unit tests<br><sub>CI on every push</sub>
 </td>
 <td align="center" width="25%">
 <strong>43</strong><br>benchmark items<br><sub>11 gold · 1 silver · 31 bronze</sub>
@@ -45,7 +45,7 @@ FRE is a research and engineering foundation for measuring formalization readine
 | | |
 |:--|:--|
 | **Lean toolchain** | Lean 4.8.0 + mathlib v4.8.0; both reference LeanTasks verified 2026-06-14 ([status](lean/README.md#verification-status)) — L1 scaffolds use `sorry`, not completed proofs |
-| **Public release** | Frozen v0.2.0 snapshot at [`56e48e83`](releases/v0.2.0/) — see [release README](releases/v0.2.0/README.md) |
+| **Public release** | Frozen v0.2.0 snapshot at [`f411fd5`](releases/v0.2.0/) — see [release README](releases/v0.2.0/README.md) |
 | **Development** | Current branch HEAD; CI badge above tracks `main` |
 | **Repository** | [github.com/fraware/formalization-readiness-engine](https://github.com/fraware/formalization-readiness-engine) |
 
@@ -202,7 +202,7 @@ flowchart LR
 
 **Current development branch** — checked-out HEAD (CI badge above). Code, tests, and docs evolve here.
 
-**Frozen public release v0.2.0** — snapshot at commit [`56e48e83`](https://github.com/fraware/formalization-readiness-engine/commit/56e48e83e760df24d35359ed230d934debadd094); committed exports and checksums live under [`releases/v0.2.0/`](releases/v0.2.0/) ([release README](releases/v0.2.0/README.md)). `main` may be ahead of that commit.
+**Frozen public release v0.2.0** — bundle cut at commit [`f411fd5`](https://github.com/fraware/formalization-readiness-engine/commit/f411fd5f1a6b6e4a5624970a26d1c33614b17f0b); committed exports and checksums live under [`releases/v0.2.0/`](releases/v0.2.0/) ([release README](releases/v0.2.0/README.md)). Lean verification is documented separately at `56e48e83` in [`lean/README.md`](lean/README.md). `main` may be ahead of the bundle cut.
 
 ```
 formalization-readiness-engine/
@@ -217,7 +217,7 @@ formalization-readiness-engine/
 │   └── docs-site/              # MkDocs config (sources in docs/)
 ├── docs/                       # Architecture, demo, release, review guides
 │   └── evidence/               # Committed evaluation evidence (e.g. live extraction v0.2)
-├── tests/                      # Unit and integration tests (339)
+├── tests/                      # Unit and integration tests (352)
 ├── releases/v0.2.0/            # Frozen v0.2.0 manifest + committed exports (not live HEAD)
 │   └── exports/                # ReadinessBench and Atlas JSONL (checksums in manifest.json)
 └── scripts/dev.ps1             # Windows equivalent of Makefile targets

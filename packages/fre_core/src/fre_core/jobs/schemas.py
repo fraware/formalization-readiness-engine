@@ -27,6 +27,7 @@ class ExtractReportJobRequest(BaseModel):
     output_path: str | None = None
     model: str | None = None
     enrich_candidates: bool = False
+    index_suggestions_in_prompt: bool = False
     index_path: str | None = None
     candidate_top_k: int = 5
 

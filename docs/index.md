@@ -17,7 +17,7 @@ The Formalization Readiness Engine (FRE) is an artifact-first research system fo
 |--------|-------|
 | ReadinessBench items | 43 (11 gold, 1 silver, 31 bronze) |
 | Corpus units | 30 from 5 catalog sources |
-| Unit tests | 340 |
+| Unit tests | 352 |
 | Lean pin | Lean 4.8.0 + mathlib v4.8.0 |
 
 ## Quick start

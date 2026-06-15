@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from fre_core.artifact_normalization import normalize_proofgraph
 from fre_core.model_client import StructuredModelClient
 from fre_core.schemas import AlignmentResult, ProofGraph, ReadinessReport, TheoremProofUnit
 from fre_core.validation import PROOFGRAPH_EDGE_TYPES, validate_proofgraph
@@ -46,5 +47,7 @@ def build_proofgraph(
     )
     if graph.unit_id != unit.unit_id:
         graph = graph.model_copy(update={"unit_id": unit.unit_id})
+    graph = normalize_proofgraph(graph)
     validate_proofgraph(graph)
+    validate_proofgraph(graph, mode="public_export")
     return graph

@@ -38,7 +38,8 @@ def run_extract_report_job(job_id: str, payload: dict[str, Any]) -> dict[str, An
 
         unit = load_unit(resolve_repo_path(payload["unit_path"]))
         index = None
-        if payload.get("enrich_candidates"):
+        use_index_suggestions = bool(payload.get("index_suggestions_in_prompt"))
+        if payload.get("enrich_candidates") or use_index_suggestions:
             index_path = payload.get("index_path")
             index = load_index(resolve_repo_path(index_path) if index_path else default_index_path())
         report = extract_readiness_report(
@@ -47,6 +48,7 @@ def run_extract_report_job(job_id: str, payload: dict[str, Any]) -> dict[str, An
             enrich_candidates=bool(payload.get("enrich_candidates")),
             index=index,
             candidate_top_k=int(payload.get("candidate_top_k", 5)),
+            use_index_suggestions=use_index_suggestions,
         )
         output_path = payload.get("output_path") or f"artifacts/generated/{unit.unit_id}/readiness_report.model.json"
         out = resolve_repo_path(output_path)

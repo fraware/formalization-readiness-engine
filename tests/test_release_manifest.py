@@ -1,6 +1,9 @@
 ﻿"""Tests for versioned release manifest generation."""
 
 import hashlib
+import json
+import re
+import subprocess
 from pathlib import Path
 
 from fre_core.release_manifest import (
@@ -13,6 +16,31 @@ from fre_core.release_manifest import (
 ROOT = Path(__file__).resolve().parents[1]
 V020_MANIFEST = ROOT / "releases" / "v0.2.0" / "manifest.json"
 V020_EXPORTS = ROOT / "releases" / "v0.2.0" / "exports"
+V020_README = ROOT / "releases" / "v0.2.0" / "README.md"
+ROOT_README = ROOT / "README.md"
+PUBLIC_RELEASE = ROOT / "docs" / "PUBLIC_RELEASE.md"
+EXPECTED_RELEASE_COMMIT = "f411fd5f1a6b6e4a5624970a26d1c33614b17f0b"
+
+
+def _extract_frozen_commit_sha(text: str) -> str | None:
+    match = re.search(
+        r"(?:release bundle cut|frozen at git commit|Frozen v0\.2\.0 snapshot at)"
+        r"[^\n]*?"
+        r"([0-9a-f]{40})",
+        text,
+        flags=re.IGNORECASE,
+    )
+    if match:
+        return match.group(1)
+    match = re.search(r"\[`([0-9a-f]{7,40})`\]", text)
+    return match.group(1) if match else None
+
+
+def _manifest_git_commit() -> str:
+    payload = json.loads(V020_MANIFEST.read_text(encoding="utf-8"))
+    commit = payload.get("git_commit")
+    assert isinstance(commit, str) and len(commit) == 40
+    return commit
 
 
 def test_collect_artifact_checksums_uses_repo_relative_paths(tmp_path: Path) -> None:
@@ -67,3 +95,23 @@ def test_committed_v020_manifest_matches_exports() -> None:
     for artifact in manifest.artifacts:
         assert (ROOT / artifact.path).is_file()
         assert artifact.path.startswith("releases/v0.2.0/exports/")
+
+
+def test_v020_manifest_git_commit_matches_release_docs() -> None:
+    manifest_commit = _manifest_git_commit()
+    assert manifest_commit == EXPECTED_RELEASE_COMMIT
+
+    release_readme_sha = _extract_frozen_commit_sha(V020_README.read_text(encoding="utf-8"))
+    root_readme_sha = _extract_frozen_commit_sha(ROOT_README.read_text(encoding="utf-8"))
+    public_release_sha = _extract_frozen_commit_sha(PUBLIC_RELEASE.read_text(encoding="utf-8"))
+
+    assert release_readme_sha is not None
+    assert root_readme_sha is not None
+    assert public_release_sha is not None
+
+    for doc_sha in (release_readme_sha, root_readme_sha, public_release_sha):
+        assert manifest_commit.startswith(doc_sha) or doc_sha.startswith(manifest_commit[: len(doc_sha)])
+
+    assert manifest_commit.startswith("f411fd5")
+    assert "56e48e83" in V020_README.read_text(encoding="utf-8")
+    assert "Lean verification" in ROOT_README.read_text(encoding="utf-8")

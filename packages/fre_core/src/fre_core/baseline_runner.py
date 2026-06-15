@@ -128,6 +128,7 @@ def run_baselines(
                     model_client=model_client,
                     enrich_candidates=True,
                     index=index,
+                    use_index_suggestions=True,
                 )
                 alignment = align_readiness_report(
                     report=report,

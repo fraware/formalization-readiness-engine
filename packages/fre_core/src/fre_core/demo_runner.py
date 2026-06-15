@@ -182,6 +182,7 @@ def _run_live_extraction(
     example_dir: Path,
     output_dir: Path,
     console: Console,
+    index_path: Path | None = None,
 ) -> None:
     api_key = os.environ.get("OPENAI_API_KEY", "").strip()
     if not api_key:
@@ -189,10 +190,16 @@ def _run_live_extraction(
 
     unit = load_unit(example_dir / "unit.json")
     provider = OpenAIResponsesProvider()
+    index = load_index(index_path) if index_path is not None and index_path.is_file() else None
 
     report_path = output_dir / "readiness_report.model.json"
     _log_stage(console, "extract-report", report_path.as_posix())
-    report = extract_readiness_report(unit=unit, model_client=provider)
+    report = extract_readiness_report(
+        unit=unit,
+        model_client=provider,
+        index=index,
+        use_index_suggestions=index is not None,
+    )
     report_path.parent.mkdir(parents=True, exist_ok=True)
     report_path.write_text(report.model_dump_json(indent=2), encoding="utf-8")
     _log_ok(console, f"wrote readiness report ({report.unit_id})")
@@ -392,7 +399,12 @@ def run_example_demo(
     console.print(f"[bold magenta]Example:[/bold magenta] {example_key} ({config['unit_id']})")
 
     if not offline:
-        _run_live_extraction(example_dir=example_dir, output_dir=example_output, console=console)
+        _run_live_extraction(
+            example_dir=example_dir,
+            output_dir=example_output,
+            console=console,
+            index_path=root / config["index_fixture"],
+        )
 
     unit_id = _validate_example_dir(example_dir=example_dir, console=console)
 

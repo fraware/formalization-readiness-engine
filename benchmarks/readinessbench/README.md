@@ -39,6 +39,23 @@ This measures string overlap, not semantic equivalence. A prediction can cite a 
 
 Semantic or embedding-based metrics are planned for v0.3; see `docs/NEXT_SPRINTS.md`.
 
+## v0.3 semantic metrics (declaration-ID and ontology)
+
+The v0.3 evaluation layer (`fre_core.evaluation_v03`) runs **in parallel** with lexical v0.2 scoring:
+
+| Column | Meaning |
+|--------|---------|
+| `macro_f1_mean` | v0.2 lexical overlap (unchanged baseline) |
+| `v03_macro_f1_mean` | Aggregate semantic score across scored items |
+| `v03_metrics.theorem_candidates_declaration_f1` | Theorem candidates resolved via mathlib index `full_name` / `declaration_id`, with optional alias groups under `equivalence/<unit_id>.json` |
+| `v03_metrics.blockers_ontology_f1` | Blockers mapped to Atlas `blocker_type` vocabulary before set F1 |
+| `v03_metrics.proofgraph_node_type_f1` | ProofGraph node types after public-export normalization |
+| `v03_metrics.atlas_blocker_type_f1` | Atlas `blocker_type` after controlled-vocabulary normalization |
+
+CLI output from `run-readinessbench` and `run-benchmark-evaluation` prints both lexical and v0.3 means when available. Live extraction evidence under `docs/evidence/live_extraction_v0.2/` records both score families in `summary.json`.
+
+Lexical F1 remains the regression baseline; v0.3 scores reflect semantic relevance where string overlap is zero (for example category-theory theorem aliases).
+
 ## Layout
 
 ```text
