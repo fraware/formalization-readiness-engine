@@ -8,7 +8,7 @@ make record-main-status
 
 | Field | Value |
 |-------|-------|
-| Commit SHA | `055c9c1314e1512f4a440c6b68cc740582ef7823` |
+| Commit SHA | `c3542045a433bc46e8f6b8f122416ef306e938aa` |
 | Verification date | 2026-06-15 |
 | Pytest collection | 352 tests (run `pytest --collect-only -q` on HEAD) |
 | `make smoke` / `scripts/dev.ps1 smoke` | pass (local) |
@@ -19,7 +19,7 @@ make record-main-status
 
 | Workflow | Status | Link |
 |----------|--------|------|
-| `ci.yml` (last run on this SHA) | failure | [Run 27529607232](https://github.com/fraware/formalization-readiness-engine/actions/runs/27529607232) |
+| `ci.yml` (last run on this SHA) | failure | [Run 27529750721](https://github.com/fraware/formalization-readiness-engine/actions/runs/27529750721) |
 | `lean.yml` (manual dispatch) | success | [Run 27514933703](https://github.com/fraware/formalization-readiness-engine/actions/runs/27514933703) |
 
 Lean CI does not run on every push. It is path-filtered to generated Lean tasks, the pinned toolchain, and `leantask*.py`. Trigger manually when those paths are unchanged:
