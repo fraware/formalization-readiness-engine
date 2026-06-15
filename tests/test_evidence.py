@@ -62,15 +62,15 @@ def _pytest_collection_count() -> int:
     return int(match.group(1))
 
 
-def _git_diff_paths(from_ref: str, to_ref: str) -> set[str]:
+def _git_parent(ref: str = "HEAD") -> str:
     completed = subprocess.run(
-        ["git", "diff", "--name-only", from_ref, to_ref],
+        ["git", "rev-parse", f"{ref}^"],
         cwd=ROOT,
         check=True,
         capture_output=True,
         text=True,
     )
-    return {line for line in completed.stdout.splitlines() if line}
+    return completed.stdout.strip()
 
 
 def test_current_main_status_matches_head() -> None:
@@ -94,14 +94,10 @@ def test_current_main_status_matches_head() -> None:
         return
 
     # Allow a docs-only status refresh commit on top of the recorded sprint SHA.
-    evidence_only = {
-        "docs/evidence/current_main_status.md",
-        "docs/evidence/status_meta.json",
-    }
-    diff_paths = _git_diff_paths(recorded, head)
-    assert diff_paths <= evidence_only, (
-        f"status_meta commit_sha {recorded!r} != HEAD {head!r} and diff is not "
-        f"evidence-only: {sorted(diff_paths)}; run make record-main-status"
+    parent = _git_parent()
+    assert parent == recorded, (
+        f"status_meta commit_sha {recorded!r} != HEAD {head!r} and parent {parent!r} "
+        "does not match; run make record-main-status"
     )
 
 
